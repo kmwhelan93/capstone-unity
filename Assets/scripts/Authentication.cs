@@ -25,7 +25,7 @@ public class Authentication : MonoBehaviour {
 		if (result.success) 
 		{
 			Debug.Log ("Successfully logged in!");
-			Application.LoadLevel ("GameScene");
+			Application.LoadLevel ("WorldView");
 		} else {
 			Debug.Log ("Login failed. Try again.");
 		}
