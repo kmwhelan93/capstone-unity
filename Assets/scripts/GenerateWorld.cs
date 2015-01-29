@@ -2,17 +2,6 @@
 using System.Collections;
 using LitJson;
 
-public class Point {
-	public int x	{ get; set; }
-	public int y	{ get; set; }
-}
-
-public class BaseLoc {
-	public int baseId	{ get; set; }
-	public Point world	{ get; set; } // world location (larger grid)
-	public Point local	{ get; set; } // local location (inner grid, 3x3 within each square of world grid)
-}
-
 public class GenerateWorld : MonoBehaviour {
 
 	// Use this for initialization
@@ -33,6 +22,26 @@ public class GenerateWorld : MonoBehaviour {
 				""baseId"": 2,
 				""world"": {""x"": 1, ""y"": 1},
 				""local"": {""x"": -1, ""y"": 0}
+			},
+			{
+				""baseId"": 3,
+				""world"": {""x"": -1, ""y"": 1},
+				""local"": {""x"": 1, ""y"": 1}
+			},
+			{
+				""baseId"": 4,
+				""world"": {""x"": -1, ""y"": -1},
+				""local"": {""x"": -1, ""y"": -1}
+			},
+			{
+				""baseId"": 5,
+				""world"": {""x"": 0, ""y"": -1},
+				""local"": {""x"": 1, ""y"": -1}
+			},
+			{
+				""baseId"": 6,
+				""world"": {""x"": -2, ""y"": 1},
+				""local"": {""x"": 0, ""y"": 0}
 			}
         ]";
 		
@@ -42,7 +51,12 @@ public class GenerateWorld : MonoBehaviour {
 		// Place objects
 		Material[] materials = {(Material)Resources.Load("base_orange", typeof(Material)),
 		                        (Material)Resources.Load("base_green", typeof(Material)),
-								(Material)Resources.Load("base_blue", typeof(Material))};
+								(Material)Resources.Load("base_blue", typeof(Material)),
+								(Material)Resources.Load("base_yellow", typeof(Material)),
+			                    (Material)Resources.Load("base_purple", typeof(Material)),
+								(Material)Resources.Load("base_pink", typeof(Material)),
+								(Material)Resources.Load("base_teal", typeof(Material))
+			                    };
 		for (int i = 0; i < baseLocs.Length; i++) {
 			int x = baseLocs[i].world.x * 3 + baseLocs[i].local.x;
 			int y = baseLocs[i].world.y * 3 + baseLocs[i].local.y;

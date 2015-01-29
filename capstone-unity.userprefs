@@ -1,12 +1,13 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\scripts\JSONExample.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\scripts\GenerateWorld.cs">
     <Files>
-      <File FileName="capstone-unity.sln" Line="1" Column="1" />
-      <File FileName="Assets\scripts\GenerateWorld.cs" Line="35" Column="36" />
+      <File FileName="capstone-unity.sln" Line="52" Column="1" />
+      <File FileName="Assets\scripts\GenerateWorld.cs" Line="3" Column="15" />
       <File FileName="Assets\scripts\JSONExample.cs" Line="1" Column="1" />
       <File FileName="Assets\scripts\Authentication.cs" Line="1" Column="1" />
-      <File FileName="Assets\BaseLocations.json" Line="1" Column="1" />
+      <File FileName="Assets\BaseLocations.json" Line="14" Column="29" />
+      <File FileName="Assets\scripts\BaseLoc.cs" Line="5" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
