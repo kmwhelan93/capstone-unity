@@ -1,70 +1,53 @@
 ﻿using UnityEngine;
 using System;
 using LitJson;
+using System.Collections;
 
 public class GenerateWorld : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
 		// Create bases
-		if (!createWorldView()) {
-			Debug.LogError("Failed to create bases");
-		}
+		StartCoroutine("createWorldView");
 
 		// Create portals
 
 	}
 
-	bool createWorldView() {
-		// Make request and get JSON
-		string json = @"[
-            {
-				""baseId"": 0,
-			    ""world"": {""x"": 0, ""y"": 0},
-  			    ""local"": {""x"": 0, ""y"": 0}
-			},
-			{
-				""baseId"": 1,
-				""world"": {""x"": 1, ""y"": 0},
-				""local"": {""x"": 1, ""y"": -1}
-			},
-			{
-				""baseId"": 2,
-				""world"": {""x"": 1, ""y"": 1},
-				""local"": {""x"": -1, ""y"": 0}
-			},
-			{
-				""baseId"": 3,
-				""world"": {""x"": -1, ""y"": 1},
-				""local"": {""x"": 1, ""y"": 1}
-			},
-			{
-				""baseId"": 4,
-				""world"": {""x"": -1, ""y"": -1},
-				""local"": {""x"": -1, ""y"": -1}
-			},
-			{
-				""baseId"": 5,
-				""world"": {""x"": 0, ""y"": -1},
-				""local"": {""x"": 1, ""y"": -1}
-			},
-			{
-				""baseId"": 6,
-				""world"": {""x"": 2, ""y"": 1},
-				""local"": {""x"": 0, ""y"": 0}
-			}
-        ]";
+	// Update is called once per frame
+	void Update () {
 		
-		BaseLoc[] baseLocs = JsonMapper.ToObject<BaseLoc[]>(json);
+	}
 
-		createBases (baseLocs);
+	/**
+	 * Get all bases belonging to a user.
+	 * Note: this method makes a request
+	 */
+	public Base[] getBases(string username)
+	{
+
+		return null;
+	}
+
+	IEnumerator waitForRequest(WWW www)
+	{
+		yield return www;
+	}
+
+
+	IEnumerator createWorldView() {
+		WWWForm wwwform = new WWWForm ();
+		wwwform.AddField ("username", "kmw8sf");
+		WWW request = new WWW ("localhost:8080/myapp/world/bases", wwwform);
+		yield return request;
+		Base[] bases = JsonMapper.ToObject<Base[]>(request.text);
+		createBases (bases);
 		//createPortals (baseLocs);
-
-		return true;
+		yield break;
 	}
 
 	// Called in Start() to load player's bases and place them on the screen
-	bool createBases(BaseLoc[] baseLocs) {
+	bool createBases(Base[] baseLocs) {
 		// Place objects
 		Material[] materials = {(Material)Resources.Load("base_orange", typeof(Material)),
 			(Material)Resources.Load("base_green", typeof(Material)),
@@ -82,13 +65,13 @@ public class GenerateWorld : MonoBehaviour {
 			
 			GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
 			sphere.transform.position = new Vector3(x, y, 0);
-			sphere.renderer.material = materials[i % materials.Length];
+			sphere.renderer.material = materials[baseLocs[i].colorId % materials.Length];
 		}
 		return true;
 	}
 
 	// Called in Start() to create portals between player's bases
-	bool createPortals(BaseLoc[] baseLocs) {
+	bool createPortals(Base[] baseLocs) {
 		// Make request and get JSON
 		string json = @"[
             {
@@ -130,8 +113,5 @@ public class GenerateWorld : MonoBehaviour {
 		return true;
 	}
 
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
 }
