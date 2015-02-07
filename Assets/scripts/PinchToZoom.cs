@@ -21,11 +21,11 @@ public class PinchToZoom : MonoBehaviour {
 
 			if (camera.isOrthoGraphic)
 			{
-				camera.orthographicSize += (currLength - prevLength) * orthoZoomSpeed;
+				camera.orthographicSize -= (currLength - prevLength) * orthoZoomSpeed;
 				camera.orthographicSize = Mathf.Max (0.1f, camera.orthographicSize);
 			} else
 			{
-				camera.fieldOfView += (currLength - prevLength) * perspectiveZoomSpeed;
+				camera.fieldOfView -= (currLength - prevLength) * perspectiveZoomSpeed;
 				camera.fieldOfView = Mathf.Clamp (camera.fieldOfView, 0.1f, 179.9f);
 			}
 		}
