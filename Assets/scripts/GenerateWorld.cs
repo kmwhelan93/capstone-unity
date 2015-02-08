@@ -4,6 +4,8 @@ using LitJson;
 using System.Collections;
 
 public class GenerateWorld : MonoBehaviour {
+
+	public GameObject basePrefab;
 	
 	// Use this for initialization
 	void Start () {
@@ -63,9 +65,10 @@ public class GenerateWorld : MonoBehaviour {
 			//print ("Base " + i + " -> wx: " + baseLocs[i].world.x + " lx: " + baseLocs[i].local.x + " x: " + x);
 			//print ("Base " + i + " -> wy: " + baseLocs[i].world.y + " ly: " + baseLocs[i].local.y + " y: " + y);
 			
-			GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-			sphere.transform.position = new Vector3(x, y, 0);
-			sphere.renderer.material = materials[baseLocs[i].colorId % materials.Length];
+			GameObject baseObj = (GameObject) Instantiate (basePrefab, new Vector3(x, y, 0), Quaternion.identity);
+			baseObj.renderer.material = materials[baseLocs[i].colorId % materials.Length];
+			TouchBase tb = baseObj.GetComponent<TouchBase>();
+			tb.b = baseLocs[i];
 		}
 		return true;
 	}
