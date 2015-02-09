@@ -6,36 +6,40 @@ using System.Collections;
 public class GenerateWorld : MonoBehaviour {
 
 	public GameObject basePrefab;
+	public Material[] materials;
 	
 	// Use this for initialization
 	void Start () {
+		// load resources
+		loadResources ();
 		// Create bases
 		StartCoroutine("createWorldView");
-
 		// Create portals
 
+	}
+
+	void loadResources() 
+	{
+		String[] materialNames = {
+						"base_orange",
+						"base_green",
+						"base_blue",
+						"base_yellow",
+						"base_purple",
+						"base_pink",
+						"base_teal"
+				};
+		materials = new Material[materialNames.Length];
+		for (int i = 0; i < materialNames.Length; i++) 
+		{
+			materials[i] = (Material) Resources.Load (materialNames[i], typeof(Material));
+		}
 	}
 
 	// Update is called once per frame
 	void Update () {
 		
 	}
-
-	/**
-	 * Get all bases belonging to a user.
-	 * Note: this method makes a request
-	 */
-	public Base[] getBases(string username)
-	{
-
-		return null;
-	}
-
-	IEnumerator waitForRequest(WWW www)
-	{
-		yield return www;
-	}
-
 
 	IEnumerator createWorldView() {
 		WWWForm wwwform = new WWWForm ();
@@ -51,14 +55,6 @@ public class GenerateWorld : MonoBehaviour {
 	// Called in Start() to load player's bases and place them on the screen
 	bool createBases(Base[] baseLocs) {
 		// Place objects
-		Material[] materials = {(Material)Resources.Load("base_orange", typeof(Material)),
-			(Material)Resources.Load("base_green", typeof(Material)),
-			(Material)Resources.Load("base_blue", typeof(Material)),
-			(Material)Resources.Load("base_yellow", typeof(Material)),
-			(Material)Resources.Load("base_purple", typeof(Material)),
-			(Material)Resources.Load("base_pink", typeof(Material)),
-			(Material)Resources.Load("base_teal", typeof(Material))
-		};
 		for (int i = 0; i < baseLocs.Length; i++) {
 			int x = baseLocs[i].world.x * 3 + baseLocs[i].local.x;
 			int y = baseLocs[i].world.y * 3 + baseLocs[i].local.y;
