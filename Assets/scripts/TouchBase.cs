@@ -7,6 +7,13 @@ public class TouchBase : MonoBehaviour {
 
 	void OnMouseDown() 
 	{
-		Debug.Log ("touched base at " + b.world.x + " " + b.world.y);
+		StartCoroutine ("createBase");
+	}
+
+	IEnumerator createBase() 
+	{
+		WWW request = RequestService.makeRequest("world/bases/create", b);
+		yield return request;
+		GenerateWorld.instance.resetWorldView ();
 	}
 }

@@ -5,15 +5,22 @@ using System.Collections;
 
 public class GenerateWorld : MonoBehaviour {
 
+	public static GenerateWorld instance;
 	public GameObject basePrefab;
 	public Material[] materials;
+	private GameObject[] currentBases;
+
+	void Awake()
+	{
+		instance = this;
+	}
 	
 	// Use this for initialization
 	void Start () {
 		// load resources
 		loadResources ();
 		// Create bases
-		StartCoroutine("createWorldView");
+		resetWorldView ();
 		// Create portals
 
 	}
@@ -41,20 +48,36 @@ public class GenerateWorld : MonoBehaviour {
 		
 	}
 
-	IEnumerator createWorldView() {
+	public void resetWorldView()
+	{
+		StartCoroutine (coResetWorldView());
+	}
+
+	private void destroyCurrentBases()
+	{
+		if (currentBases == null)
+			return;
+		foreach (GameObject b in currentBases) {
+			Destroy (b);
+		}
+	}
+
+	private IEnumerator coResetWorldView() {
 		WWWForm wwwform = new WWWForm ();
 		wwwform.AddField ("username", "kmw8sf");
 		WWW request = new WWW ("localhost:8080/myapp/world/bases", wwwform);
 		yield return request;
+		destroyCurrentBases ();
 		Base[] bases = JsonMapper.ToObject<Base[]>(request.text);
-		createBases (bases);
+		displayBases (bases);
 		//createPortals (baseLocs);
 		yield break;
 	}
 
 	// Called in Start() to load player's bases and place them on the screen
-	bool createBases(Base[] baseLocs) {
+	bool displayBases(Base[] baseLocs) {
 		// Place objects
+		currentBases = new GameObject[baseLocs.Length];
 		for (int i = 0; i < baseLocs.Length; i++) {
 			int x = baseLocs[i].world.x * 3 + baseLocs[i].local.x;
 			int y = baseLocs[i].world.y * 3 + baseLocs[i].local.y;
@@ -65,6 +88,7 @@ public class GenerateWorld : MonoBehaviour {
 			baseObj.renderer.material = materials[baseLocs[i].colorId % materials.Length];
 			TouchBase tb = baseObj.GetComponent<TouchBase>();
 			tb.b = baseLocs[i];
+			currentBases[i] = baseObj;
 		}
 		return true;
 	}
@@ -110,6 +134,18 @@ public class GenerateWorld : MonoBehaviour {
 		}
 
 		return true;
+	}
+
+	public void clearBases()
+	{
+		StartCoroutine(coClearBases ());
+	}
+
+	private IEnumerator coClearBases() 
+	{
+		WWW request = RequestService.makeRequest ("world/clear", currentBases [0].GetComponent<TouchBase>().b);
+		yield return request;
+		GenerateWorld.instance.resetWorldView();
 	}
 
 
