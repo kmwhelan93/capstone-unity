@@ -7,6 +7,7 @@ public class GenerateWorld : MonoBehaviour {
 
 	public static GenerateWorld instance;
 	public GameObject basePrefab;
+	public GameObject portalPrefab;
 	public Material[] materials;
 	private GameObject[] currentBases;
 
@@ -21,8 +22,6 @@ public class GenerateWorld : MonoBehaviour {
 		loadResources ();
 		// Create bases
 		resetWorldView ();
-		// Create portals
-
 	}
 
 	void loadResources() 
@@ -70,7 +69,7 @@ public class GenerateWorld : MonoBehaviour {
 		destroyCurrentBases ();
 		Base[] bases = JsonMapper.ToObject<Base[]>(request.text);
 		displayBases (bases);
-		//createPortals (baseLocs);
+		createPortals (bases);
 		yield break;
 	}
 
@@ -98,21 +97,21 @@ public class GenerateWorld : MonoBehaviour {
 		// Make request and get JSON
 		string json = @"[
             {
-				""baseId1"": 0,
-				""baseId2"": 1,
-			},
-			{
-				""baseId1"": 0,
-				""baseId2"": 2,
-			},
-			{
-				""baseId1"": 0,
-				""baseId2"": 3,
+				""baseId1"": 1,
+				""baseId2"": 111
 			},
 			{
 				""baseId1"": 1,
-				""baseId2"": 6,
+				""baseId2"": 137
 			},
+			{
+				""baseId1"": 1,
+				""baseId2"": 138
+			},
+			{
+				""baseId1"": 1,
+				""baseId2"": 139
+			}
         ]";
 
 		Portal[] portals = JsonMapper.ToObject<Portal[]>(json);
@@ -122,10 +121,24 @@ public class GenerateWorld : MonoBehaviour {
 				if (baseLocs[j].baseId == portals[i].baseId1) {
 					for (int k = 0; k < baseLocs.Length; k++) {
 						if (baseLocs[k].baseId == portals[i].baseId2) {
+							// Locations of the two bases
 							int x1 = baseLocs[j].world.x * 3 + baseLocs[j].local.x;
 							int y1 = baseLocs[j].world.y * 3 + baseLocs[j].local.y;
-							int x = baseLocs[i].world.x * 3 + baseLocs[i].local.x;
-							int y = baseLocs[i].world.y * 3 + baseLocs[i].local.y;
+							int x2 = baseLocs[k].world.x * 3 + baseLocs[k].local.x;
+							int y2 = baseLocs[k].world.y * 3 + baseLocs[k].local.y;
+
+							// Create the portal (cylinder prefab)
+							GameObject portalObj = (GameObject) Instantiate (portalPrefab, new Vector3((x1+x2)/2.0f, (y1+y2)/2.0f, 0f), Quaternion.identity);
+							// Scale portal based on distance between bases
+							Vector3 scale = portalObj.transform.localScale;
+							scale.y = Vector2.Distance(new Vector2(x1,y1), new Vector2(x2,y2)) / 2.0f;
+							portalObj.transform.localScale = scale;
+							// Rotate portal based on angle between bases
+							float slope = (y2*1.0f-y1)/(x2*1.0f-x1);
+							float angle = Mathf.Rad2Deg*Mathf.Atan(slope) + 90;
+							Vector3 rotate = portalObj.transform.eulerAngles;
+							rotate.z = angle;
+							portalObj.transform.eulerAngles = rotate;
 						}
 					}
 					break;
