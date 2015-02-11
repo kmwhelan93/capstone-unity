@@ -69,7 +69,7 @@ public class GenerateWorld : MonoBehaviour {
 		destroyCurrentBases ();
 		Base[] bases = JsonMapper.ToObject<Base[]>(request.text);
 		displayBases (bases);
-		createPortals (bases);
+		StartCoroutine(createPortals (bases));
 		yield break;
 	}
 
@@ -93,24 +93,27 @@ public class GenerateWorld : MonoBehaviour {
 	}
 
 	// Called in Start() to create portals between player's bases
-	bool createPortals(Base[] baseLocs) {
+	IEnumerator createPortals(Base[] baseLocs) {
+		WWW request = RequestService.makeRequest ("world/portals", new {username = "kmw8sf"});
+		yield return request;
+		Portal2[] portal2 = JsonMapper.ToObject<Portal2[]> (request.text);
 		// Make request and get JSON
 		string json = @"[
             {
 				""baseId1"": 1,
-				""baseId2"": 111
+				""baseId2"": 142
 			},
 			{
 				""baseId1"": 1,
-				""baseId2"": 137
+				""baseId2"": 143
 			},
 			{
 				""baseId1"": 1,
-				""baseId2"": 138
+				""baseId2"": 144
 			},
 			{
-				""baseId1"": 1,
-				""baseId2"": 139
+				""baseId1"": 142,
+				""baseId2"": 145
 			}
         ]";
 
@@ -146,7 +149,6 @@ public class GenerateWorld : MonoBehaviour {
 			}
 		}
 
-		return true;
 	}
 
 	public void clearBases()
