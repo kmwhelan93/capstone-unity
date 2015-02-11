@@ -9,9 +9,12 @@ public class TouchAndDrag : MonoBehaviour {
 	void Update () {
 		if (Input.touchCount == 1)
 		{
-			Vector2 deltaPosition = Input.GetTouch (0).deltaPosition;
-			Vector2 deltaToScreenRatio = deltaPosition * camera.orthographicSize / 5;
-			camera.transform.Translate(deltaToScreenRatio * -1 *speed);
+			Touch t = Input.GetTouch (0);
+			if (t.phase == TouchPhase.Moved && t.deltaPosition.magnitude > 2) {
+				Vector2 deltaPosition = Input.GetTouch (0).deltaPosition;
+				Vector2 deltaToScreenRatio = deltaPosition * camera.orthographicSize / 5;
+				camera.transform.Translate(deltaToScreenRatio * -1 *speed);
+			}
 		}
 	}
 }
