@@ -96,8 +96,9 @@ public class GenerateWorld : MonoBehaviour {
 	IEnumerator createPortals(Base[] baseLocs) {
 		WWW request = RequestService.makeRequest ("world/portals", new {username = "kmw8sf"});
 		yield return request;
-		Portal2[] portal2 = JsonMapper.ToObject<Portal2[]> (request.text);
+		Portal2[] portals = JsonMapper.ToObject<Portal2[]> (request.text);
 		// Make request and get JSON
+		/*
 		string json = @"[
             {
 				""baseId1"": 1,
@@ -118,35 +119,29 @@ public class GenerateWorld : MonoBehaviour {
         ]";
 
 		Portal[] portals = JsonMapper.ToObject<Portal[]>(json);
+		*/
 
 		for (int i = 0; i < portals.Length; i++) {
-			for (int j = 0; j < baseLocs.Length; j++) {
-				if (baseLocs[j].baseId == portals[i].baseId1) {
-					for (int k = 0; k < baseLocs.Length; k++) {
-						if (baseLocs[k].baseId == portals[i].baseId2) {
 							// Locations of the two bases
-							int x1 = baseLocs[j].world.x * 3 + baseLocs[j].local.x;
-							int y1 = baseLocs[j].world.y * 3 + baseLocs[j].local.y;
-							int x2 = baseLocs[k].world.x * 3 + baseLocs[k].local.x;
-							int y2 = baseLocs[k].world.y * 3 + baseLocs[k].local.y;
+			Portal2 portal = portals[i];
+			int x1 = portal.base1.world.x * 3 + portal.base1.local.x;
+			int y1 = portal.base1.world.y * 3 + portal.base1.local.y;
+			int x2 = portal.base2.world.x * 3 + portal.base2.local.x;
+			int y2 = portal.base2.world.y * 3 + portal.base2.local.y;
 
-							// Create the portal (cylinder prefab)
-							GameObject portalObj = (GameObject) Instantiate (portalPrefab, new Vector3((x1+x2)/2.0f, (y1+y2)/2.0f, 0f), Quaternion.identity);
-							// Scale portal based on distance between bases
-							Vector3 scale = portalObj.transform.localScale;
-							scale.y = Vector2.Distance(new Vector2(x1,y1), new Vector2(x2,y2)) / 2.0f;
-							portalObj.transform.localScale = scale;
-							// Rotate portal based on angle between bases
-							float slope = (y2*1.0f-y1)/(x2*1.0f-x1);
-							float angle = Mathf.Rad2Deg*Mathf.Atan(slope) + 90;
-							Vector3 rotate = portalObj.transform.eulerAngles;
-							rotate.z = angle;
-							portalObj.transform.eulerAngles = rotate;
-						}
-					}
-					break;
-				}
-			}
+			// Create the portal (cylinder prefab)
+			GameObject portalObj = (GameObject) Instantiate (portalPrefab, new Vector3((x1+x2)/2.0f, (y1+y2)/2.0f, 0f), Quaternion.identity);
+			// Scale portal based on distance between bases
+			Vector3 scale = portalObj.transform.localScale;
+			scale.y = Vector2.Distance(new Vector2(x1,y1), new Vector2(x2,y2)) / 2.0f;
+			portalObj.transform.localScale = scale;
+			// Rotate portal based on angle between bases
+			float slope = (y2*1.0f-y1)/(x2*1.0f-x1);
+			float angle = Mathf.Rad2Deg*Mathf.Atan(slope) + 90;
+			Vector3 rotate = portalObj.transform.eulerAngles;
+			rotate.z = angle;
+			portalObj.transform.eulerAngles = rotate;
+	
 		}
 
 	}
