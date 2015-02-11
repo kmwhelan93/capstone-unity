@@ -5,8 +5,10 @@ public class TouchBase : MonoBehaviour {
 
 	public Base b;
 
+
 	void OnMouseDown() 
 	{
+		Debug.Log ("base touched");
 		StartCoroutine ("createBase");
 	}
 
