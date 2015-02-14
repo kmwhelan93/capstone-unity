@@ -10,6 +10,7 @@ public class GenerateWorld : MonoBehaviour {
 	public GameObject portalPrefab;
 	public Material[] materials;
 	private GameObject[] currentBases;
+	private GameObject[] currentPortals;
 
 	void Awake()
 	{
@@ -61,28 +62,36 @@ public class GenerateWorld : MonoBehaviour {
 		}
 	}
 
+	private void destroyCurrentPortals()
+	{
+		if (currentPortals == null)
+			return;
+		foreach (GameObject p in currentPortals) {
+			Destroy (p);
+		}
+	}
+
 	private IEnumerator coResetWorldView() {
 		WWWForm wwwform = new WWWForm ();
 		wwwform.AddField ("username", "kmw8sf");
 		WWW request = new WWW ("localhost:8080/myapp/world/bases", wwwform);
 		yield return request;
 		destroyCurrentBases ();
+		destroyCurrentPortals ();
 		Base[] bases = JsonMapper.ToObject<Base[]>(request.text);
 		displayBases (bases);
-		StartCoroutine(createPortals (bases));
+		displayPortals (bases);
 		yield break;
 	}
 
 	// Called in Start() to load player's bases and place them on the screen
-	bool displayBases(Base[] baseLocs) {
+	private bool displayBases(Base[] baseLocs) {
 		// Place objects
 		currentBases = new GameObject[baseLocs.Length];
 		for (int i = 0; i < baseLocs.Length; i++) {
 			int x = baseLocs[i].world.x * 3 + baseLocs[i].local.x;
 			int y = baseLocs[i].world.y * 3 + baseLocs[i].local.y;
-			//print ("Base " + i + " -> wx: " + baseLocs[i].world.x + " lx: " + baseLocs[i].local.x + " x: " + x);
-			//print ("Base " + i + " -> wy: " + baseLocs[i].world.y + " ly: " + baseLocs[i].local.y + " y: " + y);
-			
+
 			GameObject baseObj = (GameObject) Instantiate (basePrefab, new Vector3(x, y, 0), Quaternion.identity);
 			baseObj.renderer.material = materials[baseLocs[i].colorId % materials.Length];
 			TouchBase tb = baseObj.GetComponent<TouchBase>();
@@ -92,37 +101,23 @@ public class GenerateWorld : MonoBehaviour {
 		return true;
 	}
 
+	private void displayPortals(Base[] bases) {
+		StartCoroutine(createPortals (bases));
+	}
+
 	// Called in Start() to create portals between player's bases
-	IEnumerator createPortals(Base[] baseLocs) {
-		WWW request = RequestService.makeRequest ("world/portals", new {username = "kmw8sf"});
+	private IEnumerator createPortals(Base[] baseLocs) {
+		WWWForm wwwform = new WWWForm ();
+		wwwform.AddField ("username", "kmw8sf");
+		// NOTE: Changed this to "new WWW" from "RequestService.makeRequest" due to an issue building
+		// the request url with the latter
+		WWW request = new WWW ("localhost:8080/myapp/world/portals", wwwform);
 		yield return request;
 		Portal2[] portals = JsonMapper.ToObject<Portal2[]> (request.text);
-		// Make request and get JSON
-		/*
-		string json = @"[
-            {
-				""baseId1"": 1,
-				""baseId2"": 142
-			},
-			{
-				""baseId1"": 1,
-				""baseId2"": 143
-			},
-			{
-				""baseId1"": 1,
-				""baseId2"": 144
-			},
-			{
-				""baseId1"": 142,
-				""baseId2"": 145
-			}
-        ]";
 
-		Portal[] portals = JsonMapper.ToObject<Portal[]>(json);
-		*/
-
+		currentPortals = new GameObject[portals.Length];
 		for (int i = 0; i < portals.Length; i++) {
-							// Locations of the two bases
+			// Locations of the two bases
 			Portal2 portal = portals[i];
 			int x1 = portal.base1.world.x * 3 + portal.base1.local.x;
 			int y1 = portal.base1.world.y * 3 + portal.base1.local.y;
@@ -141,7 +136,7 @@ public class GenerateWorld : MonoBehaviour {
 			Vector3 rotate = portalObj.transform.eulerAngles;
 			rotate.z = angle;
 			portalObj.transform.eulerAngles = rotate;
-	
+			currentPortals[i] = portalObj;
 		}
 
 	}
