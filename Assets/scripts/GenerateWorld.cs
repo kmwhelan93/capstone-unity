@@ -12,12 +12,9 @@ public class GenerateWorld : MonoBehaviour {
 	public GameObject portalPrefab;
 	public Material[] materials;
 	private GameObject[] currentBases;
-<<<<<<< HEAD
 	private GameObject[] currentDisplayText;
 	public GameObject canvas;
-=======
 	private GameObject[] currentPortals;
->>>>>>> f701842db853f5496dca18b9e56e117d11c06eee
 
 	void Awake()
 	{
