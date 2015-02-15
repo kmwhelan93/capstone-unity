@@ -2,14 +2,18 @@
 using System;
 using LitJson;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GenerateWorld : MonoBehaviour {
 
 	public static GenerateWorld instance;
 	public GameObject basePrefab;
+	public GameObject textPrefab;
 	public GameObject portalPrefab;
 	public Material[] materials;
 	private GameObject[] currentBases;
+	private GameObject[] currentDisplayText;
+	public GameObject canvas;
 
 	void Awake()
 	{
@@ -59,6 +63,9 @@ public class GenerateWorld : MonoBehaviour {
 		foreach (GameObject b in currentBases) {
 			Destroy (b);
 		}
+		foreach (GameObject t in currentDisplayText) {
+			Destroy (t);
+		}
 	}
 
 	private IEnumerator coResetWorldView() {
@@ -77,18 +84,26 @@ public class GenerateWorld : MonoBehaviour {
 	bool displayBases(Base[] baseLocs) {
 		// Place objects
 		currentBases = new GameObject[baseLocs.Length];
+		currentDisplayText = new GameObject[baseLocs.Length];
+		List<BaseWrapper> baseWrappers = new List<BaseWrapper> ();
 		for (int i = 0; i < baseLocs.Length; i++) {
 			int x = baseLocs[i].world.x * 3 + baseLocs[i].local.x;
 			int y = baseLocs[i].world.y * 3 + baseLocs[i].local.y;
 			//print ("Base " + i + " -> wx: " + baseLocs[i].world.x + " lx: " + baseLocs[i].local.x + " x: " + x);
 			//print ("Base " + i + " -> wy: " + baseLocs[i].world.y + " ly: " + baseLocs[i].local.y + " y: " + y);
-			
 			GameObject baseObj = (GameObject) Instantiate (basePrefab, new Vector3(x, y, 0), Quaternion.identity);
 			baseObj.renderer.material = materials[baseLocs[i].colorId % materials.Length];
 			TouchBase tb = baseObj.GetComponent<TouchBase>();
 			tb.b = baseLocs[i];
 			currentBases[i] = baseObj;
+
+			GameObject displayTextObj = (GameObject) Instantiate (textPrefab, new Vector3(0, 0, -1000), Quaternion.identity);
+			currentDisplayText[i] = displayTextObj;
+			displayTextObj.transform.SetParent (canvas.transform, false);
+			baseWrappers.Add (new BaseWrapper(baseObj, displayTextObj));
 		}
+		Camera.main.GetComponent<DisplayInfoHandler> ().baseWrappers = baseWrappers;
+		Camera.main.GetComponent<DisplayInfoHandler> ().positionText ();
 		return true;
 	}
 

@@ -28,6 +28,7 @@ public class PinchToZoom : MonoBehaviour {
 				camera.fieldOfView -= (currLength - prevLength) * perspectiveZoomSpeed;
 				camera.fieldOfView = Mathf.Clamp (camera.fieldOfView, 0.1f, 179.9f);
 			}
+			Camera.main.GetComponent<DisplayInfoHandler>().positionText();
 		}
 	}
 }

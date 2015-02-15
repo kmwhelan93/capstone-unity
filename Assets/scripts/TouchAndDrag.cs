@@ -14,6 +14,7 @@ public class TouchAndDrag : MonoBehaviour {
 				Vector2 deltaPosition = Input.GetTouch (0).deltaPosition;
 				Vector2 deltaToScreenRatio = deltaPosition * camera.orthographicSize / 5;
 				camera.transform.Translate(deltaToScreenRatio * -1 *speed);
+				Camera.main.GetComponent<DisplayInfoHandler>().positionText();
 			}
 		}
 	}

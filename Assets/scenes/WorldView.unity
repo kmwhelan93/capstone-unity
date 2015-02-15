@@ -151,6 +151,7 @@ GameObject:
   - 81: {fileID: 562025591}
   - 114: {fileID: 562025596}
   - 114: {fileID: 562025597}
+  - 114: {fileID: 562025598}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -248,6 +249,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: .0199999996
+--- !u!114 &562025598
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 562025590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9b04430ac86695458677d70faceb38f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &700670639
 GameObject:
   m_ObjectHideFlags: 0
@@ -418,8 +430,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   basePrefab: {fileID: 177098, guid: 07e145e6dc25c3d4dbf274b59124f696, type: 2}
+  textPrefab: {fileID: 189276, guid: 952cbd09a20ff91439d3ef5564ccc594, type: 2}
   portalPrefab: {fileID: 100000, guid: 795dd59e39e8dda44bc7e9650fb36e29, type: 2}
   materials: []
+  canvas: {fileID: 1475738429}
 --- !u!114 &1307284333
 MonoBehaviour:
   m_ObjectHideFlags: 0
