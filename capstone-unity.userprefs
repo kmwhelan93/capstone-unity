@@ -1,12 +1,11 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\scripts\GenerateWorld.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\scripts\TouchBase.cs">
     <Files>
-      <File FileName="Assets\scripts\GenerateWorld.cs" Line="116" Column="5" />
-      <File FileName="Assets\scripts\Portal.cs" Line="6" Column="20" />
-      <File FileName="Assets\scripts\Authentication.cs" Line="1" Column="1" />
-      <File FileName="Assets\scripts\Point.cs" Line="1" Column="1" />
-      <File FileName="Assets\BaseLocations.json" Line="1" Column="1" />
+      <File FileName="Assets\scripts\GenerateWorld.cs" Line="128" Column="36" />
+      <File FileName="Assets\scripts\PinchToZoom.cs" Line="1" Column="1" />
+      <File FileName="Assets\scripts\TouchAndDrag.cs" Line="1" Column="1" />
+      <File FileName="Assets\scripts\TouchBase.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
