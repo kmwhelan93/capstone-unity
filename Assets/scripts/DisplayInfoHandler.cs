@@ -1,15 +1,28 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 
 public class DisplayInfoHandler : MonoBehaviour {
 
 	public List<BaseWrapper> baseWrappers { get; set; }
+	public float hideTextSize;
+
+	public void updateContent()
+	{
+		foreach (BaseWrapper bw in baseWrappers) 
+		{
+			Base b = bw.baseObj.GetComponent<TouchBase>().b;
+			bw.displayText.GetComponent<Text>().text = "prod: " + b.prodRate + "\nunits: " + b.units;
+		}
+	}
 
 	public void positionText()
 	{
 		foreach(BaseWrapper bw in baseWrappers) {
+			// hide or show text
+			bw.displayText.SetActive(Camera.main.orthographicSize < hideTextSize);
 			Vector3 worldOffset = getBestOffset(bw);
 
 			Vector3 textPosition = Camera.main.WorldToScreenPoint(bw.baseObj.transform.position + worldOffset) - new Vector3(Screen.width / 2, Screen.height / 2, 0);

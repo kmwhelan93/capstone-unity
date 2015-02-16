@@ -260,6 +260,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9b04430ac86695458677d70faceb38f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hideTextSize: 5.0999999
 --- !u!1 &700670639
 GameObject:
   m_ObjectHideFlags: 0

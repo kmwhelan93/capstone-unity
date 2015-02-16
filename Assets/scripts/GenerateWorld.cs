@@ -113,6 +113,7 @@ public class GenerateWorld : MonoBehaviour {
 		}
 		Camera.main.GetComponent<DisplayInfoHandler> ().baseWrappers = baseWrappers;
 		Camera.main.GetComponent<DisplayInfoHandler> ().positionText ();
+		Camera.main.GetComponent<DisplayInfoHandler> ().updateContent ();
 		return true;
 	}
 
