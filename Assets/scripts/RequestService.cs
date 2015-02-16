@@ -3,7 +3,7 @@ using System.Collections;
 using LitJson;
 
 public class RequestService : ScriptableObject {
-	static string baseUrl = "http://localhost:8080/myapp/";
+	public static string baseUrl = "http://localhost:8080/myapp/";
 	public static WWW makeRequest(string path, object body)
 	{
 		var jsonString = JsonMapper.ToJson (body);
