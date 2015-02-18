@@ -88,7 +88,6 @@ public class GenerateWorld : MonoBehaviour {
 		wwwform.AddField ("username", "kmw8sf");
 		WWW request = new WWW ("localhost:8080/myapp/world/bases", wwwform);
 		yield return request;
-		print ("REQUEST GOOD: " + request.url);
 		destroyCurrentBases ();
 		destroyCurrentPortals ();
 		Base[] bases = JsonMapper.ToObject<Base[]>(request.text);
