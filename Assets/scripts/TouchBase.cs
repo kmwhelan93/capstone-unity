@@ -21,7 +21,12 @@ public class TouchBase : MonoBehaviour {
 			else {
 				print ("Got second click, adding portal");
 				GenerateWorld.instance.secondClick = false;
-				StartCoroutine ("createPortal");
+				if (GenerateWorld.instance.lastBase.baseId != b.baseId) {
+					StartCoroutine ("createPortal");
+				}
+				else {
+					Debug.Log ("Sorry! Can't add a portal from a base to itself");
+				}
 			}
 		}
 	}
