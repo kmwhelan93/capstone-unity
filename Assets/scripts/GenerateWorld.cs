@@ -15,6 +15,11 @@ public class GenerateWorld : MonoBehaviour {
 	private GameObject[] currentDisplayText;
 	public GameObject canvas;
 	private GameObject[] currentPortals;
+	public UnityEngine.UI.Text changeModeButtonText;
+
+	public bool mode;
+	public Base lastBase;
+	public bool secondClick;
 
 	void Awake()
 	{
@@ -83,6 +88,7 @@ public class GenerateWorld : MonoBehaviour {
 		wwwform.AddField ("username", "kmw8sf");
 		WWW request = new WWW ("localhost:8080/myapp/world/bases", wwwform);
 		yield return request;
+		print ("REQUEST GOOD: " + request.url);
 		destroyCurrentBases ();
 		destroyCurrentPortals ();
 		Base[] bases = JsonMapper.ToObject<Base[]>(request.text);
@@ -125,8 +131,7 @@ public class GenerateWorld : MonoBehaviour {
 	private IEnumerator createPortals(Base[] baseLocs) {
 		WWWForm wwwform = new WWWForm ();
 		wwwform.AddField ("username", "kmw8sf");
-		// NOTE: Changed this to "new WWW" from "RequestService.makeRequest" due to an issue building
-		// the request url with the latter
+		// NOTE: Changed this to "new WWW" from "RequestService.makeRequest" to fix a 500 request failed error
 		WWW request = new WWW ("localhost:8080/myapp/world/portals", wwwform);
 		yield return request;
 		Portal2[] portals = JsonMapper.ToObject<Portal2[]> (request.text);
@@ -167,6 +172,22 @@ public class GenerateWorld : MonoBehaviour {
 		WWW request = RequestService.makeRequest ("world/clear", currentBases [0].GetComponent<TouchBase>().b);
 		yield return request;
 		GenerateWorld.instance.resetWorldView();
+	}
+
+	public void switchBaseClickMode() {
+		mode = !mode;
+		foreach (GameObject b in currentBases) {
+			TouchBase script = (TouchBase)b.GetComponent("TouchBase");
+			script.switchMode(mode);
+		}
+		if (!mode) {
+			print ("Click base to add new base");
+			changeModeButtonText.text = "In add base mode";
+
+		} else if (mode) {
+			print ("Click two bases to add portal between bases");
+			changeModeButtonText.text = "In add portal mode";
+		}
 	}
 
 
