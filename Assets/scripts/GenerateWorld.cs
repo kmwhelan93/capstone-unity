@@ -11,6 +11,7 @@ public class GenerateWorld : MonoBehaviour {
 	public GameObject textPrefab;
 	public GameObject portalPrefab;
 	public Material[] materials;
+	public Material portalMaterial;
 	private GameObject[] currentBases;
 	private GameObject[] currentDisplayText;
 	public GameObject canvas;
@@ -50,6 +51,7 @@ public class GenerateWorld : MonoBehaviour {
 		{
 			materials[i] = (Material) Resources.Load (materialNames[i], typeof(Material));
 		}
+		portalMaterial = (Material) Resources.Load ("PortalPlasma", typeof(Material));
 	}
 
 	// Update is called once per frame
@@ -156,6 +158,7 @@ public class GenerateWorld : MonoBehaviour {
 			Vector3 rotate = portalObj.transform.eulerAngles;
 			rotate.z = angle;
 			portalObj.transform.eulerAngles = rotate;
+			portalObj.renderer.material = portalMaterial;
 			currentPortals[i] = portalObj;
 		}
 
