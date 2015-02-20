@@ -5,13 +5,13 @@ using LitJson;
 
 public class UpdateGold : MonoBehaviour {
 
-	public UpdateGold instance;
+	public static UpdateGold instance;
 	public GameObject goldText;
 
 	// Use this for initialization
 	void Start () {
 		instance = this;
-		StartCoroutine (syncGold ());
+		syncGold ();
 	}
 	
 	// Update is called once per frame
@@ -21,13 +21,18 @@ public class UpdateGold : MonoBehaviour {
 	}
 
 
-	public IEnumerator syncGold()
+	public void syncGold()
+	{
+		StartCoroutine (syncGoldCo ());
+	}
+	private IEnumerator syncGoldCo()
 	{
 		WWW request = new WWW (RequestService.baseUrl + "sync/gold");
 		yield return request;
 		GoldSync goldSync = JsonMapper.ToObject<GoldSync>(request.text);
 		Globals.gold = goldSync.gold;
 		Globals.goldPerSec = goldSync.goldPerSec;
+		Debug.Log (Globals.goldPerSec);
 		displayGold ();
 	}
 

@@ -35,6 +35,8 @@ public class TouchBase : MonoBehaviour {
 	{
 		WWW request = RequestService.makeRequest("world/bases/create", b);
 		yield return request;
+		Debug.Log (request.text);
+		UpdateGold.instance.syncGold ();
 		GenerateWorld.instance.resetWorldView ();
 	}
 

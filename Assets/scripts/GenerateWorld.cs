@@ -173,6 +173,8 @@ public class GenerateWorld : MonoBehaviour {
 	{
 		WWW request = RequestService.makeRequest ("world/clear", currentBases [0].GetComponent<TouchBase>().b);
 		yield return request;
+		Debug.Log (request.text);
+		UpdateGold.instance.syncGold ();
 		GenerateWorld.instance.resetWorldView();
 	}
 
