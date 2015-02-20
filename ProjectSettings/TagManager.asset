@@ -14,7 +14,7 @@ TagManager:
   Builtin Layer 7: 
   User Layer 8: Background Image
   User Layer 9: Game
-  User Layer 10: 
+  User Layer 10: UI2
   User Layer 11: 
   User Layer 12: 
   User Layer 13: 
@@ -48,4 +48,8 @@ TagManager:
   - name: Game
     userID: 2
     uniqueID: 16804533
+    locked: 0
+  - name: UI2
+    userID: 3
+    uniqueID: 1802404745
     locked: 0
