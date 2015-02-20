@@ -7,11 +7,11 @@ public class TouchBase : MonoBehaviour {
 
 	public void OnMouseDown() 
 	{
-		if (!GenerateWorld.instance.mode) {
+		if (Globals.addState == AddState.Base) {
 			Debug.Log ("base touched to add base");
 			StartCoroutine ("createBase");
 		}
-		else if (GenerateWorld.instance.mode) {
+		else if (Globals.addState == AddState.Portal) {
 			Debug.Log ("base touched to add portal");
 			if (!GenerateWorld.instance.secondClick) {
 				print ("Waiting for second click");

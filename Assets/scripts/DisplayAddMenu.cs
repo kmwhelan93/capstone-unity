@@ -4,44 +4,44 @@ using System.Collections;
 
 public class DisplayAddMenu : MonoBehaviour {
 
-	public GameObject toggleModeButton;
-	public GameObject clearBasesButton;
 	private bool showAddMenu = false;
-	private bool newBaseBtnSelected = false;
 
-	public Button showAddMenuBtn;
 	public Toggle newBaseToggle;
 	public Toggle newPortalToggle;
-
-	// Use this for initialization
-	void Start () {
-		toggleModeButton.SetActive(showAddMenu);
-		clearBasesButton.SetActive(showAddMenu);
-
-	}
 	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 
 	public void onPlusButtonClick() {
+		toggleAddMenu ();
+	}
+
+	public void onNewBaseToggle()
+	{
+		if (newBaseToggle.isOn) {
+			Globals.addState = AddState.Base;
+		} else {
+			Globals.addState = AddState.None;
+		}
+	}
+
+	public void onNewPortalToggle()
+	{
+		if (newPortalToggle.isOn) {
+			Globals.addState = AddState.Portal;
+		} else {
+			Globals.addState = AddState.None;
+		}
+
+	}
+
+	private void toggleAddMenu()
+	{
 		showAddMenu = !showAddMenu;
-		showMenu (showAddMenu);
-	}
+		if (!showAddMenu) 
+		{
+			Globals.addState = AddState.None;
+		}
 
-	public void onNewBaseClick()
-	{
-		newBaseBtnSelected = !newBaseBtnSelected;
-	}
-
-	private void showMenu(bool show)
-	{
-		toggleModeButton.SetActive(showAddMenu);
-		clearBasesButton.SetActive(showAddMenu);
-
-
-		newBaseToggle.interactable = show;
-		newPortalToggle.interactable = show;
+		newBaseToggle.interactable = showAddMenu;
+		newPortalToggle.interactable = showAddMenu;
 	}
 }

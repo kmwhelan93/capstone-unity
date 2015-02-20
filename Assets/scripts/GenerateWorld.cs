@@ -176,21 +176,5 @@ public class GenerateWorld : MonoBehaviour {
 		GenerateWorld.instance.resetWorldView();
 	}
 
-	public void switchBaseClickMode() {
-		mode = !mode;
-		foreach (GameObject b in currentBases) {
-			TouchBase script = (TouchBase)b.GetComponent("TouchBase");
-			script.switchMode(mode);
-		}
-		if (!mode) {
-			print ("Click base to add new base");
-			changeModeButtonText.text = "In add base mode";
-
-		} else if (mode) {
-			print ("Click two bases to add portal between bases");
-			changeModeButtonText.text = "In add portal mode";
-		}
-	}
-
 
 }
