@@ -49,9 +49,9 @@ public class GenerateWorld : MonoBehaviour {
 		materials = new Material[materialNames.Length];
 		for (int i = 0; i < materialNames.Length; i++) 
 		{
-			materials[i] = (Material) Resources.Load (materialNames[i], typeof(Material));
+			materials[i] = (Material) Resources.Load ("materials/"+ materialNames[i], typeof(Material));
 		}
-		portalMaterial = (Material) Resources.Load ("PortalPlasma", typeof(Material));
+		portalMaterial = (Material) Resources.Load ("materials/PortalPlasma", typeof(Material));
 	}
 
 	// Update is called once per frame
