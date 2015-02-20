@@ -1,19 +1,23 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class DisplayAddMenu : MonoBehaviour {
 
 	public GameObject toggleModeButton;
 	public GameObject clearBasesButton;
-	public bool showMenu;
+	private bool showAddMenu = false;
+	private bool newBaseBtnSelected = false;
+
+	public Button showAddMenuBtn;
+	public Toggle newBaseToggle;
+	public Toggle newPortalToggle;
 
 	// Use this for initialization
 	void Start () {
-		showMenu = false;
-		toggleModeButton = GameObject.Find ("SelectModeButton");
-		clearBasesButton = GameObject.Find ("ClearButton");
-		toggleModeButton.SetActive(showMenu);
-		clearBasesButton.SetActive(showMenu);
+		toggleModeButton.SetActive(showAddMenu);
+		clearBasesButton.SetActive(showAddMenu);
+
 	}
 	
 	// Update is called once per frame
@@ -22,8 +26,22 @@ public class DisplayAddMenu : MonoBehaviour {
 	}
 
 	public void onPlusButtonClick() {
-		showMenu = !showMenu;
-		toggleModeButton.SetActive(showMenu);
-		clearBasesButton.SetActive(showMenu);
+		showAddMenu = !showAddMenu;
+		showMenu (showAddMenu);
+	}
+
+	public void onNewBaseClick()
+	{
+		newBaseBtnSelected = !newBaseBtnSelected;
+	}
+
+	private void showMenu(bool show)
+	{
+		toggleModeButton.SetActive(showAddMenu);
+		clearBasesButton.SetActive(showAddMenu);
+
+
+		newBaseToggle.interactable = show;
+		newPortalToggle.interactable = show;
 	}
 }
