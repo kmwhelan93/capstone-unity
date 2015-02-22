@@ -8,6 +8,7 @@ public class DisplayAddMenu : MonoBehaviour {
 
 	public Toggle newBaseToggle;
 	public Toggle newPortalToggle;
+	public Toggle moveTroopsToggle;
 	
 
 	public void onPlusButtonClick() {
@@ -33,6 +34,15 @@ public class DisplayAddMenu : MonoBehaviour {
 
 	}
 
+	public void onMoveTroopsToggle() {
+		if (moveTroopsToggle.isOn) {
+			print ("troopsssssssssss");
+			Globals.addState = AddState.Troops;
+		} else {
+			Globals.addState = AddState.None;
+		}
+	}
+
 	private void toggleAddMenu()
 	{
 		showAddMenu = !showAddMenu;
@@ -43,5 +53,6 @@ public class DisplayAddMenu : MonoBehaviour {
 
 		newBaseToggle.interactable = showAddMenu;
 		newPortalToggle.interactable = showAddMenu;
+		moveTroopsToggle.interactable = showAddMenu;
 	}
 }

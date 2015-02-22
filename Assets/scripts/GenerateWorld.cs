@@ -18,7 +18,6 @@ public class GenerateWorld : MonoBehaviour {
 	private GameObject[] currentPortals;
 	public UnityEngine.UI.Text changeModeButtonText;
 
-	public bool mode;
 	public Base lastBase;
 	public bool secondClick;
 
