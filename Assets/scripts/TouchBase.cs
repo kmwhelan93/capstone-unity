@@ -9,35 +9,41 @@ public class TouchBase : MonoBehaviour {
 	{
 		if (Globals.addState == AddState.Base) {
 			Debug.Log ("base touched to add base");
+			GenerateWorld.instance.message.text = "Adding base...";
 			StartCoroutine ("createBase");
 		} else if (Globals.addState == AddState.Portal) {
 			Debug.Log ("base touched to add portal");
 			if (!GenerateWorld.instance.secondClick) {
-				print ("Waiting for second click");
+				print ("waiting for second click");
+				GenerateWorld.instance.message.text = "Now click which base to attach portal to";
 				GenerateWorld.instance.lastBase = b;
 				GenerateWorld.instance.secondClick = true;
 			} else {
-				print ("Got second click, adding portal");
+				print ("got second click, adding portal");
 				GenerateWorld.instance.secondClick = false;
 				if (GenerateWorld.instance.lastBase.baseId != b.baseId) {
+					GenerateWorld.instance.message.text = "Adding portal...";
 					StartCoroutine ("createPortal");
 				} else {
 					Debug.Log ("Sorry! Can't add a portal from a base to itself");
+					GenerateWorld.instance.message.text = "Can't add a portal from a base to itself";
 				}
 			}
 		} else if (Globals.addState == AddState.Troops) {
 			Debug.Log("base touched to move troops");
 			if (!GenerateWorld.instance.secondClick) {
-				print ("Waiting for second click");
+				print ("waiting for second click");
+				GenerateWorld.instance.message.text = "Now click which base to send the units to";
 				GenerateWorld.instance.lastBase = b;
 				GenerateWorld.instance.secondClick = true;
 			} else {
-				print ("Got second click, moving troops");
+				print ("got second click, moving troops");
 				GenerateWorld.instance.secondClick = false;
 				if (GenerateWorld.instance.lastBase.baseId != b.baseId) {
+					GenerateWorld.instance.message.text = "Moving units...";
 					StartCoroutine ("moveTroops");
 				} else {
-					Debug.Log ("Sorry! Can't move troops from a base to itself");
+					Debug.Log ("Sorry! Can't move units from a base to itself");
 				}
 			}
 		}
@@ -48,6 +54,7 @@ public class TouchBase : MonoBehaviour {
 		WWW request = RequestService.makeRequest("world/bases/create", b);
 		yield return request;
 		Debug.Log (request.text);
+		GenerateWorld.instance.message.text = request.text;
 		UpdateGold.instance.syncGold ();
 		GenerateWorld.instance.resetWorldView ();
 	}
@@ -61,6 +68,7 @@ public class TouchBase : MonoBehaviour {
 		// NOTE: Changed this to "new WWW" from "RequestService.makeRequest" to fix a 500 request failed error
 		WWW request = new WWW ("localhost:8080/myapp/world/portals/create", wwwform);
 		yield return request;
+		GenerateWorld.instance.message.text = request.text;
 		GenerateWorld.instance.resetWorldView ();
 	}
 
@@ -70,9 +78,11 @@ public class TouchBase : MonoBehaviour {
 		wwwform.AddField ("username", b.username);
 		wwwform.AddField ("baseId1", GenerateWorld.instance.lastBase.baseId);
 		wwwform.AddField ("baseId2", b.baseId);
+		// Update this to move variable number of troops eventually
 		wwwform.AddField ("numTroops", 1);
 		WWW request = new WWW ("localhost:8080/myapp/world/troops/move", wwwform);
 		yield return request;
+		GenerateWorld.instance.message.text = request.text;
 		GenerateWorld.instance.resetWorldView ();
 	}
 	

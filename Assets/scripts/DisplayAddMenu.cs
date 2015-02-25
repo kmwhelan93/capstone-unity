@@ -9,7 +9,6 @@ public class DisplayAddMenu : MonoBehaviour {
 	public Toggle newBaseToggle;
 	public Toggle newPortalToggle;
 	public Toggle moveTroopsToggle;
-	
 
 	public void onPlusButtonClick() {
 		toggleAddMenu ();
@@ -19,8 +18,10 @@ public class DisplayAddMenu : MonoBehaviour {
 	{
 		if (newBaseToggle.isOn) {
 			Globals.addState = AddState.Base;
+			GenerateWorld.instance.message.text = "Click a base to add a new base";
 		} else {
 			Globals.addState = AddState.None;
+			GenerateWorld.instance.message.text = "";
 		}
 	}
 
@@ -28,18 +29,21 @@ public class DisplayAddMenu : MonoBehaviour {
 	{
 		if (newPortalToggle.isOn) {
 			Globals.addState = AddState.Portal;
+			GenerateWorld.instance.message.text = "Click a base to start adding a portal";
 		} else {
 			Globals.addState = AddState.None;
+			GenerateWorld.instance.message.text = "";
 		}
 
 	}
 
 	public void onMoveTroopsToggle() {
 		if (moveTroopsToggle.isOn) {
-			print ("troopsssssssssss");
 			Globals.addState = AddState.Troops;
+			GenerateWorld.instance.message.text = "Click a base with units";
 		} else {
 			Globals.addState = AddState.None;
+			GenerateWorld.instance.message.text = "";
 		}
 	}
 
@@ -49,6 +53,7 @@ public class DisplayAddMenu : MonoBehaviour {
 		if (!showAddMenu) 
 		{
 			Globals.addState = AddState.None;
+			GenerateWorld.instance.message.text = "";
 		}
 
 		newBaseToggle.interactable = showAddMenu;

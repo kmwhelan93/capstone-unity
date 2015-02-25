@@ -16,7 +16,7 @@ public class GenerateWorld : MonoBehaviour {
 	private GameObject[] currentDisplayText;
 	public GameObject canvas;
 	private GameObject[] currentPortals;
-	public UnityEngine.UI.Text changeModeButtonText;
+	public UnityEngine.UI.Text message;
 
 	public Base lastBase;
 	public bool secondClick;
@@ -28,6 +28,7 @@ public class GenerateWorld : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
+		message.text = "";
 		// load resources
 		loadResources ();
 		// Create bases
