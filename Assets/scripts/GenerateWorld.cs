@@ -17,6 +17,8 @@ public class GenerateWorld : MonoBehaviour {
 	public GameObject canvas;
 	private GameObject[] currentPortals;
 	public UnityEngine.UI.Text message;
+	public GameObject numTroopsInputObject;
+	public UnityEngine.UI.InputField numTroopsInputField;
 
 	public Base lastBase;
 	public bool secondClick;
@@ -29,6 +31,7 @@ public class GenerateWorld : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		message.text = "";
+		numTroopsInputObject.SetActive(false);
 		// load resources
 		loadResources ();
 		// Create bases

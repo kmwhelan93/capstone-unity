@@ -33,14 +33,16 @@ public class TouchBase : MonoBehaviour {
 			Debug.Log("base touched to move troops");
 			if (!GenerateWorld.instance.secondClick) {
 				print ("waiting for second click");
-				GenerateWorld.instance.message.text = "Now click which base to send the units to";
+				GenerateWorld.instance.message.text = "How many?            Then click base to send them to.";
+				GenerateWorld.instance.numTroopsInputObject.SetActive(true);
 				GenerateWorld.instance.lastBase = b;
 				GenerateWorld.instance.secondClick = true;
 			} else {
 				print ("got second click, moving troops");
 				GenerateWorld.instance.secondClick = false;
+				GenerateWorld.instance.numTroopsInputObject.SetActive(false);
+				GenerateWorld.instance.message.text = "Moving units...";
 				if (GenerateWorld.instance.lastBase.baseId != b.baseId) {
-					GenerateWorld.instance.message.text = "Moving units...";
 					StartCoroutine ("moveTroops");
 				} else {
 					Debug.Log ("Sorry! Can't move units from a base to itself");
@@ -78,8 +80,7 @@ public class TouchBase : MonoBehaviour {
 		wwwform.AddField ("username", b.username);
 		wwwform.AddField ("baseId1", GenerateWorld.instance.lastBase.baseId);
 		wwwform.AddField ("baseId2", b.baseId);
-		// Update this to move variable number of troops eventually
-		wwwform.AddField ("numTroops", 1);
+		wwwform.AddField ("numTroops", GenerateWorld.instance.numTroopsInputField.text);
 		WWW request = new WWW ("localhost:8080/myapp/world/troops/move", wwwform);
 		yield return request;
 		GenerateWorld.instance.message.text = request.text;
