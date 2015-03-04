@@ -1749,12 +1749,13 @@ MonoBehaviour:
   textPrefab: {fileID: 189276, guid: 952cbd09a20ff91439d3ef5564ccc594, type: 2}
   portalPrefab: {fileID: 100000, guid: 795dd59e39e8dda44bc7e9650fb36e29, type: 2}
   materials: []
-  portalMaterial: {fileID: 0}
+  portalMaterial: {fileID: 2100000, guid: b3dbfa3b8c15e22489e7377374c8bf3f, type: 2}
+  portalUnfinishedMaterial: {fileID: 0}
   canvas: {fileID: 1615884911}
+  secondClick: 0
   message: {fileID: 137720505}
   numTroopsInputObject: {fileID: 1065444069}
   numTroopsInputField: {fileID: 1065444071}
-  secondClick: 0
 --- !u!114 &1307284333
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2343,8 +2344,8 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 235, y: 156.5}
-  m_SizeDelta: {x: 470, y: 313}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: .5, y: .5}
 --- !u!1 &1767336231
 GameObject:

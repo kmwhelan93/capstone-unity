@@ -7,21 +7,26 @@ using System.Collections.Generic;
 public class GenerateWorld : MonoBehaviour {
 
 	public static GenerateWorld instance;
+
 	public GameObject basePrefab;
 	public GameObject textPrefab;
 	public GameObject portalPrefab;
+
 	public Material[] materials;
 	public Material portalMaterial;
+	public Material portalUnfinishedMaterial;
+
 	private GameObject[] currentBases;
 	private GameObject[] currentDisplayText;
-	public GameObject canvas;
 	private GameObject[] currentPortals;
-	public UnityEngine.UI.Text message;
-	public GameObject numTroopsInputObject;
-	public UnityEngine.UI.InputField numTroopsInputField;
+	private List<Portal2> currentUnfinishedPortals;
+	public GameObject canvas;
 
 	public Base lastBase;
 	public bool secondClick;
+	public UnityEngine.UI.Text message;
+	public GameObject numTroopsInputObject;
+	public UnityEngine.UI.InputField numTroopsInputField;
 
 	void Awake()
 	{
@@ -32,6 +37,7 @@ public class GenerateWorld : MonoBehaviour {
 	void Start () {
 		message.text = "";
 		numTroopsInputObject.SetActive(false);
+		Globals.portalBuildTimeInMins = 1;
 		// load resources
 		loadResources ();
 		// Create bases
@@ -55,11 +61,16 @@ public class GenerateWorld : MonoBehaviour {
 			materials[i] = (Material) Resources.Load ("materials/"+ materialNames[i], typeof(Material));
 		}
 		portalMaterial = (Material) Resources.Load ("materials/PortalPlasma", typeof(Material));
+		portalUnfinishedMaterial = (Material)Resources.Load ("materials/PortalLava", typeof(Material));
 	}
 
 	// Update is called once per frame
 	void Update () {
-		
+		if (currentUnfinishedPortals != null) {
+			if (currentUnfinishedPortals.Count != 0) {
+				syncPortals ();
+			}
+		}
 	}
 
 	public void resetWorldView()
@@ -81,11 +92,13 @@ public class GenerateWorld : MonoBehaviour {
 
 	private void destroyCurrentPortals()
 	{
-		if (currentPortals == null)
-			return;
-		foreach (GameObject p in currentPortals) {
-			Destroy (p);
+		if (currentPortals != null) {
+			foreach (GameObject p in currentPortals) {
+				Destroy (p);
+			}
 		}
+		currentUnfinishedPortals = null;
+		return;
 	}
 
 	private IEnumerator coResetWorldView() {
@@ -97,7 +110,8 @@ public class GenerateWorld : MonoBehaviour {
 		destroyCurrentPortals ();
 		Base[] bases = JsonMapper.ToObject<Base[]>(request.text);
 		displayBases (bases);
-		displayPortals (bases);
+		displayPortals ();
+		//displayUnfinishedPortals ();
 		yield break;
 	}
 
@@ -127,12 +141,12 @@ public class GenerateWorld : MonoBehaviour {
 		return true;
 	}
 
-	private void displayPortals(Base[] bases) {
-		StartCoroutine(createPortals (bases));
+	// To display finished portals
+	private void displayPortals() {
+		StartCoroutine(createPortals ());
 	}
-
-	// Called in Start() to create portals between player's bases
-	private IEnumerator createPortals(Base[] baseLocs) {
+	
+	private IEnumerator createPortals() {
 		WWWForm wwwform = new WWWForm ();
 		wwwform.AddField ("username", "kmw8sf");
 		// NOTE: Changed this to "new WWW" from "RequestService.makeRequest" to fix a 500 request failed error
@@ -141,6 +155,7 @@ public class GenerateWorld : MonoBehaviour {
 		Portal2[] portals = JsonMapper.ToObject<Portal2[]> (request.text);
 
 		currentPortals = new GameObject[portals.Length];
+		currentUnfinishedPortals = new List<Portal2>();
 		for (int i = 0; i < portals.Length; i++) {
 			// Locations of the two bases
 			Portal2 portal = portals[i];
@@ -161,10 +176,53 @@ public class GenerateWorld : MonoBehaviour {
 			Vector3 rotate = portalObj.transform.eulerAngles;
 			rotate.z = angle;
 			portalObj.transform.eulerAngles = rotate;
-			portalObj.renderer.material = portalMaterial;
+			portalObj.name = "Portal" + portal.portalId;
+			if (portal.timeFinished <= CurrentTime.currentTimeMillis()) {
+				// Portal finished
+				portalObj.renderer.material = portalMaterial;
+			}
+			else {
+				// Portal unfinished
+				portalObj.renderer.material = portalUnfinishedMaterial;
+				currentUnfinishedPortals.Add(portal);
+			}
 			currentPortals[i] = portalObj;
 		}
 
+	}
+
+	public void syncPortals() {
+		List<Portal2> toRemove = new List<Portal2> ();
+		foreach (Portal2 p in currentUnfinishedPortals) {
+			// Finished yet?
+			int percentFinished = getPortalPercentFinished(p);
+			if (percentFinished == 100) {
+				// Finish portal
+				GameObject pObj = GameObject.Find("Portal" + p.portalId);
+				pObj.renderer.material = portalMaterial;
+				toRemove.Add(p);
+				GenerateWorld.instance.message.text = "Portal finished!";
+			}
+			else {
+				// Update portal completion percent
+				GenerateWorld.instance.message.text = "Portal now " + percentFinished + "% finished";
+			}
+		}
+		foreach (Portal2 p in toRemove) {
+			currentUnfinishedPortals.Remove(p);
+		}
+	}
+
+	// true if portal finished, false if unfinished
+	public int getPortalPercentFinished(Portal2 p) {
+		long buildTimeMilli = (long)(Globals.portalBuildTimeInMins * 60000.0);
+		long curTime = CurrentTime.currentTimeMillis ();
+		if (p.timeFinished <= curTime) {
+			// Portal finished
+			return 100;
+		}
+		long startTime = p.timeFinished - buildTimeMilli;
+		return (int)(((curTime - startTime) / (buildTimeMilli*1.0))*100);
 	}
 
 	public void clearBases()
