@@ -20,6 +20,7 @@ public class GenerateWorld : MonoBehaviour {
 	private GameObject[] currentDisplayText;
 	private GameObject[] currentPortals;
 	private List<Portal2> currentUnfinishedPortals;
+	private List<GameObject> currentUnfinishedPortalObjs;
 	public GameObject canvas;
 
 	public Base lastBase;
@@ -27,7 +28,7 @@ public class GenerateWorld : MonoBehaviour {
 	public UnityEngine.UI.Text message;
 	public GameObject numTroopsInputObject;
 	public UnityEngine.UI.InputField numTroopsInputField;
-
+	
 	void Awake()
 	{
 		instance = this;
@@ -156,6 +157,7 @@ public class GenerateWorld : MonoBehaviour {
 
 		currentPortals = new GameObject[portals.Length];
 		currentUnfinishedPortals = new List<Portal2>();
+		currentUnfinishedPortalObjs = new List<GameObject>();
 		for (int i = 0; i < portals.Length; i++) {
 			// Locations of the two bases
 			Portal2 portal = portals[i];
@@ -165,10 +167,13 @@ public class GenerateWorld : MonoBehaviour {
 			int y2 = portal.base2.world.y * 3 + portal.base2.local.y;
 
 			// Create the portal (cylinder prefab)
-			GameObject portalObj = (GameObject) Instantiate (portalPrefab, new Vector3((x1+x2)/2.0f, (y1+y2)/2.0f, 0f), Quaternion.identity);
+			// Start portals at length corresponging to 1% finished
+			float xTemp = portal.timeFinished > CurrentTime.currentTimeMillis() ? x1 + (x2-x1)*0.01f : x2*1.0f;
+			float yTemp = portal.timeFinished > CurrentTime.currentTimeMillis() ? y1 + (y2-y1)*0.01f : y2*1.0f;
+			GameObject portalObj = (GameObject) Instantiate (portalPrefab, new Vector3((x1+xTemp)/2.0f, (y1+yTemp)/2.0f, 0f), Quaternion.identity);
 			// Scale portal based on distance between bases
 			Vector3 scale = portalObj.transform.localScale;
-			scale.y = Vector2.Distance(new Vector2(x1,y1), new Vector2(x2,y2)) / 2.0f;
+			scale.y = Vector2.Distance(new Vector2(x1,y1), new Vector2(xTemp,yTemp)) / 2.0f;
 			portalObj.transform.localScale = scale;
 			// Rotate portal based on angle between bases
 			float slope = (y2*1.0f-y1)/(x2*1.0f-x1);
@@ -185,6 +190,7 @@ public class GenerateWorld : MonoBehaviour {
 				// Portal unfinished
 				portalObj.renderer.material = portalUnfinishedMaterial;
 				currentUnfinishedPortals.Add(portal);
+				currentUnfinishedPortalObjs.Add(portalObj);
 			}
 			currentPortals[i] = portalObj;
 		}
@@ -195,17 +201,28 @@ public class GenerateWorld : MonoBehaviour {
 		List<Portal2> toRemove = new List<Portal2> ();
 		foreach (Portal2 p in currentUnfinishedPortals) {
 			// Finished yet?
-			int percentFinished = getPortalPercentFinished(p);
-			if (percentFinished == 100) {
-				// Finish portal
-				GameObject pObj = GameObject.Find("Portal" + p.portalId);
-				pObj.renderer.material = portalMaterial;
-				toRemove.Add(p);
-				GenerateWorld.instance.message.text = "Portal finished!";
+			float percentFinished = getPortalPercentFinished(p);
+			GameObject portalObj = GameObject.Find("Portal" + p.portalId);
+			if (percentFinished < 1.0f) {
+				// Grow portal
+				int x1 = p.base1.world.x * 3 + p.base1.local.x;
+				int y1 = p.base1.world.y * 3 + p.base1.local.y;
+				int x2 = p.base2.world.x * 3 + p.base2.local.x;
+				int y2 = p.base2.world.y * 3 + p.base2.local.y;
+				
+				float xTemp = x1 + (x2-x1)*percentFinished;
+				float yTemp = y1 + (y2-y1)*percentFinished;
+				portalObj.transform.localPosition = new Vector3((x1+xTemp)/2.0f, (y1+yTemp)/2.0f, 0f);
+				// Scale portal based on distance between bases
+				Vector3 scale = portalObj.transform.localScale;
+				scale.y = Vector2.Distance(new Vector2(x1,y1), new Vector2(xTemp,yTemp)) / 2.0f;
+				portalObj.transform.localScale = scale;
 			}
 			else {
-				// Update portal completion percent
-				GenerateWorld.instance.message.text = "Portal now " + percentFinished + "% finished";
+				// Finish portal
+				portalObj.renderer.material = portalMaterial;
+				toRemove.Add(p);
+				GenerateWorld.instance.message.text = "Portal finished!";
 			}
 		}
 		foreach (Portal2 p in toRemove) {
@@ -213,16 +230,23 @@ public class GenerateWorld : MonoBehaviour {
 		}
 	}
 
+	private GameObject getPortalObj(int pId) {
+		foreach (GameObject p in currentUnfinishedPortalObjs) {
+			if (p.name == "Portal" + pId) return p;
+		}
+		return null;
+	}
+
 	// true if portal finished, false if unfinished
-	public int getPortalPercentFinished(Portal2 p) {
+	public float getPortalPercentFinished(Portal2 p) {
 		long buildTimeMilli = (long)(Globals.portalBuildTimeInMins * 60000.0);
 		long curTime = CurrentTime.currentTimeMillis ();
 		if (p.timeFinished <= curTime) {
 			// Portal finished
-			return 100;
+			return 1.0f;
 		}
 		long startTime = p.timeFinished - buildTimeMilli;
-		return (int)(((curTime - startTime) / (buildTimeMilli*1.0))*100);
+		return (((curTime - startTime) / (buildTimeMilli*1.0f))*1.0f);
 	}
 
 	public void clearBases()

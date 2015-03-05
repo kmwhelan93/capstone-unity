@@ -67,9 +67,7 @@ public class TouchBase : MonoBehaviour {
 		wwwform.AddField ("username", b.username);
 		wwwform.AddField ("baseId1", GenerateWorld.instance.lastBase.baseId);
 		wwwform.AddField ("baseId2", b.baseId);
-		//System.DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond
 		long finishTime = CurrentTime.currentTimeMillis() + (long)(Globals.portalBuildTimeInMins * 60000.0);
-		print ("CURTIME: " + CurrentTime.currentTimeMillis () + " ADDITION: " + (long)(Globals.portalBuildTimeInMins * 60000.0) + " TOTAL: " + finishTime);
 		wwwform.AddField ("timeFinished", finishTime + "");
 		// NOTE: Changed this to "new WWW" from "RequestService.makeRequest" to fix a 500 request failed error
 		WWW request = new WWW ("localhost:8080/myapp/world/portals/create", wwwform);
