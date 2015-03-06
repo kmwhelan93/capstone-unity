@@ -1716,6 +1716,7 @@ GameObject:
   - 114: {fileID: 1307284333}
   - 114: {fileID: 1307284334}
   - 114: {fileID: 1307284335}
+  - 114: {fileID: 1307284336}
   m_Layer: 0
   m_Name: World
   m_TagString: Untagged
@@ -1748,11 +1749,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   basePrefab: {fileID: 177098, guid: 07e145e6dc25c3d4dbf274b59124f696, type: 2}
   textPrefab: {fileID: 189276, guid: 952cbd09a20ff91439d3ef5564ccc594, type: 2}
-  portalPrefab: {fileID: 100000, guid: 795dd59e39e8dda44bc7e9650fb36e29, type: 2}
   materials: []
-  portalMaterial: {fileID: 2100000, guid: b3dbfa3b8c15e22489e7377374c8bf3f, type: 2}
-  dragPortalValidMaterial: {fileID: 0}
-  dragPortalInvalidMaterial: {fileID: 0}
   canvas: {fileID: 1615884911}
   secondClick: 0
   message: {fileID: 137720505}
@@ -1794,6 +1791,22 @@ MonoBehaviour:
   newBaseToggle: {fileID: 675178675}
   newPortalToggle: {fileID: 306436565}
   moveTroopsToggle: {fileID: 1414818876}
+--- !u!114 &1307284336
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1307284330}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69d7a2c01234ad34a8e58aa7cc8dddd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  portalPrefab: {fileID: 100000, guid: 795dd59e39e8dda44bc7e9650fb36e29, type: 2}
+  portalMaterial: {fileID: 0}
+  portalBuildingMaterial: {fileID: 0}
+  dragPortalInvalidMaterial: {fileID: 0}
+  invalidBaseMaterial: {fileID: 0}
 --- !u!1 &1369496861
 GameObject:
   m_ObjectHideFlags: 0

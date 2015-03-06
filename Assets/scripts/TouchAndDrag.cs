@@ -15,30 +15,46 @@ public class TouchAndDrag : MonoBehaviour {
 				// Drag to create portal
 				if (t.phase == TouchPhase.Began) {
 					// Create temp portal - red
-					GenerateWorld.instance.createDragPortal(t.position);
+					PortalHandler.instance.createDragPortal(t.position);
+					// Gray out invalid bases
+					PortalHandler.instance.grayOutInvalidBases(GenerateWorld.instance.lastBase.baseId);
 				}
 				if (t.phase == TouchPhase.Moved) {
 					// Update temp portal
 					// If touch location is on base, temp portal = purple to signify that portal is valid
-					GenerateWorld.instance.updateDragPortal(
+					PortalHandler.instance.updateDragPortal(
 						camera.ScreenToWorldPoint(new Vector3(t.position.x, t.position.y, camera.nearClipPlane)), 
-												  baseAtPos(t.position));
+												  validBaseAtPos(t.position));
 				}
 				if (t.phase == TouchPhase.Ended) {
 					// Create portal if on base
 					int bId = getIdOfBaseAtPos(t.position);
-					if (bId != -1 && bId != GenerateWorld.instance.lastBase.baseId) {
-						// Portal created by dragging
-						GenerateWorld.instance.secondClick = false;
-						GenerateWorld.instance.message.text = "Adding portal...";
-						StartCoroutine ("createPortal", bId);
+					if (bId == -1) {
+						PortalHandler.instance.restoreInvalidBaseColors();
+						PortalHandler.instance.deleteDragPortal();
 					}
 					else {
-						// Portal created by touching each base separately, waiting for second touch
-						GenerateWorld.instance.message.text = "Now click which base to attach portal to";
-						GenerateWorld.instance.secondClick = true;
+						if (bId == GenerateWorld.instance.lastBase.baseId) {
+							// Portal created by touching each base separately, waiting for second touch
+							PortalHandler.instance.deleteDragPortal();
+							GenerateWorld.instance.message.text = "Now click which base to attach portal to";
+							GenerateWorld.instance.secondClick = true;
+						}
+						else if (PortalHandler.instance.validBase(bId)) {
+							//if (bId != -1 && bId != GenerateWorld.instance.lastBase.baseId) {
+							// Portal created by dragging
+							// restore invalid base colors
+							PortalHandler.instance.restoreInvalidBaseColors();
+							PortalHandler.instance.deleteDragPortal();
+							GenerateWorld.instance.secondClick = false;
+							GenerateWorld.instance.message.text = "Adding portal...";
+							StartCoroutine ("createPortal", bId);
+						}
+						else {
+							PortalHandler.instance.restoreInvalidBaseColors();
+							PortalHandler.instance.deleteDragPortal();
+						}
 					}
-					GenerateWorld.instance.deleteDragPortal();
 				}
 			}
 			else if (t.phase == TouchPhase.Moved && t.deltaPosition.magnitude > 2) {
@@ -57,17 +73,21 @@ public class TouchAndDrag : MonoBehaviour {
 		
 		if ( Physics.Raycast(ray, out hit, 100f ) ) {
 			string name = hit.transform.gameObject.name;
-			return int.Parse(name.Substring(4));
+			if (name.Substring(0,4).Equals("Base")) return int.Parse(name.Substring(4));
 		}
 		return -1;
 	}
 
-	private bool baseAtPos(Vector2 pos) {
+	private bool validBaseAtPos(Vector2 pos) {
 		Ray ray = Camera.mainCamera.ScreenPointToRay(pos);
 		RaycastHit hit;
 		
 		if (Physics.Raycast (ray, out hit, 100f)) {
-			return true;
+			if (hit.transform.gameObject.name.Substring(0,4).Equals("Base")) {
+				if (PortalHandler.instance.validBase(int.Parse(hit.transform.gameObject.name.Substring(4)))) {
+					return true;
+				}
+			}
 		}
 		return false;
 	}

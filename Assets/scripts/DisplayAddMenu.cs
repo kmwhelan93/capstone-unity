@@ -29,7 +29,7 @@ public class DisplayAddMenu : MonoBehaviour {
 	{
 		if (newPortalToggle.isOn) {
 			Globals.addState = AddState.Portal;
-			GenerateWorld.instance.message.text = "Click a base to start adding a portal";
+			GenerateWorld.instance.message.text = "Click a base and drag to make a portal";
 		} else {
 			Globals.addState = AddState.None;
 			GenerateWorld.instance.message.text = "";
