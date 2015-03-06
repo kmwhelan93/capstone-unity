@@ -1019,6 +1019,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: .0199999996
+  initPosition: {x: 0, y: 0}
 --- !u!114 &562025598
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1750,8 +1751,8 @@ MonoBehaviour:
   portalPrefab: {fileID: 100000, guid: 795dd59e39e8dda44bc7e9650fb36e29, type: 2}
   materials: []
   portalMaterial: {fileID: 2100000, guid: b3dbfa3b8c15e22489e7377374c8bf3f, type: 2}
-  portalUnfinishedMaterial: {fileID: 2100000, guid: 09035ab733c2734458dbf514f5d21ddd,
-    type: 2}
+  dragPortalValidMaterial: {fileID: 0}
+  dragPortalInvalidMaterial: {fileID: 0}
   canvas: {fileID: 1615884911}
   secondClick: 0
   message: {fileID: 137720505}

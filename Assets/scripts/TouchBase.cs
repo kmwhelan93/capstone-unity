@@ -14,20 +14,8 @@ public class TouchBase : MonoBehaviour {
 		} else if (Globals.addState == AddState.Portal) {
 			Debug.Log ("base touched to add portal");
 			if (!GenerateWorld.instance.secondClick) {
-				print ("waiting for second click");
-				GenerateWorld.instance.message.text = "Now click which base to attach portal to";
 				GenerateWorld.instance.lastBase = b;
 				GenerateWorld.instance.secondClick = true;
-			} else {
-				print ("got second click, adding portal");
-				GenerateWorld.instance.secondClick = false;
-				if (GenerateWorld.instance.lastBase.baseId != b.baseId) {
-					GenerateWorld.instance.message.text = "Adding portal...";
-					StartCoroutine ("createPortal");
-				} else {
-					Debug.Log ("Sorry! Can't add a portal from a base to itself");
-					GenerateWorld.instance.message.text = "Can't add a portal from a base to itself";
-				}
 			}
 		} else if (Globals.addState == AddState.Troops) {
 			Debug.Log("base touched to move troops");
@@ -58,21 +46,6 @@ public class TouchBase : MonoBehaviour {
 		Debug.Log (request.text);
 		GenerateWorld.instance.message.text = request.text;
 		UpdateGold.instance.syncGold ();
-		GenerateWorld.instance.resetWorldView ();
-	}
-
-	IEnumerator createPortal()
-	{
-		WWWForm wwwform = new WWWForm ();
-		wwwform.AddField ("username", b.username);
-		wwwform.AddField ("baseId1", GenerateWorld.instance.lastBase.baseId);
-		wwwform.AddField ("baseId2", b.baseId);
-		long finishTime = CurrentTime.currentTimeMillis() + (long)(Globals.portalBuildTimeInMins * 60000.0);
-		wwwform.AddField ("timeFinished", finishTime + "");
-		// NOTE: Changed this to "new WWW" from "RequestService.makeRequest" to fix a 500 request failed error
-		WWW request = new WWW ("localhost:8080/myapp/world/portals/create", wwwform);
-		yield return request;
-		GenerateWorld.instance.message.text = request.text;
 		GenerateWorld.instance.resetWorldView ();
 	}
 

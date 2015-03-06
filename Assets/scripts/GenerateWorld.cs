@@ -14,13 +14,15 @@ public class GenerateWorld : MonoBehaviour {
 
 	public Material[] materials;
 	public Material portalMaterial;
-	public Material portalUnfinishedMaterial;
+	public Material dragPortalValidMaterial;
+	public Material dragPortalInvalidMaterial;
 
 	private GameObject[] currentBases;
 	private GameObject[] currentDisplayText;
 	private GameObject[] currentPortals;
 	private List<Portal2> currentUnfinishedPortals;
 	private List<GameObject> currentUnfinishedPortalObjs;
+	private GameObject dragToCreateTempPortal;
 	public GameObject canvas;
 
 	public Base lastBase;
@@ -62,7 +64,8 @@ public class GenerateWorld : MonoBehaviour {
 			materials[i] = (Material) Resources.Load ("materials/"+ materialNames[i], typeof(Material));
 		}
 		portalMaterial = (Material) Resources.Load ("materials/PortalPlasma", typeof(Material));
-		portalUnfinishedMaterial = (Material)Resources.Load ("materials/PortalLava", typeof(Material));
+		dragPortalValidMaterial = (Material)Resources.Load ("materials/PortalPlasma2", typeof(Material));
+		dragPortalInvalidMaterial = (Material)Resources.Load ("materials/PortalLava", typeof(Material));
 	}
 
 	// Update is called once per frame
@@ -99,6 +102,7 @@ public class GenerateWorld : MonoBehaviour {
 			}
 		}
 		currentUnfinishedPortals = null;
+		Destroy (dragToCreateTempPortal);
 		return;
 	}
 
@@ -112,7 +116,6 @@ public class GenerateWorld : MonoBehaviour {
 		Base[] bases = JsonMapper.ToObject<Base[]>(request.text);
 		displayBases (bases);
 		displayPortals ();
-		//displayUnfinishedPortals ();
 		yield break;
 	}
 
@@ -129,6 +132,7 @@ public class GenerateWorld : MonoBehaviour {
 			baseObj.renderer.material = materials[baseLocs[i].colorId % materials.Length];
 			TouchBase tb = baseObj.GetComponent<TouchBase>();
 			tb.b = baseLocs[i];
+			baseObj.name = "Base" + baseLocs[i].baseId;
 			currentBases[i] = baseObj;
 
 			GameObject displayTextObj = (GameObject) Instantiate (textPrefab, new Vector3(0, 0, -1000), Quaternion.identity);
@@ -167,20 +171,10 @@ public class GenerateWorld : MonoBehaviour {
 			int y2 = portal.base2.world.y * 3 + portal.base2.local.y;
 
 			// Create the portal (cylinder prefab)
-			// Start portals at length corresponging to 1% finished
+			// Start new, user created portals at length corresponging to 1% finished
 			float xTemp = portal.timeFinished > CurrentTime.currentTimeMillis() ? x1 + (x2-x1)*0.01f : x2*1.0f;
 			float yTemp = portal.timeFinished > CurrentTime.currentTimeMillis() ? y1 + (y2-y1)*0.01f : y2*1.0f;
-			GameObject portalObj = (GameObject) Instantiate (portalPrefab, new Vector3((x1+xTemp)/2.0f, (y1+yTemp)/2.0f, 0f), Quaternion.identity);
-			// Scale portal based on distance between bases
-			Vector3 scale = portalObj.transform.localScale;
-			scale.y = Vector2.Distance(new Vector2(x1,y1), new Vector2(xTemp,yTemp)) / 2.0f;
-			portalObj.transform.localScale = scale;
-			// Rotate portal based on angle between bases
-			float slope = (y2*1.0f-y1)/(x2*1.0f-x1);
-			float angle = Mathf.Rad2Deg*Mathf.Atan(slope) + 90;
-			Vector3 rotate = portalObj.transform.eulerAngles;
-			rotate.z = angle;
-			portalObj.transform.eulerAngles = rotate;
+			GameObject portalObj = createPortal(x1,y1,xTemp,yTemp);
 			portalObj.name = "Portal" + portal.portalId;
 			if (portal.timeFinished <= CurrentTime.currentTimeMillis()) {
 				// Portal finished
@@ -188,13 +182,36 @@ public class GenerateWorld : MonoBehaviour {
 			}
 			else {
 				// Portal unfinished
-				portalObj.renderer.material = portalUnfinishedMaterial;
+				portalObj.renderer.material = dragPortalValidMaterial;
 				currentUnfinishedPortals.Add(portal);
 				currentUnfinishedPortalObjs.Add(portalObj);
 			}
 			currentPortals[i] = portalObj;
 		}
 
+	}
+
+	private GameObject createPortal(float x1, float y1, float x2, float y2) {
+		GameObject portalObj = (GameObject) Instantiate (portalPrefab, new Vector3((x1+x2)/2.0f, (y1+y2)/2.0f, 0f), Quaternion.identity);
+		scalePortalBetweenPoints (portalObj, x1, y1, x2, y2);
+		rotatePortalBetweenPoints (portalObj, x1, y1, x2, y2);
+		return portalObj;
+	}
+
+	private void scalePortalBetweenPoints(GameObject portalObj, float x1, float y1, float x2, float y2) {
+		// Scale portal based on distance between bases
+		Vector3 scale = portalObj.transform.localScale;
+		scale.y = Vector2.Distance(new Vector2(x1,y1), new Vector2(x2,y2)) / 2.0f;
+		portalObj.transform.localScale = scale;
+	}
+
+	private void rotatePortalBetweenPoints(GameObject portalObj, float x1, float y1, float x2, float y2) {
+		// Rotate portal based on angle between bases
+		float slope = (y2*1.0f-y1)/(x2*1.0f-x1);
+		float angle = Mathf.Rad2Deg*Mathf.Atan(slope) + 90;
+		Vector3 rotate = portalObj.transform.eulerAngles;
+		rotate.z = angle;
+		portalObj.transform.eulerAngles = rotate;
 	}
 
 	public void syncPortals() {
@@ -213,10 +230,7 @@ public class GenerateWorld : MonoBehaviour {
 				float xTemp = x1 + (x2-x1)*percentFinished;
 				float yTemp = y1 + (y2-y1)*percentFinished;
 				portalObj.transform.localPosition = new Vector3((x1+xTemp)/2.0f, (y1+yTemp)/2.0f, 0f);
-				// Scale portal based on distance between bases
-				Vector3 scale = portalObj.transform.localScale;
-				scale.y = Vector2.Distance(new Vector2(x1,y1), new Vector2(xTemp,yTemp)) / 2.0f;
-				portalObj.transform.localScale = scale;
+				scalePortalBetweenPoints(portalObj, x1, y1, xTemp, yTemp);
 			}
 			else {
 				// Finish portal
@@ -237,6 +251,13 @@ public class GenerateWorld : MonoBehaviour {
 		return null;
 	}
 
+	public GameObject getBaseObj(String name) {
+		foreach (GameObject b in currentBases) {
+			if (b.name.Equals(name)) return b;
+		}
+		return null;
+	}
+
 	// true if portal finished, false if unfinished
 	public float getPortalPercentFinished(Portal2 p) {
 		long buildTimeMilli = (long)(Globals.portalBuildTimeInMins * 60000.0);
@@ -247,6 +268,35 @@ public class GenerateWorld : MonoBehaviour {
 		}
 		long startTime = p.timeFinished - buildTimeMilli;
 		return (((curTime - startTime) / (buildTimeMilli*1.0f))*1.0f);
+	}
+
+	public void createDragPortal(Vector2 pos) {
+		float x1 = pos.x * 3 + pos.x;
+		float y1 = pos.y * 3 + pos.y;
+		float x2 = x1 + 0.1f;
+		float y2 = y1 + 0.1f;
+
+		// Create the portal (cylinder prefab)
+		dragToCreateTempPortal = createPortal (x1, y1, x2, y2);
+		dragToCreateTempPortal.name = "tempPortal";
+	}
+
+	public void updateDragPortal(Vector2 pos, bool onBase) {
+		float x1 = lastBase.world.x * 3 + lastBase.local.x;
+		float y1 = lastBase.world.y * 3 + lastBase.local.y;
+		float x2 = pos.x;
+		float y2 = pos.y;
+		
+		// Create the portal (cylinder prefab)
+		dragToCreateTempPortal.transform.localPosition = new Vector3((x1+x2)/2.0f, (y1+y2)/2.0f, 0f);
+		scalePortalBetweenPoints (dragToCreateTempPortal, x1, y1, x2, y2);
+		rotatePortalBetweenPoints (dragToCreateTempPortal, x1, y1, x2, y2);
+		dragToCreateTempPortal.renderer.material = onBase ? dragPortalValidMaterial : dragPortalInvalidMaterial;
+	}
+
+	public void deleteDragPortal() {
+		Destroy (dragToCreateTempPortal);
+		dragToCreateTempPortal = null;
 	}
 
 	public void clearBases()

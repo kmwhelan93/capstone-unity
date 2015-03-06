@@ -3,19 +3,86 @@ using System.Collections;
 
 public class TouchAndDrag : MonoBehaviour {
 	public float speed;
-
+	public Vector2 initPosition;
 	
 	// Update is called once per frame
 	void Update () {
 		if (Input.touchCount == 1)
 		{
 			Touch t = Input.GetTouch (0);
-			if (t.phase == TouchPhase.Moved && t.deltaPosition.magnitude > 2) {
+			// If in AddPortal state and first touch is on a base
+			if (Globals.addState == AddState.Portal && GenerateWorld.instance.secondClick) {
+				// Drag to create portal
+				if (t.phase == TouchPhase.Began) {
+					// Create temp portal - red
+					GenerateWorld.instance.createDragPortal(t.position);
+				}
+				if (t.phase == TouchPhase.Moved) {
+					// Update temp portal
+					// If touch location is on base, temp portal = purple to signify that portal is valid
+					GenerateWorld.instance.updateDragPortal(
+						camera.ScreenToWorldPoint(new Vector3(t.position.x, t.position.y, camera.nearClipPlane)), 
+												  baseAtPos(t.position));
+				}
+				if (t.phase == TouchPhase.Ended) {
+					// Create portal if on base
+					int bId = getIdOfBaseAtPos(t.position);
+					if (bId != -1 && bId != GenerateWorld.instance.lastBase.baseId) {
+						// Portal created by dragging
+						GenerateWorld.instance.secondClick = false;
+						GenerateWorld.instance.message.text = "Adding portal...";
+						StartCoroutine ("createPortal", bId);
+					}
+					else {
+						// Portal created by touching each base separately, waiting for second touch
+						GenerateWorld.instance.message.text = "Now click which base to attach portal to";
+						GenerateWorld.instance.secondClick = true;
+					}
+					GenerateWorld.instance.deleteDragPortal();
+				}
+			}
+			else if (t.phase == TouchPhase.Moved && t.deltaPosition.magnitude > 2) {
+				// Drag to move camera
 				Vector2 deltaPosition = Input.GetTouch (0).deltaPosition;
 				Vector2 deltaToScreenRatio = deltaPosition * camera.orthographicSize / 5;
 				camera.transform.Translate(deltaToScreenRatio * -1 *speed);
 				Camera.main.GetComponent<DisplayInfoHandler>().positionText();
 			}
 		}
+	}
+
+	private int getIdOfBaseAtPos(Vector2 pos) {
+		Ray ray = Camera.mainCamera.ScreenPointToRay(pos);
+		RaycastHit hit;
+		
+		if ( Physics.Raycast(ray, out hit, 100f ) ) {
+			string name = hit.transform.gameObject.name;
+			return int.Parse(name.Substring(4));
+		}
+		return -1;
+	}
+
+	private bool baseAtPos(Vector2 pos) {
+		Ray ray = Camera.mainCamera.ScreenPointToRay(pos);
+		RaycastHit hit;
+		
+		if (Physics.Raycast (ray, out hit, 100f)) {
+			return true;
+		}
+		return false;
+	}
+
+	IEnumerator createPortal(int base2Id)
+	{
+		WWWForm wwwform = new WWWForm ();
+		wwwform.AddField ("username", Globals.username);
+		wwwform.AddField ("baseId1", GenerateWorld.instance.lastBase.baseId);
+		wwwform.AddField ("baseId2", base2Id);
+		long finishTime = CurrentTime.currentTimeMillis() + (long)(Globals.portalBuildTimeInMins * 60000.0);
+		wwwform.AddField ("timeFinished", finishTime + "");
+		WWW request = new WWW ("localhost:8080/myapp/world/portals/create", wwwform);
+		yield return request;
+		GenerateWorld.instance.message.text = request.text;
+		GenerateWorld.instance.resetWorldView ();
 	}
 }
