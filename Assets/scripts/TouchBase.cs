@@ -17,7 +17,7 @@ public class TouchBase : MonoBehaviour {
 				GenerateWorld.instance.lastBase = b;
 				GenerateWorld.instance.secondClick = true;
 			}
-		} else if (Globals.addState == AddState.Troops) {
+		} else if (Globals.moveState == MoveState.Troops) {
 			Debug.Log("base touched to move troops");
 			if (!GenerateWorld.instance.secondClick) {
 				print ("waiting for second click");
