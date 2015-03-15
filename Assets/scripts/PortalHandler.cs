@@ -107,12 +107,16 @@ public class PortalHandler : MonoBehaviour {
 			}
 			currentPortals[i] = portalObj;
 		}
+		// TODO (cem6at): Find better location for this
+		if (TroopsHandler.instance.moveTroopsActions.Count == 0) {
+			TroopsHandler.instance.restartMoveTroops ();
+		}
 		
 	}
 
-	private GameObject getPortalObj(int pId) {
+	private GameObject getUnfinishedPortalObj(int pId) {
 		foreach (GameObject p in currentUnfinishedPortalObjs) {
-			if (p.name == "Portal" + pId) return p;
+			if (p.name.Equals("Portal" + pId)) return p;
 		}
 		return null;
 	}
@@ -242,4 +246,12 @@ public class PortalHandler : MonoBehaviour {
 		validBaseIds = null;
 		GenerateWorld.instance.resetWorldView();
 	}
+
+	public GameObject getFinishedPortalObj(int pId) {
+		foreach (GameObject p in currentPortals) {
+			if (p.name == "Portal" + pId) return p;
+		}
+		return null;
+	}
+	
 }

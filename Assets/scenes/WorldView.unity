@@ -1717,6 +1717,7 @@ GameObject:
   - 114: {fileID: 1307284334}
   - 114: {fileID: 1307284335}
   - 114: {fileID: 1307284336}
+  - 114: {fileID: 1307284337}
   m_Layer: 0
   m_Name: World
   m_TagString: Untagged
@@ -1807,6 +1808,17 @@ MonoBehaviour:
   portalBuildingMaterial: {fileID: 0}
   dragPortalInvalidMaterial: {fileID: 0}
   invalidBaseMaterial: {fileID: 0}
+--- !u!114 &1307284337
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1307284330}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba9fe8b74e7c7454da768e1bdee5a6fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1369496861
 GameObject:
   m_ObjectHideFlags: 0

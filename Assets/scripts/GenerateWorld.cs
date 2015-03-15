@@ -34,8 +34,10 @@ public class GenerateWorld : MonoBehaviour {
 		Globals.portalBuildTimeInMins = 1;
 		// load resources
 		loadResources ();
-		// Create bases
+		// Create bases and portals
 		resetWorldView ();
+		// Restart any troop transfers in progress
+		//TroopsHandler.instance.restartMoveTroops ();
 	}
 
 	// Update is called once per frame

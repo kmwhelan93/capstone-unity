@@ -31,7 +31,7 @@ public class TouchBase : MonoBehaviour {
 				GenerateWorld.instance.numTroopsInputObject.SetActive(false);
 				GenerateWorld.instance.message.text = "Moving units...";
 				if (GenerateWorld.instance.lastBase.baseId != b.baseId) {
-					StartCoroutine ("moveTroops");
+					TroopsHandler.instance.startMoveTroopsAction(b);
 				} else {
 					Debug.Log ("Sorry! Can't move units from a base to itself");
 				}
@@ -46,19 +46,6 @@ public class TouchBase : MonoBehaviour {
 		Debug.Log (request.text);
 		GenerateWorld.instance.message.text = request.text;
 		UpdateGold.instance.syncGold ();
-		GenerateWorld.instance.resetWorldView ();
-	}
-
-	IEnumerator moveTroops() 
-	{
-		WWWForm wwwform = new WWWForm ();
-		wwwform.AddField ("username", b.username);
-		wwwform.AddField ("baseId1", GenerateWorld.instance.lastBase.baseId);
-		wwwform.AddField ("baseId2", b.baseId);
-		wwwform.AddField ("numTroops", GenerateWorld.instance.numTroopsInputField.text);
-		WWW request = new WWW ("localhost:8080/myapp/world/troops/move", wwwform);
-		yield return request;
-		GenerateWorld.instance.message.text = request.text;
 		GenerateWorld.instance.resetWorldView ();
 	}
 
