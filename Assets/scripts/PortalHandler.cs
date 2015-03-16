@@ -97,7 +97,7 @@ public class PortalHandler : MonoBehaviour {
 				float xTemp = x2*1.0f;
 				float yTemp = y2*1.0f;
 				portalObj = createPortal(x1,y1,xTemp,yTemp);
-				portalObj.renderer.material = portalMaterial;
+				portalObj.GetComponent<Renderer>().material = portalMaterial;
 			}
 			else {
 				// Portal unfinished
@@ -119,7 +119,7 @@ public class PortalHandler : MonoBehaviour {
 				float xTemp = x1 + (x2-x1)*0.01f;
 				float yTemp = y1 + (y2-y1)*0.01f;
 				portalObj = createPortal(x1,y1,xTemp,yTemp);
-				portalObj.renderer.material = portalBuildingMaterial;
+				portalObj.GetComponent<Renderer>().material = portalBuildingMaterial;
 				currentUnfinishedPortals.Add(portal);
 				currentUnfinishedPortalObjs.Add(portalObj);
 			}
@@ -182,7 +182,7 @@ public class PortalHandler : MonoBehaviour {
 			}
 			else {
 				// Finish portal
-				portalObj.renderer.material = portalMaterial;
+				portalObj.GetComponent<Renderer>().material = portalMaterial;
 				toRemove.Add(p);
 				GenerateWorld.instance.message.text = "Portal finished!";
 			}
@@ -225,7 +225,7 @@ public class PortalHandler : MonoBehaviour {
 		dragToCreateTempPortal.transform.localPosition = new Vector3((x1+x2)/2.0f, (y1+y2)/2.0f, 0f);
 		scalePortalBetweenPoints (dragToCreateTempPortal, x1, y1, x2, y2);
 		rotatePortalBetweenPoints (dragToCreateTempPortal, x1, y1, x2, y2);
-		dragToCreateTempPortal.renderer.material = onBase ? portalMaterial : dragPortalInvalidMaterial;
+		dragToCreateTempPortal.GetComponent<Renderer>().material = onBase ? portalMaterial : dragPortalInvalidMaterial;
 	}
 	
 	public void deleteDragPortal() {
@@ -256,7 +256,7 @@ public class PortalHandler : MonoBehaviour {
 		GameObject[] currentBases = GenerateWorld.instance.getCurrentBases ();
 		foreach (GameObject b in currentBases) {
 			if (!validBase(int.Parse(b.name.Substring(4)))) {
-				b.renderer.material = invalidBaseMaterial;
+				b.GetComponent<Renderer>().material = invalidBaseMaterial;
 			}
 		}
 	}

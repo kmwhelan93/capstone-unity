@@ -23,7 +23,7 @@ public class TouchAndDrag : MonoBehaviour {
 					// Update temp portal
 					// If touch location is on base, temp portal = purple to signify that portal is valid
 					PortalHandler.instance.updateDragPortal(
-						camera.ScreenToWorldPoint(new Vector3(t.position.x, t.position.y, camera.nearClipPlane)), 
+						GetComponent<Camera>().ScreenToWorldPoint(new Vector3(t.position.x, t.position.y, GetComponent<Camera>().nearClipPlane)), 
 												  validBaseAtPos(t.position));
 				}
 				if (t.phase == TouchPhase.Ended) {
@@ -60,15 +60,15 @@ public class TouchAndDrag : MonoBehaviour {
 			else if (t.phase == TouchPhase.Moved && t.deltaPosition.magnitude > 2) {
 				// Drag to move camera
 				Vector2 deltaPosition = Input.GetTouch (0).deltaPosition;
-				Vector2 deltaToScreenRatio = deltaPosition * camera.orthographicSize / 5;
-				camera.transform.Translate(deltaToScreenRatio * -1 *speed);
+				Vector2 deltaToScreenRatio = deltaPosition * GetComponent<Camera>().orthographicSize / 5;
+				GetComponent<Camera>().transform.Translate(deltaToScreenRatio * -1 *speed);
 				Camera.main.GetComponent<DisplayInfoHandler>().positionText();
 			}
 		}
 	}
 
 	private int getIdOfBaseAtPos(Vector2 pos) {
-		Ray ray = Camera.mainCamera.ScreenPointToRay(pos);
+		Ray ray = Camera.main.ScreenPointToRay(pos);
 		RaycastHit hit;
 		
 		if ( Physics.Raycast(ray, out hit, 100f ) ) {
@@ -79,7 +79,7 @@ public class TouchAndDrag : MonoBehaviour {
 	}
 
 	private bool validBaseAtPos(Vector2 pos) {
-		Ray ray = Camera.mainCamera.ScreenPointToRay(pos);
+		Ray ray = Camera.main.ScreenPointToRay(pos);
 		RaycastHit hit;
 		
 		if (Physics.Raycast (ray, out hit, 100f)) {

@@ -9,8 +9,7 @@ public class RequestService : ScriptableObject {
 		var jsonString = JsonMapper.ToJson (body);
 		
 		var encoding = new System.Text.UTF8Encoding();
-		var postHeader = new Hashtable();
-		
+		var postHeader = new IDictionary();
 		postHeader.Add("Content-Type", "application/json");
 		postHeader.Add("Content-Length", jsonString.Length);
 

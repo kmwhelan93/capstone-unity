@@ -19,14 +19,14 @@ public class PinchToZoom : MonoBehaviour {
 			float prevLength = (touchZeroPrevPos - touchOnePrevPos).magnitude;
 			float currLength = (touchZero.position - touchOne.position).magnitude;
 
-			if (camera.isOrthoGraphic)
+			if (GetComponent<Camera>().orthographic)
 			{
-				camera.orthographicSize -= (currLength - prevLength) * orthoZoomSpeed;
-				camera.orthographicSize = Mathf.Max (0.1f, camera.orthographicSize);
+				GetComponent<Camera>().orthographicSize -= (currLength - prevLength) * orthoZoomSpeed;
+				GetComponent<Camera>().orthographicSize = Mathf.Max (0.1f, GetComponent<Camera>().orthographicSize);
 			} else
 			{
-				camera.fieldOfView -= (currLength - prevLength) * perspectiveZoomSpeed;
-				camera.fieldOfView = Mathf.Clamp (camera.fieldOfView, 0.1f, 179.9f);
+				GetComponent<Camera>().fieldOfView -= (currLength - prevLength) * perspectiveZoomSpeed;
+				GetComponent<Camera>().fieldOfView = Mathf.Clamp (GetComponent<Camera>().fieldOfView, 0.1f, 179.9f);
 			}
 			Camera.main.GetComponent<DisplayInfoHandler>().positionText();
 		}

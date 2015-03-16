@@ -58,7 +58,7 @@ public class TroopsHandler : MonoBehaviour {
 					// Remove action from list
 					toRemove.Add(a);
 					// Restore portal color
-					a.portal.renderer.material = PortalHandler.instance.portalMaterial;
+					a.portal.GetComponent<Renderer>().material = PortalHandler.instance.portalMaterial;
 					// Final db sync
 					StartCoroutine("finishMoveTroops", a);
 				}
@@ -92,7 +92,7 @@ public class TroopsHandler : MonoBehaviour {
 			GameObject b2 = GenerateWorld.instance.getBaseObj("Base" + b.baseId);
 			Portal2 p = JsonMapper.ToObject<Portal2>(request.text);
 			GameObject pObj = PortalHandler.instance.getFinishedPortalObj (p.portalId);
-			pObj.renderer.material = PortalHandler.instance.portalBuildingMaterial;
+			pObj.GetComponent<Renderer>().material = PortalHandler.instance.portalBuildingMaterial;
 			MoveTroopsAction a = new MoveTroopsAction (b1, b2, b.username, pObj, p.portalId, p.flowRate, numTroops);
 			moveTroopsActions.Add (a);
 		}
@@ -125,7 +125,7 @@ public class TroopsHandler : MonoBehaviour {
 		Portal2[] portals = JsonMapper.ToObject<Portal2[]>(request.text);
 		foreach (Portal2 p in portals) {
 			GameObject pObj = PortalHandler.instance.getFinishedPortalObj (p.portalId);
-			pObj.renderer.material = PortalHandler.instance.portalBuildingMaterial;
+			pObj.GetComponent<Renderer>().material = PortalHandler.instance.portalBuildingMaterial;
 			GameObject base1 = GenerateWorld.instance.getBaseObj("Base" + p.base1.baseId);
 			GameObject base2 = GenerateWorld.instance.getBaseObj("Base" + p.base2.baseId);
 			MoveTroopsAction a = new MoveTroopsAction (base1, base2, p.base1.username, pObj, p.portalId, p.flowRate, p.troopsToMove);
