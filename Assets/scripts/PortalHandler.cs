@@ -84,27 +84,46 @@ public class PortalHandler : MonoBehaviour {
 		for (int i = 0; i < portals.Length; i++) {
 			// Locations of the two bases
 			Portal2 portal = portals[i];
-			int x1 = portal.base1.world.x * 3 + portal.base1.local.x;
-			int y1 = portal.base1.world.y * 3 + portal.base1.local.y;
-			int x2 = portal.base2.world.x * 3 + portal.base2.local.x;
-			int y2 = portal.base2.world.y * 3 + portal.base2.local.y;
+			float x1 = portal.base1.world.x * 3 + portal.base1.local.x;
+			float y1 = portal.base1.world.y * 3 + portal.base1.local.y;
+			float x2 = portal.base2.world.x * 3 + portal.base2.local.x;
+			float y2 = portal.base2.world.y * 3 + portal.base2.local.y;
 			
 			// Create the portal (cylinder prefab)
 			// Start new, user created portals at length corresponging to 1% finished
-			float xTemp = portal.timeFinished > CurrentTime.currentTimeMillis() ? x1 + (x2-x1)*0.01f : x2*1.0f;
-			float yTemp = portal.timeFinished > CurrentTime.currentTimeMillis() ? y1 + (y2-y1)*0.01f : y2*1.0f;
-			GameObject portalObj = createPortal(x1,y1,xTemp,yTemp);
-			portalObj.name = "Portal" + portal.portalId;
+			GameObject portalObj;
 			if (portal.timeFinished <= CurrentTime.currentTimeMillis()) {
 				// Portal finished
+				float xTemp = x2*1.0f;
+				float yTemp = y2*1.0f;
+				portalObj = createPortal(x1,y1,xTemp,yTemp);
 				portalObj.renderer.material = portalMaterial;
 			}
 			else {
 				// Portal unfinished
+				// Convert x1,x2,y1,y2 from base centers to points on outer edge of base
+				float slope = (y2*1.0f-y1)/(x2*1.0f-x1);
+				float angle = Mathf.Rad2Deg*Mathf.Atan(slope);
+				GameObject b1 = GenerateWorld.instance.getBaseObj("Base" + portal.base1.baseId);
+				float rB1 = b1.GetComponent<SphereCollider>().radius;
+				GameObject b2 = GenerateWorld.instance.getBaseObj("Base" + portal.base2.baseId);
+				float rB2 = b2.GetComponent<SphereCollider>().radius;
+
+				int offset1 = x1 < x2 ? 0 : 180;
+				int offset2 = x1 < x2 ? 180 : 0;
+				x1 += Mathf.Cos(Mathf.Deg2Rad * (angle + offset1)) * rB1;
+				y1 += Mathf.Sin(Mathf.Deg2Rad * (angle + offset1)) * rB1;
+				x2 += Mathf.Cos(Mathf.Deg2Rad * (angle + offset2)) * rB2;
+				y2 += Mathf.Sin(Mathf.Deg2Rad * (angle + offset2)) * rB2;
+
+				float xTemp = x1 + (x2-x1)*0.01f;
+				float yTemp = y1 + (y2-y1)*0.01f;
+				portalObj = createPortal(x1,y1,xTemp,yTemp);
 				portalObj.renderer.material = portalBuildingMaterial;
 				currentUnfinishedPortals.Add(portal);
 				currentUnfinishedPortalObjs.Add(portalObj);
 			}
+			portalObj.name = "Portal" + portal.portalId;
 			currentPortals[i] = portalObj;
 		}
 		// TODO (cem6at): Find better location for this
@@ -137,11 +156,25 @@ public class PortalHandler : MonoBehaviour {
 			GameObject portalObj = GameObject.Find("Portal" + p.portalId);
 			if (percentFinished < 1.0f) {
 				// Grow portal
-				int x1 = p.base1.world.x * 3 + p.base1.local.x;
-				int y1 = p.base1.world.y * 3 + p.base1.local.y;
-				int x2 = p.base2.world.x * 3 + p.base2.local.x;
-				int y2 = p.base2.world.y * 3 + p.base2.local.y;
-				
+				float x1 = p.base1.world.x * 3 + p.base1.local.x;
+				float y1 = p.base1.world.y * 3 + p.base1.local.y;
+				float x2 = p.base2.world.x * 3 + p.base2.local.x;
+				float y2 = p.base2.world.y * 3 + p.base2.local.y;
+
+				float slope = (y2*1.0f-y1)/(x2*1.0f-x1);
+				float angle = Mathf.Rad2Deg*Mathf.Atan(slope);
+				GameObject b1 = GenerateWorld.instance.getBaseObj("Base" + p.base1.baseId);
+				float rB1 = b1.GetComponent<SphereCollider>().radius;
+				GameObject b2 = GenerateWorld.instance.getBaseObj("Base" + p.base2.baseId);
+				float rB2 = b2.GetComponent<SphereCollider>().radius;
+
+				int offset1 = x1 <= x2 ? 0 : 180;
+				int offset2 = x1 <= x2 ? 180 : 0;
+				x1 += Mathf.Cos(Mathf.Deg2Rad * (angle + offset1)) * rB1;
+				y1 += Mathf.Sin(Mathf.Deg2Rad * (angle + offset1)) * rB1;
+				x2 += Mathf.Cos(Mathf.Deg2Rad * (angle + offset2)) * rB2;
+				y2 += Mathf.Sin(Mathf.Deg2Rad * (angle + offset2)) * rB2;
+
 				float xTemp = x1 + (x2-x1)*percentFinished;
 				float yTemp = y1 + (y2-y1)*percentFinished;
 				portalObj.transform.localPosition = new Vector3((x1+xTemp)/2.0f, (y1+yTemp)/2.0f, 0f);
