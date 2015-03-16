@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using LitJson;
 
 public class RequestService : ScriptableObject {
@@ -9,9 +10,9 @@ public class RequestService : ScriptableObject {
 		var jsonString = JsonMapper.ToJson (body);
 		
 		var encoding = new System.Text.UTF8Encoding();
-		var postHeader = new IDictionary();
+		Dictionary<string, string> postHeader = new Dictionary<string, string>();
 		postHeader.Add("Content-Type", "application/json");
-		postHeader.Add("Content-Length", jsonString.Length);
+		postHeader.Add("Content-Length", jsonString.Length + "");
 
 		WWW request = new WWW(baseUrl + path, encoding.GetBytes(jsonString), postHeader);
 		return request;
