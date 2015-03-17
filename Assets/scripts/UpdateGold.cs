@@ -32,7 +32,6 @@ public class UpdateGold : MonoBehaviour {
 		GoldSync goldSync = JsonMapper.ToObject<GoldSync>(request.text);
 		Globals.gold = goldSync.gold;
 		Globals.goldPerSec = goldSync.goldPerSec;
-		Debug.Log (Globals.goldPerSec);
 		displayGold ();
 	}
 

@@ -6,6 +6,7 @@ public class Globals {
 	public static double gold { get; set; }
 	public static double goldPerSec { get; set; }
 	public static double portalBuildTimeInMins { get; set; }
+	public static bool isInLocalView = false;
 	// Update this to pull username from session eventually
 	public static string username = "kmw8sf";
 }
