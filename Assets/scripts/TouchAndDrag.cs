@@ -24,7 +24,6 @@ public class TouchAndDrag : MonoBehaviour {
 					// If touch location is on base, temp portal = purple to signify that portal is valid
 					Vector3 touchWorldPos = GetComponent<Camera>().ScreenToWorldPoint(new Vector3(t.position.x, t.position.y, -GetComponent<Camera>().transform.position.z));
 					touchWorldPos.z = 0;
-					Debug.Log (touchWorldPos);
 					PortalHandler.instance.updateDragPortal(
 						touchWorldPos, 
 												  validBaseAtPos(t.position));
