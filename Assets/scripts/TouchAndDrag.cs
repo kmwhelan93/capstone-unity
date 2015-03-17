@@ -11,7 +11,7 @@ public class TouchAndDrag : MonoBehaviour {
 		{
 			Touch t = Input.GetTouch (0);
 			// If in AddPortal state and first touch is on a base
-			if (Globals.addState == AddState.Portal && GenerateWorld.instance.secondClick) {
+			if (Globals.opState == OpState.AddPortal && GenerateWorld.instance.secondClick) {
 				// Drag to create portal
 				if (t.phase == TouchPhase.Began) {
 					// Create temp portal - red

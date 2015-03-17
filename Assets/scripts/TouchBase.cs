@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class TouchBase : MonoBehaviour {
@@ -7,35 +7,37 @@ public class TouchBase : MonoBehaviour {
 
 	public void OnMouseDown() 
 	{
-		if (Globals.addState == AddState.Base) {
+		if (Globals.opState == OpState.AddBase) {
 			Debug.Log ("base touched to add base");
 			GenerateWorld.instance.message.text = "Adding base...";
 			StartCoroutine ("createBase");
-		} else if (Globals.addState == AddState.Portal) {
+		} else if (Globals.opState == OpState.AddPortal) {
 			Debug.Log ("base touched to add portal");
 			if (!GenerateWorld.instance.secondClick) {
 				GenerateWorld.instance.lastBase = b;
 				GenerateWorld.instance.secondClick = true;
 			}
-		} else if (Globals.moveState == MoveState.Troops) {
-			Debug.Log("base touched to move troops");
+		} else if (Globals.opState == OpState.MoveTroops) {
+			Debug.Log ("base touched to move troops");
 			if (!GenerateWorld.instance.secondClick) {
 				print ("waiting for second click");
 				GenerateWorld.instance.message.text = "How many?            Then click base to send them to.";
-				GenerateWorld.instance.numTroopsInputObject.SetActive(true);
+				GenerateWorld.instance.numTroopsInputObject.SetActive (true);
 				GenerateWorld.instance.lastBase = b;
 				GenerateWorld.instance.secondClick = true;
 			} else {
 				print ("got second click, moving troops");
 				GenerateWorld.instance.secondClick = false;
-				GenerateWorld.instance.numTroopsInputObject.SetActive(false);
+				GenerateWorld.instance.numTroopsInputObject.SetActive (false);
 				GenerateWorld.instance.message.text = "Moving units...";
 				if (GenerateWorld.instance.lastBase.baseId != b.baseId) {
-					TroopsHandler.instance.startMoveTroopsAction(b);
+					TroopsHandler.instance.startMoveTroopsAction (b);
 				} else {
 					Debug.Log ("Sorry! Can't move units from a base to itself");
 				}
 			}
+		} else if (Globals.opState == OpState.ZoomBase) {
+
 		}
 	}
 	
