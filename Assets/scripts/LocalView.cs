@@ -81,6 +81,10 @@ public class LocalView : MonoBehaviour {
 				transform.localRotation = Quaternion.Slerp (transform.localRotation, rotation, Time.deltaTime * rotateSmooth);
 			} else {
 				transform.localRotation = Quaternion.Slerp (transform.localRotation, empireViewRotation, Time.deltaTime * rotateSmooth);
+				Debug.Log (fracJourney);
+				if (fracJourney > .999) {
+					inProgress = false;
+				}
 			}
 		}
 	}
