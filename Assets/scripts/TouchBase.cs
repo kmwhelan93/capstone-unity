@@ -37,7 +37,7 @@ public class TouchBase : MonoBehaviour {
 				}
 			}
 		} else if (Globals.opState == OpState.ZoomBase) {
-
+			Camera.main.GetComponent<LocalView>().switchToLocalView(gameObject);
 		}
 	}
 	

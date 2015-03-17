@@ -363,7 +363,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11457150, guid: 9e41f3037af3bb546854b44c3ad69491, type: 2}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11457150, guid: 9e41f3037af3bb546854b44c3ad69491, type: 2}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
@@ -372,7 +372,7 @@ Prefab:
     - target: {fileID: 11457150, guid: 9e41f3037af3bb546854b44c3ad69491, type: 2}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1307284338}
+      objectReference: {fileID: 1904473244}
     - target: {fileID: 11457150, guid: 9e41f3037af3bb546854b44c3ad69491, type: 2}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: onMoveTroopsToggle
@@ -1015,14 +1015,13 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 562025590}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a072d612228112a4b8e56561f94e7a8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 3
   rotateSmooth: 2
-  lookAtBase: {fileID: 0}
 --- !u!114 &592901037
 MonoBehaviour:
   m_PrefabParentObject: {fileID: 11457156, guid: 9e41f3037af3bb546854b44c3ad69491,
@@ -1041,8 +1040,9 @@ GameObject:
   - 114: {fileID: 645059317}
   - 114: {fileID: 645059316}
   - 114: {fileID: 645059315}
+  - 114: {fileID: 645059319}
   m_Layer: 5
-  m_Name: MoveMenuBtn
+  m_Name: ZoomMenuBtn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1123,8 +1123,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1307284338}
-        m_MethodName: onArrowButtonClick
+      - m_Target: {fileID: 645059319}
+        m_MethodName: toggleMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1164,6 +1164,19 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 645059313}
+--- !u!114 &645059319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 645059313}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 767be22829425534d96ba53e535f5b04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  toggles:
+  - {fileID: 1600599978}
 --- !u!1 &657063302
 GameObject:
   m_ObjectHideFlags: 0
@@ -1980,7 +1993,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8562e8ab315a14040acf6c08b4dfb63d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveTroopsToggle: {fileID: 1733069722}
 --- !u!1 &1369496861
 GameObject:
   m_ObjectHideFlags: 0
@@ -2384,7 +2396,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11457150, guid: 9e41f3037af3bb546854b44c3ad69491, type: 2}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11457150, guid: 9e41f3037af3bb546854b44c3ad69491, type: 2}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
@@ -2393,10 +2405,10 @@ Prefab:
     - target: {fileID: 11457150, guid: 9e41f3037af3bb546854b44c3ad69491, type: 2}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1307284338}
+      objectReference: {fileID: 645059319}
     - target: {fileID: 11457150, guid: 9e41f3037af3bb546854b44c3ad69491, type: 2}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: onMoveTroopsToggle
+      value: onZoomWorldToggle
       objectReference: {fileID: 0}
     - target: {fileID: 11457150, guid: 9e41f3037af3bb546854b44c3ad69491, type: 2}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -2414,6 +2426,10 @@ Prefab:
       propertyPath: m_PreserveAspect
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 11457150, guid: 9e41f3037af3bb546854b44c3ad69491, type: 2}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9e41f3037af3bb546854b44c3ad69491, type: 2}
   m_IsPrefabParent: 0
@@ -2422,6 +2438,12 @@ RectTransform:
   m_PrefabParentObject: {fileID: 22457152, guid: 9e41f3037af3bb546854b44c3ad69491,
     type: 2}
   m_PrefabInternal: {fileID: 1584553070}
+--- !u!114 &1600599978
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11457150, guid: 9e41f3037af3bb546854b44c3ad69491,
+    type: 2}
+  m_PrefabInternal: {fileID: 1584553070}
+  m_Script: {fileID: 2109663825, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
 --- !u!1 &1611938916
 GameObject:
   m_ObjectHideFlags: 0
@@ -2870,6 +2892,7 @@ GameObject:
   - 114: {fileID: 1904473242}
   - 114: {fileID: 1904473241}
   - 114: {fileID: 1904473240}
+  - 114: {fileID: 1904473244}
   m_Layer: 5
   m_Name: MoveMenuBtn
   m_TagString: Untagged
@@ -2909,7 +2932,7 @@ MonoBehaviour:
   m_IgnoreLayout: 0
   m_MinWidth: -1
   m_MinHeight: -1
-  m_PreferredWidth: -1
+  m_PreferredWidth: 40
   m_PreferredHeight: 40
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
@@ -2952,8 +2975,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1307284338}
-        m_MethodName: onArrowButtonClick
+      - m_Target: {fileID: 1904473244}
+        m_MethodName: toggleMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2993,6 +3016,19 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1904473238}
+--- !u!114 &1904473244
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1904473238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 767be22829425534d96ba53e535f5b04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  toggles:
+  - {fileID: 1733069722}
 --- !u!1 &2103979093
 GameObject:
   m_ObjectHideFlags: 0
