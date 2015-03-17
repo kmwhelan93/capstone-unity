@@ -7,5 +7,6 @@ public enum OpState {
 	AddPortal = 2,
 	AddTroops = 3,
 	MoveTroops = 4,
-	ZoomBase = 5
+	ZoomBase = 5,
+	ZoomEmpire = 6
 }

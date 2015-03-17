@@ -9,6 +9,8 @@ public class LocalView : MonoBehaviour {
 
 	private Vector3 initialPosition;
 	private Vector3 endPosition;
+	private Vector3 empireViewPosition;
+	private Quaternion empireViewRotation = new Quaternion (0, 0, 0, 1);
 
 	private float startTime;
 	private float translateDistance;
@@ -17,8 +19,25 @@ public class LocalView : MonoBehaviour {
 
 	private bool inProgress = false;
 
+	public void switchToEmpireView()
+	{
+		Globals.isInLocalView = false;
+		initialPosition = transform.position;
+		startTime = Time.time;
+		endPosition = empireViewPosition;
+		translateDistance = Vector3.Distance (initialPosition, empireViewPosition);
+		inProgress = true;
+	}
+
 	public void switchToLocalView(GameObject world)
 	{
+		// Save where the empire view was last if this is our first movement away from empire view
+		if (!Globals.isInLocalView) {
+			empireViewPosition = transform.position;
+		}
+		Globals.isInLocalView = true;
+		// hide the displayInfo text
+		GetComponent<DisplayInfoHandler> ().positionText ();
 		initialPosition = transform.position;
 		lookAtWorld = world;
 
@@ -32,18 +51,6 @@ public class LocalView : MonoBehaviour {
 		targetRotatePosition = new Vector3 (0, 0, 0);
 
 		inProgress = true;
-	}
-
-	private IEnumerator switchToLocalViewHelper()
-	{
-		var distCovered = (Time.time - startTime) * moveSpeed;
-		var fracJourney = distCovered / translateDistance;
-		Camera.main.transform.position = Vector3.Slerp (initialPosition, endPosition, fracJourney);
-		
-		Vector3 relativePos = targetRotatePosition - transform.position;
-		Quaternion rotation = Quaternion.LookRotation (relativePos, new Vector3(0, 0, -1));
-		transform.localRotation = Quaternion.Slerp (transform.localRotation, rotation, Time.deltaTime*rotateSmooth);
-		yield return rotation;
 	}
 
 	// Use this for initialization
@@ -68,10 +75,13 @@ public class LocalView : MonoBehaviour {
 			var distCovered = (Time.time - startTime) * moveSpeed;
 			var fracJourney = distCovered / translateDistance;
 			Camera.main.transform.position = Vector3.Slerp (initialPosition, endPosition, fracJourney);
-
-			Vector3 relativePos = targetRotatePosition - transform.position;
-			Quaternion rotation = Quaternion.LookRotation (relativePos, new Vector3 (0, 0, -1));
-			transform.localRotation = Quaternion.Slerp (transform.localRotation, rotation, Time.deltaTime * rotateSmooth);
+			if (Globals.isInLocalView) {
+				Vector3 relativePos = targetRotatePosition - transform.position;
+				Quaternion rotation = Quaternion.LookRotation (relativePos, new Vector3 (0, 0, -1));
+				transform.localRotation = Quaternion.Slerp (transform.localRotation, rotation, Time.deltaTime * rotateSmooth);
+			} else {
+				transform.localRotation = Quaternion.Slerp (transform.localRotation, empireViewRotation, Time.deltaTime * rotateSmooth);
+			}
 		}
 	}
 }

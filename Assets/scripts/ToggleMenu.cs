@@ -72,4 +72,15 @@ public class ToggleMenu : MonoBehaviour {
 		}
 	}
 
+	public void onZoomEmpireToggle(bool isOn) {
+		if (isOn) {
+			Globals.opState = OpState.ZoomEmpire;
+			GenerateWorld.instance.message.text = "";
+			Camera.main.GetComponent<LocalView>().switchToEmpireView();
+		} else {
+			Globals.opState = OpState.None;
+			GenerateWorld.instance.message.text = "";
+		}
+	}
+
 }
