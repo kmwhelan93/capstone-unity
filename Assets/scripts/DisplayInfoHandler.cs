@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class DisplayInfoHandler : MonoBehaviour {
 
 	public List<BaseWrapper> baseWrappers { get; set; }
-	public float hideTextSize;
+	public float hideTextDepth;
 
 	public void updateContent()
 	{
@@ -22,7 +22,7 @@ public class DisplayInfoHandler : MonoBehaviour {
 	{
 		foreach(BaseWrapper bw in baseWrappers) {
 			// hide or show text
-			bw.displayText.SetActive(Camera.main.orthographicSize < hideTextSize);
+			bw.displayText.SetActive(Camera.main.transform.position.z >= hideTextDepth);
 			Vector3 worldOffset = getBestOffset(bw);
 			Vector3 textPosition = Camera.main.WorldToScreenPoint(bw.baseObj.transform.position + worldOffset);
 			//bw.displayText.SetActive(false);

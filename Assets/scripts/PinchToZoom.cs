@@ -25,8 +25,7 @@ public class PinchToZoom : MonoBehaviour {
 				GetComponent<Camera>().orthographicSize = Mathf.Max (0.1f, GetComponent<Camera>().orthographicSize);
 			} else
 			{
-				GetComponent<Camera>().fieldOfView -= (currLength - prevLength) * perspectiveZoomSpeed;
-				GetComponent<Camera>().fieldOfView = Mathf.Clamp (GetComponent<Camera>().fieldOfView, 0.1f, 179.9f);
+				transform.position = new Vector3(transform.position.x, transform.position.y, Mathf.Clamp (transform.position.z + (currLength - prevLength) * perspectiveZoomSpeed, -100, -.8f));
 			}
 			Camera.main.GetComponent<DisplayInfoHandler>().positionText();
 		}

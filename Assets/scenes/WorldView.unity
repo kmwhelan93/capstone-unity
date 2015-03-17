@@ -866,10 +866,10 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: .300000012
+  near clip plane: .00999999978
   far clip plane: 1000
   field of view: 60
-  orthographic: 1
+  orthographic: 0
   orthographic size: 5
   m_Depth: -1
   m_CullingMask:
@@ -931,7 +931,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9b04430ac86695458677d70faceb38f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hideTextSize: 5.0999999
+  hideTextDepth: -10
 --- !u!114 &562025599
 MonoBehaviour:
   m_ObjectHideFlags: 0
