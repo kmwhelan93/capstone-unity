@@ -24,9 +24,8 @@ public class DisplayInfoHandler : MonoBehaviour {
 			// hide or show text
 			bw.displayText.SetActive(Camera.main.orthographicSize < hideTextSize);
 			Vector3 worldOffset = getBestOffset(bw);
-
-			Vector3 textPosition = Camera.main.WorldToScreenPoint(bw.baseObj.transform.position + worldOffset) - new Vector3(Screen.width / 2, Screen.height / 2, 0);
-			bw.displayText.transform.localPosition = textPosition;
+			Vector3 textPosition = Camera.main.WorldToScreenPoint(bw.baseObj.transform.position + worldOffset);
+			bw.displayText.transform.position = textPosition;
 		}
 
 	}
