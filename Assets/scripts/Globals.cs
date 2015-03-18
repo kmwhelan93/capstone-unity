@@ -9,4 +9,5 @@ public class Globals {
 	public static bool isInLocalView = false;
 	// Update this to pull username from session eventually
 	public static string username = "kmw8sf";
+	public static float baseRadius = .5f;
 }

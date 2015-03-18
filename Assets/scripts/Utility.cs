@@ -24,4 +24,12 @@ public class Utility {
 			angle *= -1;
 		return angle;
 	}
+
+	public static float getAngleRelativeToVertical(Vector3 vector)
+	{
+		float angle = Vector3.Angle (vector, Vector3.up);
+		if (vector.x > 0)
+			angle *= -1;
+		return angle;
+	}
 }

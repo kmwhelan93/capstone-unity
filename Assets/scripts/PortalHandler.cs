@@ -33,26 +33,24 @@ public class PortalHandler : MonoBehaviour {
 		invalidBaseMaterial = (Material)Resources.Load ("materials/base_gray", typeof(Material));
 	}
 
-	public GameObject createPortal(float x1, float y1, float x2, float y2) {
-		GameObject portalObj = (GameObject) Instantiate (portalPrefab, new Vector3((x1+x2)/2.0f, (y1+y2)/2.0f, 0f), Quaternion.identity);
-		scalePortalBetweenPoints (portalObj, x1, y1, x2, y2);
-		rotatePortalBetweenPoints (portalObj, x1, y1, x2, y2);
+	public GameObject createPortal(Vector3 p1, Vector3 p2) {
+		GameObject portalObj = (GameObject) Instantiate (portalPrefab, (p1 + p2) / 2, Quaternion.identity);
+		scalePortalBetweenPoints (portalObj, p1, p2);
+		rotatePortalBetweenPoints (portalObj, p1, p2);
 		return portalObj;
 	}
 	
-	public void scalePortalBetweenPoints(GameObject portalObj, float x1, float y1, float x2, float y2) {
+	public void scalePortalBetweenPoints(GameObject portalObj, Vector3 p1, Vector3 p2) {
 		// Scale portal based on distance between bases
 		Vector3 scale = portalObj.transform.localScale;
-		scale.y = Vector2.Distance(new Vector2(x1,y1), new Vector2(x2,y2)) / 2.0f;
+		scale.y = Vector2.Distance(p1, p2) / 2.0f;
 		portalObj.transform.localScale = scale;
 	}
 	
-	public void rotatePortalBetweenPoints(GameObject portalObj, float x1, float y1, float x2, float y2) {
+	public void rotatePortalBetweenPoints(GameObject portalObj, Vector3 p1, Vector3 p2) {
 		// Rotate portal based on angle between bases
-		float slope = (y2*1.0f-y1)/(x2*1.0f-x1);
-		float angle = Mathf.Rad2Deg*Mathf.Atan(slope) + 90;
 		Vector3 rotate = portalObj.transform.eulerAngles;
-		rotate.z = angle;
+		rotate.z = Utility.getAngleRelativeToVertical (p2 - p1);
 		portalObj.transform.eulerAngles = rotate;
 	}
 
@@ -70,6 +68,12 @@ public class PortalHandler : MonoBehaviour {
 	public void displayPortals() {
 		StartCoroutine(createPortals ());
 	}
+
+	// TODO: move this and change Base's points to Vector2's to make this easier
+	private Vector2 convertBaseCoordsToWorld(Base b)
+	{
+		return new Vector3 ( 2 * Globals.baseRadius * (b.world.x * 3 + b.local.x), Globals.baseRadius * 2 * (b.world.y * 3 + b.local.y), 0);
+	}
 	
 	private IEnumerator createPortals() {
 		WWWForm wwwform = new WWWForm ();
@@ -85,41 +89,23 @@ public class PortalHandler : MonoBehaviour {
 		for (int i = 0; i < portals.Length; i++) {
 			// Locations of the two bases
 			Portal2 portal = portals[i];
-			float x1 = portal.base1.world.x * 3 + portal.base1.local.x;
-			float y1 = portal.base1.world.y * 3 + portal.base1.local.y;
-			float x2 = portal.base2.world.x * 3 + portal.base2.local.x;
-			float y2 = portal.base2.world.y * 3 + portal.base2.local.y;
+			Vector3 p1 = convertBaseCoordsToWorld(portal.base1);
+			Vector3 p2 = convertBaseCoordsToWorld(portal.base2);
+
+			p1 = p1 + (p2 - p1).normalized * Globals.baseRadius;
+			p2 = p2 + (p1 - p2).normalized * Globals.baseRadius;
+			GameObject portalObj;
 			
 			// Create the portal (cylinder prefab)
 			// Start new, user created portals at length corresponging to 1% finished
-			GameObject portalObj;
 			if (portal.timeFinished <= CurrentTime.currentTimeMillis()) {
 				// Portal finished
-				float xTemp = x2*1.0f;
-				float yTemp = y2*1.0f;
-				portalObj = createPortal(x1,y1,xTemp,yTemp);
+				portalObj = createPortal(p1, p2);
 				portalObj.GetComponent<Renderer>().material = portalMaterial;
 			}
 			else {
 				// Portal unfinished
-				// Convert x1,x2,y1,y2 from base centers to points on outer edge of base
-				float slope = (y2*1.0f-y1)/(x2*1.0f-x1);
-				float angle = Mathf.Rad2Deg*Mathf.Atan(slope);
-				GameObject b1 = GenerateWorld.instance.getBaseObj("Base" + portal.base1.baseId);
-				float rB1 = b1.GetComponent<SphereCollider>().radius;
-				GameObject b2 = GenerateWorld.instance.getBaseObj("Base" + portal.base2.baseId);
-				float rB2 = b2.GetComponent<SphereCollider>().radius;
-
-				int offset1 = x1 < x2 ? 0 : 180;
-				int offset2 = x1 < x2 ? 180 : 0;
-				x1 += Mathf.Cos(Mathf.Deg2Rad * (angle + offset1)) * rB1;
-				y1 += Mathf.Sin(Mathf.Deg2Rad * (angle + offset1)) * rB1;
-				x2 += Mathf.Cos(Mathf.Deg2Rad * (angle + offset2)) * rB2;
-				y2 += Mathf.Sin(Mathf.Deg2Rad * (angle + offset2)) * rB2;
-
-				float xTemp = x1 + (x2-x1)*0.01f;
-				float yTemp = y1 + (y2-y1)*0.01f;
-				portalObj = createPortal(x1,y1,xTemp,yTemp);
+				portalObj = createPortal(p1, p1 + (p2- p1)*.01f);
 				portalObj.GetComponent<Renderer>().material = portalBuildingMaterial;
 				currentUnfinishedPortals.Add(portal);
 				currentUnfinishedPortalObjs.Add(portalObj);
@@ -157,29 +143,15 @@ public class PortalHandler : MonoBehaviour {
 			GameObject portalObj = GameObject.Find("Portal" + p.portalId);
 			if (percentFinished < 1.0f) {
 				// Grow portal
-				float x1 = p.base1.world.x * 3 + p.base1.local.x;
-				float y1 = p.base1.world.y * 3 + p.base1.local.y;
-				float x2 = p.base2.world.x * 3 + p.base2.local.x;
-				float y2 = p.base2.world.y * 3 + p.base2.local.y;
+				Vector3 p1 = convertBaseCoordsToWorld(p.base1);
+				Vector3 p2 = convertBaseCoordsToWorld(p.base2);
+				
+				p1 = p1 + (p2 - p1).normalized * Globals.baseRadius;
+				p2 = p2 + (p1 - p2).normalized * Globals.baseRadius;
 
-				float slope = (y2*1.0f-y1)/(x2*1.0f-x1);
-				float angle = Mathf.Rad2Deg*Mathf.Atan(slope);
-				GameObject b1 = GenerateWorld.instance.getBaseObj("Base" + p.base1.baseId);
-				float rB1 = b1.GetComponent<SphereCollider>().radius;
-				GameObject b2 = GenerateWorld.instance.getBaseObj("Base" + p.base2.baseId);
-				float rB2 = b2.GetComponent<SphereCollider>().radius;
-
-				int offset1 = x1 <= x2 ? 0 : 180;
-				int offset2 = x1 <= x2 ? 180 : 0;
-				x1 += Mathf.Cos(Mathf.Deg2Rad * (angle + offset1)) * rB1;
-				y1 += Mathf.Sin(Mathf.Deg2Rad * (angle + offset1)) * rB1;
-				x2 += Mathf.Cos(Mathf.Deg2Rad * (angle + offset2)) * rB2;
-				y2 += Mathf.Sin(Mathf.Deg2Rad * (angle + offset2)) * rB2;
-
-				float xTemp = x1 + (x2-x1)*percentFinished;
-				float yTemp = y1 + (y2-y1)*percentFinished;
-				portalObj.transform.localPosition = new Vector3((x1+xTemp)/2.0f, (y1+yTemp)/2.0f, 0f);
-				scalePortalBetweenPoints(portalObj, x1, y1, xTemp, yTemp);
+				p2 = p1 + (p2-p1)*percentFinished;
+				portalObj.transform.position = (p1 + p2) / 2;
+				scalePortalBetweenPoints(portalObj, p1, p2);
 			}
 			else {
 				// Finish portal
@@ -212,7 +184,7 @@ public class PortalHandler : MonoBehaviour {
 		float y2 = y1 + 0.1f;
 		
 		// Create the portal (cylinder prefab)
-		dragToCreateTempPortal = createPortal (x1, y1, x2, y2);
+		dragToCreateTempPortal = createPortal (new Vector2(x1, y1), new Vector2(x2, y2));
 		dragToCreateTempPortal.name = "tempPortal";
 	}
 	
@@ -224,8 +196,8 @@ public class PortalHandler : MonoBehaviour {
 		
 		// Create the portal (cylinder prefab)
 		dragToCreateTempPortal.transform.localPosition = new Vector3((x1+x2)/2.0f, (y1+y2)/2.0f, 0f);
-		scalePortalBetweenPoints (dragToCreateTempPortal, x1, y1, x2, y2);
-		rotatePortalBetweenPoints (dragToCreateTempPortal, x1, y1, x2, y2);
+		scalePortalBetweenPoints (dragToCreateTempPortal, new Vector2(x1, y1), new Vector2(x2, y2));
+		rotatePortalBetweenPoints (dragToCreateTempPortal, new Vector2(x1, y1), new Vector2(x2, y2));
 		dragToCreateTempPortal.GetComponent<Renderer>().material = onBase ? portalMaterial : dragPortalInvalidMaterial;
 	}
 	

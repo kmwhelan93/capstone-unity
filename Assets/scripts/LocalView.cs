@@ -83,6 +83,7 @@ public class LocalView : MonoBehaviour {
 	{
 		Vector3 finalDirection = Utility.angleToVector(rotateAngle);
 		// offset back for now, may need to change this
+		// TODO: use  base radius here to some extent
 		return lookAtWorld.transform.position + new Vector3(0, 0, -.8f) - finalDirection*.8f;
 	}
 
