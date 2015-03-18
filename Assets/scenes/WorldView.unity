@@ -2048,7 +2048,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7690e00c12a1ee74fb61e8b7dc24917f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  basePrefab: {fileID: 177098, guid: 07e145e6dc25c3d4dbf274b59124f696, type: 2}
+  basePrefab: {fileID: 137954, guid: b1b24370be6332749ac252245446ed23, type: 2}
   textPrefab: {fileID: 189276, guid: 952cbd09a20ff91439d3ef5564ccc594, type: 2}
   materials: []
   canvas: {fileID: 1615884911}

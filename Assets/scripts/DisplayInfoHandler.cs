@@ -37,7 +37,7 @@ public class DisplayInfoHandler : MonoBehaviour {
 		GameObject displayText = bw.displayText;
 		Base b = baseObj.GetComponent<TouchBase>().b;
 		NESWBases nearBases = getNESWBases (b);
-		float radius = baseObj.GetComponent<SphereCollider>().radius;
+		float radius = .5f;
 		if (nearBases.E == null) 
 		{
 			displayText.GetComponent<RectTransform>().pivot = new Vector2(0, .5f);

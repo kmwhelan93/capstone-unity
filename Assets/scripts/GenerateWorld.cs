@@ -98,7 +98,7 @@ public class GenerateWorld : MonoBehaviour {
 		for (int i = 0; i < baseLocs.Length; i++) {
 			int x = baseLocs[i].world.x * 3 + baseLocs[i].local.x;
 			int y = baseLocs[i].world.y * 3 + baseLocs[i].local.y;
-			GameObject baseObj = (GameObject) Instantiate (basePrefab, new Vector3(x, y, 0), Quaternion.identity);
+			GameObject baseObj = (GameObject) Instantiate (basePrefab, new Vector3(x, y, .5f), basePrefab.transform.rotation);
 			baseObj.GetComponent<Renderer>().material = materials[baseLocs[i].colorId % materials.Length];
 			TouchBase tb = baseObj.GetComponent<TouchBase>();
 			tb.b = baseLocs[i];

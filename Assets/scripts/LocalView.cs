@@ -65,17 +65,25 @@ public class LocalView : MonoBehaviour {
 		initialPosition = transform.position;
 		lookAtWorld = world;
 
-		Vector3 finalDirection = Utility.angleToVector(rotateAngle);
-		// offset back for now, may need to change this
-		endPosition = lookAtWorld.transform.position + new Vector3(0, 0, -.52f);
+		moveToNewEndPosition (rotateAngle);
+		inProgress = true;
+		rotateQuickly = false;
+	}
 
-
+	public void moveToNewEndPosition(float angle)
+	{
+		initialPosition = transform.position;
+		endPosition = getEndPosition(angle);
 		// end rotation: 0, 300, 90
 		startTime = Time.time;
 		translateDistance = Vector3.Distance (initialPosition, endPosition);
+	}
 
-		inProgress = true;
-		rotateQuickly = false;
+	public Vector3 getEndPosition(float angle)
+	{
+		Vector3 finalDirection = Utility.angleToVector(rotateAngle);
+		// offset back for now, may need to change this
+		return lookAtWorld.transform.position + new Vector3(0, 0, -.8f) - finalDirection*.8f;
 	}
 
 	void Update () {
@@ -83,9 +91,9 @@ public class LocalView : MonoBehaviour {
 			var distCovered = (Time.time - startTime) * moveSpeed;
 			var fracJourney = distCovered / translateDistance;
 			if (isFirstSwitchToLocalView) {
-				Camera.main.transform.position = Vector3.Slerp (initialPosition, endPosition, fracJourney);
+				Camera.main.transform.position = Vector3.Slerp (initialPosition, endPosition, rotateQuickly ? 1 : fracJourney);
 			} else {
-				Camera.main.transform.position = Vector3.Lerp (initialPosition, endPosition, fracJourney);
+				Camera.main.transform.position = Vector3.Lerp (initialPosition, endPosition, rotateQuickly ? 1 : fracJourney);
 			}
 			if (Globals.isInLocalView) {
 				Vector3 relativePos = currentWorld.transform.position + Utility.angleToVector(rotateAngle)*distanceToLook - transform.position;
