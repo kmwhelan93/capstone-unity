@@ -38,11 +38,17 @@ public class LocalView : MonoBehaviour {
 		if (!Globals.isInLocalView) {
 			empireViewPosition = transform.position;
 			isFirstSwitchToLocalView = true;
+			targetRotatePosition = new Vector3(0, 0, 0);
+			if (world.GetComponent<TouchBase>().b.world.Equals (new Point(0, 0))) {
+				targetRotatePosition = new Vector3(0, 2, 0);
+			}
 		} else {
 			isFirstSwitchToLocalView = false;
 			if (!worldCamera.GetComponent<PortalHandler>().areConnected(currentWorld, world)) {
+				GenerateWorld.instance.message.text = "You can only move along bases connected by portals";
 				return;
 			}
+			targetRotatePosition = (world.transform.position - transform.position).normalized*10 + world.transform.position;
 		}
 		currentWorld = world;
 		Globals.isInLocalView = true;
@@ -58,7 +64,6 @@ public class LocalView : MonoBehaviour {
 		// end rotation: 0, 300, 90
 		startTime = Time.time;
 		translateDistance = Vector3.Distance (initialPosition, endPosition);
-		targetRotatePosition = new Vector3 (0, 0, 0);
 
 		inProgress = true;
 	}
@@ -80,6 +85,7 @@ public class LocalView : MonoBehaviour {
 				transform.localRotation = Quaternion.Slerp (transform.localRotation, empireViewRotation, Time.deltaTime * rotateSmooth);
 				Debug.Log (fracJourney);
 				if (fracJourney > .999) {
+					GetComponent<DisplayInfoHandler>().positionText();
 					inProgress = false;
 				}
 			}
