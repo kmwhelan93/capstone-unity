@@ -4,6 +4,7 @@ using System.Collections;
 public class LocalView : MonoBehaviour {
 	public float moveSpeed = 3;
 	public float rotateSmooth = 2;
+	public GameObject worldCamera;
 
 	private GameObject lookAtWorld;
 
@@ -18,6 +19,8 @@ public class LocalView : MonoBehaviour {
 	private Vector3 targetRotatePosition;
 
 	private bool inProgress = false;
+	private bool isFirstSwitchToLocalView = true;
+	private GameObject currentWorld;
 
 	public void switchToEmpireView()
 	{
@@ -34,7 +37,14 @@ public class LocalView : MonoBehaviour {
 		// Save where the empire view was last if this is our first movement away from empire view
 		if (!Globals.isInLocalView) {
 			empireViewPosition = transform.position;
+			isFirstSwitchToLocalView = true;
+		} else {
+			isFirstSwitchToLocalView = false;
+			if (!worldCamera.GetComponent<PortalHandler>().areConnected(currentWorld, world)) {
+				return;
+			}
 		}
+		currentWorld = world;
 		Globals.isInLocalView = true;
 		// hide the displayInfo text
 		GetComponent<DisplayInfoHandler> ().positionText ();
@@ -53,28 +63,15 @@ public class LocalView : MonoBehaviour {
 		inProgress = true;
 	}
 
-	// Use this for initialization
-	/*
-	void Start() 
-	{
-		Debug.Log (lookAtBase.GetComponent<SphereCollider> ().radius);
-		initialPosition = Camera.main.transform.position;
-		endPosition = lookAtBase.transform.position + new Vector3(0, 0, -.8f);
-		// end rotation: 0, 300, 90
-
-		startTime = Time.time;
-		translateDistance = Vector3.Distance (initialPosition, endPosition);
-		targetRotatePosition = new Vector3 (-1, 0, .8f);
-	}
-	*/
-
-	// Update is called once per frame
-
 	void Update () {
 		if (inProgress) {
 			var distCovered = (Time.time - startTime) * moveSpeed;
 			var fracJourney = distCovered / translateDistance;
-			Camera.main.transform.position = Vector3.Slerp (initialPosition, endPosition, fracJourney);
+			if (isFirstSwitchToLocalView) {
+				Camera.main.transform.position = Vector3.Slerp (initialPosition, endPosition, fracJourney);
+			} else {
+				Camera.main.transform.position = Vector3.Lerp (initialPosition, endPosition, fracJourney);
+			}
 			if (Globals.isInLocalView) {
 				Vector3 relativePos = targetRotatePosition - transform.position;
 				Quaternion rotation = Quaternion.LookRotation (relativePos, new Vector3 (0, 0, -1));

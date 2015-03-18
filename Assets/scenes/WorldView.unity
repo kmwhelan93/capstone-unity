@@ -1161,6 +1161,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 3
   rotateSmooth: 2
+  worldCamera: {fileID: 1307284330}
 --- !u!114 &592901037
 MonoBehaviour:
   m_PrefabParentObject: {fileID: 11457156, guid: 9e41f3037af3bb546854b44c3ad69491,

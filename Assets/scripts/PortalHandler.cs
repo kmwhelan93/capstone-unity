@@ -13,8 +13,9 @@ public class PortalHandler : MonoBehaviour {
 	public Material portalBuildingMaterial;
 	public Material dragPortalInvalidMaterial;
 	public Material invalidBaseMaterial;
-	
-	private GameObject[] currentPortals;
+
+	private Portal2[] portals;
+	private GameObject[] currentPortalObjects;
 	private List<Portal2> currentUnfinishedPortals;
 	private List<GameObject> currentUnfinishedPortalObjs;
 	private GameObject dragToCreateTempPortal;
@@ -56,8 +57,8 @@ public class PortalHandler : MonoBehaviour {
 	}
 
 	public void destroyCurrentPortals() {
-		if (currentPortals != null) {
-			foreach (GameObject p in currentPortals) {
+		if (currentPortalObjects != null) {
+			foreach (GameObject p in currentPortalObjects) {
 				Destroy (p);
 			}
 		}
@@ -76,9 +77,9 @@ public class PortalHandler : MonoBehaviour {
 		// NOTE: Changed this to "new WWW" from "RequestService.makeRequest" to fix a 500 request failed error
 		WWW request = new WWW ("localhost:8080/myapp/world/portals", wwwform);
 		yield return request;
-		Portal2[] portals = JsonMapper.ToObject<Portal2[]> (request.text);
+		portals = JsonMapper.ToObject<Portal2[]> (request.text);
 		
-		currentPortals = new GameObject[portals.Length];
+		currentPortalObjects = new GameObject[portals.Length];
 		currentUnfinishedPortals = new List<Portal2>();
 		currentUnfinishedPortalObjs = new List<GameObject>();
 		for (int i = 0; i < portals.Length; i++) {
@@ -124,7 +125,7 @@ public class PortalHandler : MonoBehaviour {
 				currentUnfinishedPortalObjs.Add(portalObj);
 			}
 			portalObj.name = "Portal" + portal.portalId;
-			currentPortals[i] = portalObj;
+			currentPortalObjects[i] = portalObj;
 		}
 		// TODO (cem6at): Find better location for this
 		if (TroopsHandler.instance.moveTroopsActions.Count == 0) {
@@ -281,10 +282,22 @@ public class PortalHandler : MonoBehaviour {
 	}
 
 	public GameObject getFinishedPortalObj(int pId) {
-		foreach (GameObject p in currentPortals) {
+		foreach (GameObject p in currentPortalObjects) {
 			if (p.name == "Portal" + pId) return p;
 		}
 		return null;
+	}
+
+	public bool areConnected(GameObject baseObj1, GameObject baseObj2)
+	{
+		Base base1 = baseObj1.GetComponent<TouchBase> ().b;
+		Base base2 = baseObj2.GetComponent<TouchBase> ().b;
+		foreach (Portal2 portal in portals) {
+			if ((portal.base1.Equals (base1) && portal.base2.Equals(base2)) || (portal.base1.Equals(base2) && portal.base2.Equals(base1))) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 }
