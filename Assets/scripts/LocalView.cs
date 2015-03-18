@@ -24,6 +24,7 @@ public class LocalView : MonoBehaviour {
 	public float distanceToLook { get; set; }
 
 	public bool rotateQuickly { get; set; }
+	private bool hasReachedDest { get; set; }
 
 	public void switchToEmpireView()
 	{
@@ -34,6 +35,7 @@ public class LocalView : MonoBehaviour {
 		translateDistance = Vector3.Distance (initialPosition, empireViewPosition);
 		inProgress = true;
 		rotateQuickly = false;
+		hasReachedDest = false;
 	}
 
 	public void switchToLocalView(GameObject world)
@@ -68,6 +70,7 @@ public class LocalView : MonoBehaviour {
 		moveToNewEndPosition (rotateAngle);
 		inProgress = true;
 		rotateQuickly = false;
+		hasReachedDest = false;
 	}
 
 	public void moveToNewEndPosition(float angle)
@@ -92,15 +95,15 @@ public class LocalView : MonoBehaviour {
 			var distCovered = (Time.time - startTime) * moveSpeed;
 			var fracJourney = distCovered / translateDistance;
 			if (isFirstSwitchToLocalView) {
-				Camera.main.transform.position = Vector3.Slerp (initialPosition, endPosition, rotateQuickly ? 1 : fracJourney);
+				Camera.main.transform.position = Vector3.Slerp (initialPosition, endPosition, hasReachedDest ? 1 : fracJourney);
 			} else {
-				Camera.main.transform.position = Vector3.Lerp (initialPosition, endPosition, rotateQuickly ? 1 : fracJourney);
+				Camera.main.transform.position = Vector3.Lerp (initialPosition, endPosition, hasReachedDest ? 1 : fracJourney);
 			}
 			if (Globals.isInLocalView) {
 				Vector3 relativePos = currentWorld.transform.position + Utility.angleToVector(rotateAngle)*distanceToLook - transform.position;
 				Quaternion rotation = Quaternion.LookRotation (relativePos, new Vector3 (0, 0, -1));
-				if (Utility.almostEqual(rotation, transform.rotation) && fracJourney > .999f) {
-					// close to destination
+				if (fracJourney > .999f) {
+					hasReachedDest = true;
 				}
 				transform.localRotation = Quaternion.Slerp (transform.localRotation, rotation, Time.deltaTime * (rotateQuickly ? 10000 : rotateSmooth));
 			} else {
