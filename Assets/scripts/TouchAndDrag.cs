@@ -66,16 +66,10 @@ public class TouchAndDrag : MonoBehaviour {
 				if (!Globals.isInLocalView) {
 					GetComponent<Camera>().transform.Translate(deltaToScreenRatio * -1 *speed);
 					Camera.main.GetComponent<DisplayInfoHandler>().positionText();
-				} else {/*
-					Vector3 currentWorldPosition = GetComponent<LocalView>().currentWorld.transform.position;
-					Vector3 currentTargetRotationPosition = GetComponent<LocalView>().targetRotatePosition;
-					Vector3 currentDirection = currentTargetRotationPosition - currentWorldPosition;
-					float angle = Vector3.Angle(new Vector3(0,0,0), currentDirection);
-					angle += deltaPosition.x / Screen.width * 9;
-					Debug.Log (deltaPosition.x / Screen.width * 9);
-					Vector3 newDirection = (Quaternion.AngleAxis(angle, Vector3.forward) * Vector3.right).normalized*10;
-					GetComponent<LocalView>().targetRotatePosition = newDirection;
-					*/
+				} else {
+					GetComponent<LocalView>().rotateQuickly = true;
+					GetComponent<LocalView>().rotateAngle += deltaPosition.x / Screen.width * 90;
+					
 				}
 			}
 		}

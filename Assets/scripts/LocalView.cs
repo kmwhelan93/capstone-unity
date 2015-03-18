@@ -23,6 +23,8 @@ public class LocalView : MonoBehaviour {
 	public GameObject currentWorld { get; set; }
 	public float distanceToLook { get; set; }
 
+	public bool rotateQuickly { get; set; }
+
 	public void switchToEmpireView()
 	{
 		Globals.isInLocalView = false;
@@ -31,6 +33,7 @@ public class LocalView : MonoBehaviour {
 		endPosition = empireViewPosition;
 		translateDistance = Vector3.Distance (initialPosition, empireViewPosition);
 		inProgress = true;
+		rotateQuickly = false;
 	}
 
 	public void switchToLocalView(GameObject world)
@@ -73,6 +76,7 @@ public class LocalView : MonoBehaviour {
 		translateDistance = Vector3.Distance (initialPosition, endPosition);
 
 		inProgress = true;
+		rotateQuickly = false;
 	}
 
 	void Update () {
@@ -88,10 +92,9 @@ public class LocalView : MonoBehaviour {
 				Vector3 relativePos = currentWorld.transform.position + Utility.angleToVector(rotateAngle)*distanceToLook - transform.position;
 				Quaternion rotation = Quaternion.LookRotation (relativePos, new Vector3 (0, 0, -1));
 				if (Utility.almostEqual(rotation, transform.rotation) && fracJourney > .999f) {
-					//inProgress = false;
-					//Debug.Log ("stopped");
+					// close to destination
 				}
-				transform.localRotation = Quaternion.Slerp (transform.localRotation, rotation, Time.deltaTime * rotateSmooth);
+				transform.localRotation = Quaternion.Slerp (transform.localRotation, rotation, Time.deltaTime * (rotateQuickly ? 10000 : rotateSmooth));
 			} else {
 				transform.localRotation = Quaternion.Slerp (transform.localRotation, empireViewRotation, Time.deltaTime * rotateSmooth);
 				if (fracJourney > .999) {
