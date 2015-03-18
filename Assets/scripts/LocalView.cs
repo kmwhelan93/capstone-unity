@@ -16,11 +16,12 @@ public class LocalView : MonoBehaviour {
 	private float startTime;
 	private float translateDistance;
 
-	private Vector3 targetRotatePosition;
+	public float rotateAngle { get; set; }
 
 	private bool inProgress = false;
 	private bool isFirstSwitchToLocalView = true;
-	private GameObject currentWorld;
+	public GameObject currentWorld { get; set; }
+	public float distanceToLook { get; set; }
 
 	public void switchToEmpireView()
 	{
@@ -38,9 +39,13 @@ public class LocalView : MonoBehaviour {
 		if (!Globals.isInLocalView) {
 			empireViewPosition = transform.position;
 			isFirstSwitchToLocalView = true;
-			targetRotatePosition = new Vector3(0, 0, 0);
+
+			rotateAngle = Utility.VectorToAngle(new Vector3(0, 0,0 ) - world.transform.position);
+			distanceToLook = world.transform.position.magnitude;
+			Debug.Log (rotateAngle);
 			if (world.GetComponent<TouchBase>().b.world.Equals (new Point(0, 0))) {
-				targetRotatePosition = new Vector3(0, 2, 0);
+				rotateAngle = 90;
+				distanceToLook = 2;
 			}
 		} else {
 			isFirstSwitchToLocalView = false;
@@ -48,7 +53,8 @@ public class LocalView : MonoBehaviour {
 				GenerateWorld.instance.message.text = "You can only move along bases connected by portals";
 				return;
 			}
-			targetRotatePosition = (world.transform.position - transform.position).normalized*10 + world.transform.position;
+			rotateAngle = Utility.VectorToAngle(world.transform.position - transform.position);
+			distanceToLook = 2;
 		}
 		currentWorld = world;
 		Globals.isInLocalView = true;
@@ -57,7 +63,8 @@ public class LocalView : MonoBehaviour {
 		initialPosition = transform.position;
 		lookAtWorld = world;
 
-		Vector3 finalDirection = (targetRotatePosition - lookAtWorld.transform.position).normalized;
+		Vector3 finalDirection = Utility.angleToVector(rotateAngle);
+		// offset back for now, may need to change this
 		endPosition = lookAtWorld.transform.position + new Vector3(0, 0, -.62f) - finalDirection / 2;
 
 
@@ -78,12 +85,15 @@ public class LocalView : MonoBehaviour {
 				Camera.main.transform.position = Vector3.Lerp (initialPosition, endPosition, fracJourney);
 			}
 			if (Globals.isInLocalView) {
-				Vector3 relativePos = targetRotatePosition - transform.position;
+				Vector3 relativePos = currentWorld.transform.position + Utility.angleToVector(rotateAngle)*distanceToLook - transform.position;
 				Quaternion rotation = Quaternion.LookRotation (relativePos, new Vector3 (0, 0, -1));
+				if (Utility.almostEqual(rotation, transform.rotation) && fracJourney > .999f) {
+					//inProgress = false;
+					//Debug.Log ("stopped");
+				}
 				transform.localRotation = Quaternion.Slerp (transform.localRotation, rotation, Time.deltaTime * rotateSmooth);
 			} else {
 				transform.localRotation = Quaternion.Slerp (transform.localRotation, empireViewRotation, Time.deltaTime * rotateSmooth);
-				Debug.Log (fracJourney);
 				if (fracJourney > .999) {
 					GetComponent<DisplayInfoHandler>().positionText();
 					inProgress = false;
