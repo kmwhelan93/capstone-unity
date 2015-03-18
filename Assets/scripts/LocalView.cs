@@ -45,10 +45,9 @@ public class LocalView : MonoBehaviour {
 
 			rotateAngle = Utility.VectorToAngle(new Vector3(0, 0,0 ) - world.transform.position);
 			distanceToLook = world.transform.position.magnitude;
-			Debug.Log (rotateAngle);
 			if (world.GetComponent<TouchBase>().b.world.Equals (new Point(0, 0))) {
 				rotateAngle = 90;
-				distanceToLook = 2;
+				distanceToLook = 4;
 			}
 		} else {
 			isFirstSwitchToLocalView = false;
@@ -57,7 +56,7 @@ public class LocalView : MonoBehaviour {
 				return;
 			}
 			rotateAngle = Utility.VectorToAngle(world.transform.position - transform.position);
-			distanceToLook = 2;
+			distanceToLook = 4;
 		}
 		currentWorld = world;
 		Globals.isInLocalView = true;
@@ -68,7 +67,7 @@ public class LocalView : MonoBehaviour {
 
 		Vector3 finalDirection = Utility.angleToVector(rotateAngle);
 		// offset back for now, may need to change this
-		endPosition = lookAtWorld.transform.position + new Vector3(0, 0, -.62f) - finalDirection / 2;
+		endPosition = lookAtWorld.transform.position + new Vector3(0, 0, -.52f);
 
 
 		// end rotation: 0, 300, 90
