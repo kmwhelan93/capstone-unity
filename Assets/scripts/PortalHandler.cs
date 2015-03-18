@@ -238,6 +238,9 @@ public class PortalHandler : MonoBehaviour {
 		if (!GenerateWorld.instance.secondClick) {
 			return true;
 		} else {
+			if (validBaseIds == null) {
+				return false;
+			}
 			foreach (int bId in validBaseIds) {
 				if (bId == baseId) {
 					return true;
