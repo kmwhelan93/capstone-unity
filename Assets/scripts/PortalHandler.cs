@@ -69,12 +69,6 @@ public class PortalHandler : MonoBehaviour {
 		StartCoroutine(createPortals ());
 	}
 
-	// TODO: move this and change Base's points to Vector2's to make this easier
-	private Vector2 convertBaseCoordsToWorld(Base b)
-	{
-		return new Vector3 ( 2 * Globals.baseRadius * (b.world.x * 3 + b.local.x), Globals.baseRadius * 2 * (b.world.y * 3 + b.local.y), 0);
-	}
-	
 	private IEnumerator createPortals() {
 		WWWForm wwwform = new WWWForm ();
 		wwwform.AddField ("username", "kmw8sf");
@@ -89,8 +83,8 @@ public class PortalHandler : MonoBehaviour {
 		for (int i = 0; i < portals.Length; i++) {
 			// Locations of the two bases
 			Portal2 portal = portals[i];
-			Vector3 p1 = convertBaseCoordsToWorld(portal.base1);
-			Vector3 p2 = convertBaseCoordsToWorld(portal.base2);
+			Vector3 p1 = portal.base1.convertBaseCoordsToWorld();
+			Vector3 p2 = portal.base2.convertBaseCoordsToWorld();
 
 			p1 = p1 + (p2 - p1).normalized * Globals.baseRadius;
 			p2 = p2 + (p1 - p2).normalized * Globals.baseRadius;
@@ -143,8 +137,8 @@ public class PortalHandler : MonoBehaviour {
 			GameObject portalObj = GameObject.Find("Portal" + p.portalId);
 			if (percentFinished < 1.0f) {
 				// Grow portal
-				Vector3 p1 = convertBaseCoordsToWorld(p.base1);
-				Vector3 p2 = convertBaseCoordsToWorld(p.base2);
+				Vector3 p1 = p.base1.convertBaseCoordsToWorld();
+				Vector3 p2 = p.base2.convertBaseCoordsToWorld();
 				
 				p1 = p1 + (p2 - p1).normalized * Globals.baseRadius;
 				p2 = p2 + (p1 - p2).normalized * Globals.baseRadius;
@@ -177,27 +171,23 @@ public class PortalHandler : MonoBehaviour {
 		return (((curTime - startTime) / (buildTimeMilli*1.0f))*1.0f);
 	}
 
-	public void createDragPortal(Vector2 pos) {
-		float x1 = pos.x * 3 + pos.x;
-		float y1 = pos.y * 3 + pos.y;
-		float x2 = x1 + 0.1f;
-		float y2 = y1 + 0.1f;
+	public void createDragPortal(Base b) {
+		Vector3 startPos = b.convertBaseCoordsToWorld ();
+		Vector3 endPos = startPos + new Vector3 (.1f, .1f, 0);
 		
 		// Create the portal (cylinder prefab)
-		dragToCreateTempPortal = createPortal (new Vector2(x1, y1), new Vector2(x2, y2));
+		dragToCreateTempPortal = createPortal (startPos, endPos);
 		dragToCreateTempPortal.name = "tempPortal";
 	}
 	
 	public void updateDragPortal(Vector2 pos, bool onBase) {
-		float x1 = GenerateWorld.instance.lastBase.world.x * 3 + GenerateWorld.instance.lastBase.local.x;
-		float y1 = GenerateWorld.instance.lastBase.world.y * 3 + GenerateWorld.instance.lastBase.local.y;
-		float x2 = pos.x;
-		float y2 = pos.y;
+		Vector3 startPos = GenerateWorld.instance.lastBase.convertBaseCoordsToWorld();
+		Vector3 endPos = pos;
 		
 		// Create the portal (cylinder prefab)
-		dragToCreateTempPortal.transform.localPosition = new Vector3((x1+x2)/2.0f, (y1+y2)/2.0f, 0f);
-		scalePortalBetweenPoints (dragToCreateTempPortal, new Vector2(x1, y1), new Vector2(x2, y2));
-		rotatePortalBetweenPoints (dragToCreateTempPortal, new Vector2(x1, y1), new Vector2(x2, y2));
+		dragToCreateTempPortal.transform.position = (startPos + endPos) / 2;
+		scalePortalBetweenPoints (dragToCreateTempPortal, startPos, endPos);
+		rotatePortalBetweenPoints (dragToCreateTempPortal, startPos, endPos);
 		dragToCreateTempPortal.GetComponent<Renderer>().material = onBase ? portalMaterial : dragPortalInvalidMaterial;
 	}
 	

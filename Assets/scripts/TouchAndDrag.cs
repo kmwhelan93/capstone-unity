@@ -12,13 +12,6 @@ public class TouchAndDrag : MonoBehaviour {
 			Touch t = Input.GetTouch (0);
 			// If in AddPortal state and first touch is on a base
 			if (Globals.opState == OpState.AddPortal && GenerateWorld.instance.secondClick) {
-				// Drag to create portal
-				if (t.phase == TouchPhase.Began) {
-					// Create temp portal - red
-					PortalHandler.instance.createDragPortal(t.position);
-					// Gray out invalid bases
-					PortalHandler.instance.grayOutInvalidBases(GenerateWorld.instance.lastBase.baseId);
-				}
 				if (t.phase == TouchPhase.Moved) {
 					// Update temp portal
 					// If touch location is on base, temp portal = purple to signify that portal is valid
@@ -39,8 +32,8 @@ public class TouchAndDrag : MonoBehaviour {
 						if (bId == GenerateWorld.instance.lastBase.baseId) {
 							// Portal created by touching each base separately, waiting for second touch
 							PortalHandler.instance.deleteDragPortal();
-							GenerateWorld.instance.message.text = "Now click which base to attach portal to";
-							GenerateWorld.instance.secondClick = true;
+							GenerateWorld.instance.message.text = "A portal must connect two different bases";
+							GenerateWorld.instance.secondClick = false;
 						}
 						else if (PortalHandler.instance.validBase(bId)) {
 							//if (bId != -1 && bId != GenerateWorld.instance.lastBase.baseId) {

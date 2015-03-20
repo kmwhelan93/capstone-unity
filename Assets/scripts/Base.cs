@@ -29,6 +29,11 @@ public class Base {
 			return baseId.GetHashCode ();
 		}
 	}
+
+	public Vector3 convertBaseCoordsToWorld()
+	{
+		return new Vector3 ( 2 * Globals.baseRadius * (world.x * 5 + local.x), Globals.baseRadius * 2 * (world.y * 5 + local.y), 0);
+	}
 	
 
 }

@@ -17,7 +17,9 @@ public class GenerateWorld : MonoBehaviour {
 	private GameObject[] currentDisplayText;
 	public GameObject canvas;
 
+	// TODO: investigate what this is used for
 	public Base lastBase;
+	// TODO: investigate whether this is necessary
 	public bool secondClick;
 	public UnityEngine.UI.Text message;
 	public GameObject numTroopsInputObject;
@@ -96,9 +98,10 @@ public class GenerateWorld : MonoBehaviour {
 		currentDisplayText = new GameObject[baseLocs.Length];
 		List<BaseWrapper> baseWrappers = new List<BaseWrapper> ();
 		for (int i = 0; i < baseLocs.Length; i++) {
-			int x = baseLocs[i].world.x * 3 + baseLocs[i].local.x;
-			int y = baseLocs[i].world.y * 3 + baseLocs[i].local.y;
-			GameObject baseObj = (GameObject) Instantiate (basePrefab, new Vector3(x, y, .5f), basePrefab.transform.rotation);
+			Vector3 loc = baseLocs[i].convertBaseCoordsToWorld();
+			// adjust for base prefab
+			loc = loc + new Vector3(0, 0, .5f);
+			GameObject baseObj = (GameObject) Instantiate (basePrefab, loc, basePrefab.transform.rotation);
 			baseObj.GetComponent<Renderer>().material = materials[baseLocs[i].colorId % materials.Length];
 			TouchBase tb = baseObj.GetComponent<TouchBase>();
 			tb.b = baseLocs[i];
