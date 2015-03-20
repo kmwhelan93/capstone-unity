@@ -78,6 +78,7 @@ public class GenerateWorld : MonoBehaviour {
 		Base[] bases = JsonMapper.ToObject<Base[]>(request.text);
 		displayBases (bases);
 		PortalHandler.instance.displayPortals ();
+		WormHoleHandler.instance.loadWormHoles ();
 		yield break;
 	}
 

@@ -34,6 +34,18 @@ public class Base {
 	{
 		return new Vector3 ( 2 * Globals.baseRadius * (world.x * 5 + local.x), Globals.baseRadius * 2 * (world.y * 5 + local.y), 0);
 	}
+
+	public GameObject getGameObject()
+	{
+		foreach (GameObject baseObj in GenerateWorld.instance.getCurrentBases()) {
+			if (baseObj.GetComponent<TouchBase>().b.Equals(this))
+			{
+				return baseObj;
+			}
+		}
+		Debug.Log ("Couldn't find matching base gameobject!");
+		return null;
+	}
 	
 
 }
