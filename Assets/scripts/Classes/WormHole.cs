@@ -10,7 +10,7 @@ public class WormHole {
 	public Vector3 getWorldCoords()
 	{
 		Vector3 offset = new Vector3 (relativeCoords.x, relativeCoords.y, 0).normalized * .65f;
-		offset = offset + new Vector3 (0, 0, -.5f - Globals.baseRadius);
+		offset = offset + new Vector3 (0, 0, -.6f - Globals.baseRadius);
 		Vector3 basePosition = b.getGameObject().transform.position;
 		return basePosition + offset;
 	}
