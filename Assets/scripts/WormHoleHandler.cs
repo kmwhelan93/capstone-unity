@@ -33,6 +33,7 @@ public class WormHoleHandler : MonoBehaviour {
 		WWW request = new WWW ("localhost:8080/myapp/world/wormholes", wwwform);
 		yield return request;
 		WormHole[] wormholes = JsonMapper.ToObject<WormHole[]>(request.text);
+		destroyWormHoleObjects ();
 		currentWormHoleObjects = new GameObject[wormholes.Length];
 
 		for (int i = 0; i < wormholes.Length; i++) {
@@ -47,6 +48,15 @@ public class WormHoleHandler : MonoBehaviour {
 		Vector3 topMiddleOfBase = baseObj.transform.position + new Vector3 (0, 0, -Globals.baseRadius);
 		Vector3 direction = topMiddleOfBase - wormhole.transform.position;
 		wormhole.transform.rotation = Quaternion.LookRotation(direction);
+	}
+
+	public void destroyWormHoleObjects() 
+	{
+		if (currentWormHoleObjects == null)
+			return;
+		foreach (GameObject go in currentWormHoleObjects) {
+			Destroy (go);
+		}
 	}
 
 }
