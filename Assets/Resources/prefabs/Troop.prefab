@@ -294,6 +294,8 @@ GameObject:
   m_Component:
   - 4: {fileID: 402576}
   - 111: {fileID: 11128508}
+  - 95: {fileID: 9502368}
+  - 114: {fileID: 11479056}
   m_Layer: 0
   m_Name: Troop
   m_TagString: Untagged
@@ -930,6 +932,23 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 151488}
   m_Mesh: {fileID: 4300000, guid: fc1d616bf97b781488a980e7f233f363, type: 3}
+--- !u!95 &9502368
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 150806}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: fc1d616bf97b781488a980e7f233f363, type: 3}
+  m_Controller: {fileID: 9100000, guid: 16b4fd16c59cbe6409e7865a97dd4e32, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!111 &11128508
 Animation:
   m_ObjectHideFlags: 1
@@ -953,6 +972,17 @@ Animation:
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0
   m_CullingType: 1
+--- !u!114 &11479056
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 150806}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 773899aa9975f6c41bb092b0f2c35d96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!137 &13797542
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1
