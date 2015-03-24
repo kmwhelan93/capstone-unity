@@ -75,17 +75,15 @@ public class TroopsHandler : MonoBehaviour {
 		}
 	}
 	
-	public void startMoveTroopsAction(Base b) {
-		StartCoroutine ("initMoveTroopsAction", b);
+	public void startMoveTroopsAction(Base b, int numTroops) {
+		StartCoroutine (initMoveTroopsAction(b, numTroops));
 	}
 	
-	IEnumerator initMoveTroopsAction(Base b) {
+	IEnumerator initMoveTroopsAction(Base b, int numTroops) {
 		WWWForm wwwform = new WWWForm ();
 		wwwform.AddField ("username", b.username);
 		wwwform.AddField ("baseId1", GenerateWorld.instance.lastBase.baseId);
 		wwwform.AddField ("baseId2", b.baseId);
-		int numTroops = GenerateWorld.instance.numTroopsInputField.text.Equals ("") ? 
-			1 : int.Parse (GenerateWorld.instance.numTroopsInputField.text);
 		wwwform.AddField ("numTroops", numTroops);
 		WWW request = new WWW ("localhost:8080/myapp/world/troops/startMove", wwwform);
 		yield return request;
@@ -155,7 +153,11 @@ public class TroopsHandler : MonoBehaviour {
 	}
 	
 	public void onCheckButtonClickAddTroops() {
-		addTroops (GenerateWorld.instance.lastBase, (int)GenerateWorld.instance.slider.value);
+		if (Globals.opState == OpState.AddTroops) {
+			addTroops (GenerateWorld.instance.lastBase, (int)GenerateWorld.instance.slider.value);
+		} else if (Globals.opState == OpState.MoveTroops) {
+			instance.startMoveTroopsAction (GenerateWorld.instance.secondBase, (int)GenerateWorld.instance.slider.value);
+		}
 	}
 
 	public void addTroops(Base b, int numTroops) {

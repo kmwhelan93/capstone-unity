@@ -21,19 +21,22 @@ public class TouchBase : MonoBehaviour {
 			PortalHandler.instance.grayOutInvalidBases (b.baseId);
 		} else if (Globals.opState == OpState.MoveTroops) {
 			Debug.Log ("base touched to move troops");
+			GenerateWorld.instance.message.text = "Select bases";
 			if (!GenerateWorld.instance.secondClick) {
 				print ("waiting for second click");
-				GenerateWorld.instance.message.text = "How many?            Then click base to send them to.";
-				GenerateWorld.instance.numTroopsInputObject.SetActive (true);
 				GenerateWorld.instance.lastBase = b;
 				GenerateWorld.instance.secondClick = true;
 			} else {
 				print ("got second click, moving troops");
 				GenerateWorld.instance.secondClick = false;
-				GenerateWorld.instance.numTroopsInputObject.SetActive (false);
-				GenerateWorld.instance.message.text = "Moving units...";
 				if (GenerateWorld.instance.lastBase.baseId != b.baseId) {
-					TroopsHandler.instance.startMoveTroopsAction (b);
+					GenerateWorld.instance.message.text = "How many?";
+					GenerateWorld.instance.sliderObject.SetActive(true);
+					GenerateWorld.instance.sliderConfirmButton.SetActive(true);
+					GenerateWorld.instance.slider.minValue = 0;
+					GenerateWorld.instance.slider.maxValue = GenerateWorld.instance.lastBase.units;
+					GenerateWorld.instance.sliderValue.text = "0";
+					GenerateWorld.instance.secondBase = b;
 				} else {
 					Debug.Log ("Sorry! Can't move units from a base to itself");
 				}

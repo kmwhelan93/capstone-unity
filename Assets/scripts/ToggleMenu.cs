@@ -59,10 +59,12 @@ public class ToggleMenu : MonoBehaviour {
 		if (isOn) {
 			Globals.opState = OpState.MoveTroops;
 			GenerateWorld.instance.message.text = "Click a base with units";
-			//GenerateWorld.instance.slider.enabled = true;
 		} else {
 			Globals.opState = OpState.None;
+			GenerateWorld.instance.sliderObject.SetActive(false);
+			GenerateWorld.instance.sliderConfirmButton.SetActive(false);
 			GenerateWorld.instance.message.text = "";
+			GenerateWorld.instance.sliderValue.text = "";
 		}
 	}
 

@@ -20,6 +20,8 @@ public class GenerateWorld : MonoBehaviour {
 
 	// TODO: investigate what this is used for
 	public Base lastBase;
+	// TODO (cem6at): do this a better way
+	public Base secondBase;
 	// TODO: investigate whether this is necessary
 	public bool secondClick;
 	public UnityEngine.UI.Text message;
@@ -28,7 +30,6 @@ public class GenerateWorld : MonoBehaviour {
 	public Slider slider; // for num troops input
 	public GameObject sliderConfirmButton;
 	public UnityEngine.UI.Text sliderValue;
-	public UnityEngine.UI.InputField numTroopsInputField;
 	
 	void Awake() {
 		instance = this;
@@ -38,7 +39,6 @@ public class GenerateWorld : MonoBehaviour {
 	void Start () {
 		message.text = "";
 		sliderValue.text = "";
-		numTroopsInputObject.SetActive(false);
 		sliderObject.SetActive(false);
 		sliderConfirmButton.SetActive(false);
 		Globals.portalBuildTimeInMins = 1;
@@ -46,8 +46,6 @@ public class GenerateWorld : MonoBehaviour {
 		loadResources ();
 		// Create bases and portals
 		resetWorldView ();
-		// Restart any troop transfers in progress
-		//TroopsHandler.instance.restartMoveTroops ();
 	}
 
 	// Update is called once per frame
