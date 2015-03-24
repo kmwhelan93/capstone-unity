@@ -4,7 +4,7 @@ using System.Collections;
 public class TouchAndDrag : MonoBehaviour {
 	public float speed;
 	public Vector2 initPosition;
-	
+
 	// Update is called once per frame
 	void Update () {
 		if (Input.touchCount == 1)
@@ -25,6 +25,7 @@ public class TouchAndDrag : MonoBehaviour {
 					// Create portal if on base
 					int bId = getIdOfBaseAtPos(t.position);
 					if (bId == -1) {
+						// End location not on base
 						PortalHandler.instance.restoreInvalidBaseColors();
 						PortalHandler.instance.deleteDragPortal();
 					}
@@ -36,7 +37,6 @@ public class TouchAndDrag : MonoBehaviour {
 							GenerateWorld.instance.secondClick = false;
 						}
 						else if (PortalHandler.instance.validBase(bId)) {
-							//if (bId != -1 && bId != GenerateWorld.instance.lastBase.baseId) {
 							// Portal created by dragging
 							// restore invalid base colors
 							PortalHandler.instance.restoreInvalidBaseColors();
@@ -102,9 +102,12 @@ public class TouchAndDrag : MonoBehaviour {
 		wwwform.AddField ("baseId2", base2Id);
 		long finishTime = CurrentTime.currentTimeMillis() + (long)(Globals.portalBuildTimeInMins * 60000.0);
 		wwwform.AddField ("timeFinished", finishTime + "");
+		wwwform.AddField ("cost", PortalHandler.instance.costPerPortal);
 		WWW request = new WWW ("localhost:8080/myapp/world/portals/create", wwwform);
 		yield return request;
 		GenerateWorld.instance.message.text = request.text;
 		GenerateWorld.instance.resetWorldView ();
+		UpdateGold.instance.syncGold ();
+		DisplayTransactionHandler.instance.setCostText(PortalHandler.instance.costPerPortal);
 	}
 }

@@ -7,6 +7,7 @@ public class TroopsHandler : MonoBehaviour {
 	
 	public static TroopsHandler instance;
 	public List<MoveTroopsAction> moveTroopsActions;
+	public int costPerUnit;
 	
 	public class MoveTroopsAction {
 		public GameObject b1 { get; set; }
@@ -151,5 +152,25 @@ public class TroopsHandler : MonoBehaviour {
 			
 			moveTroopsActions.Add (a);
 		}
+	}
+
+	public void addTroops(Base b, int numTroops) {
+		StartCoroutine (buyTroops(b, numTroops));
+	}
+
+	IEnumerator buyTroops(Base b, int numTroops) {
+		WWWForm wwwform = new WWWForm ();
+		wwwform.AddField ("username", Globals.username);
+		wwwform.AddField ("baseId", b.baseId);
+		wwwform.AddField ("numTroops", numTroops);
+		wwwform.AddField ("costPerTroop", costPerUnit);
+		WWW request = new WWW ("localhost:8080/myapp/world/troops/buy", wwwform);
+		yield return request;
+		GameObject b1 = GenerateWorld.instance.getBaseObj("Base" + b.baseId);
+		b1.GetComponent<TouchBase> ().b.units += numTroops;
+		Camera.main.GetComponent<DisplayInfoHandler> ().updateContent ();
+		// database gold entry undated with troops/buy request, this syncs frontend to new value
+		UpdateGold.instance.syncGold ();
+		DisplayTransactionHandler.instance.setCostText(numTroops * costPerUnit);
 	}
 }

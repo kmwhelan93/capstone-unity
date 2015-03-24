@@ -45,7 +45,7 @@ public class ToggleMenu : MonoBehaviour {
 	public void onNewTroopsToggle(bool isOn) {
 		if (isOn) {
 			Globals.opState = OpState.AddTroops;
-			GenerateWorld.instance.message.text = "Click a base with units";
+			GenerateWorld.instance.message.text = "Click a base to add a unit";
 		} else {
 			Globals.opState = OpState.None;
 			GenerateWorld.instance.message.text = "";

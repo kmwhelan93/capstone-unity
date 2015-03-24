@@ -14,11 +14,11 @@ public class TouchBase : MonoBehaviour {
 		} else if (Globals.opState == OpState.AddPortal && !GenerateWorld.instance.secondClick) {
 			Debug.Log ("base touched to add portal");
 			// Create temp portal - red
-			PortalHandler.instance.createDragPortal(b);
+			PortalHandler.instance.createDragPortal (b);
 			GenerateWorld.instance.lastBase = b;
 			GenerateWorld.instance.secondClick = true;
 			// Gray out invalid bases
-			PortalHandler.instance.grayOutInvalidBases(b.baseId);
+			PortalHandler.instance.grayOutInvalidBases (b.baseId);
 		} else if (Globals.opState == OpState.MoveTroops) {
 			Debug.Log ("base touched to move troops");
 			if (!GenerateWorld.instance.secondClick) {
@@ -39,7 +39,9 @@ public class TouchBase : MonoBehaviour {
 				}
 			}
 		} else if (Globals.opState == OpState.ZoomBase) {
-			Camera.main.GetComponent<LocalView>().switchToLocalView(gameObject);
+			Camera.main.GetComponent<LocalView> ().switchToLocalView (gameObject);
+		} else if (Globals.opState == OpState.AddTroops) {
+			TroopsHandler.instance.addTroops(b, 1);
 		}
 	}
 	

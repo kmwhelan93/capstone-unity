@@ -21,6 +21,8 @@ public class PortalHandler : MonoBehaviour {
 	private GameObject dragToCreateTempPortal;
 	private int[] validBaseIds; // For graying out bases during portal creation
 
+	public int costPerPortal;
+
 	void Start() {
 		instance = this;
 		loadResources ();
