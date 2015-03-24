@@ -41,7 +41,13 @@ public class TouchBase : MonoBehaviour {
 		} else if (Globals.opState == OpState.ZoomBase) {
 			Camera.main.GetComponent<LocalView> ().switchToLocalView (gameObject);
 		} else if (Globals.opState == OpState.AddTroops) {
-			TroopsHandler.instance.addTroops(b, 1);
+			GenerateWorld.instance.message.text = "Waiting for check button click";
+			GenerateWorld.instance.lastBase = b;
+			GenerateWorld.instance.sliderObject.SetActive(true);
+			GenerateWorld.instance.sliderConfirmButton.SetActive(true);
+			GenerateWorld.instance.slider.minValue = 0;
+			GenerateWorld.instance.slider.maxValue = 100;
+			GenerateWorld.instance.sliderValue.text = "0";
 		}
 	}
 	

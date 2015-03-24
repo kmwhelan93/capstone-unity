@@ -153,6 +153,10 @@ public class TroopsHandler : MonoBehaviour {
 			moveTroopsActions.Add (a);
 		}
 	}
+	
+	public void onCheckButtonClickAddTroops() {
+		addTroops (GenerateWorld.instance.lastBase, (int)GenerateWorld.instance.slider.value);
+	}
 
 	public void addTroops(Base b, int numTroops) {
 		StartCoroutine (buyTroops(b, numTroops));
@@ -172,5 +176,9 @@ public class TroopsHandler : MonoBehaviour {
 		// database gold entry undated with troops/buy request, this syncs frontend to new value
 		UpdateGold.instance.syncGold ();
 		DisplayTransactionHandler.instance.setCostText(numTroops * costPerUnit);
+	}
+	
+	public void displaySliderValue(float f) {
+		GenerateWorld.instance.sliderValue.text = (int)f + "";
 	}
 }

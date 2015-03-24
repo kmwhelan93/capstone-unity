@@ -3,6 +3,7 @@ using System;
 using LitJson;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class GenerateWorld : MonoBehaviour {
 
@@ -23,6 +24,10 @@ public class GenerateWorld : MonoBehaviour {
 	public bool secondClick;
 	public UnityEngine.UI.Text message;
 	public GameObject numTroopsInputObject;
+	public GameObject sliderObject;
+	public Slider slider; // for num troops input
+	public GameObject sliderConfirmButton;
+	public UnityEngine.UI.Text sliderValue;
 	public UnityEngine.UI.InputField numTroopsInputField;
 	
 	void Awake() {
@@ -32,7 +37,10 @@ public class GenerateWorld : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		message.text = "";
+		sliderValue.text = "";
 		numTroopsInputObject.SetActive(false);
+		sliderObject.SetActive(false);
+		sliderConfirmButton.SetActive(false);
 		Globals.portalBuildTimeInMins = 1;
 		// load resources
 		loadResources ();
