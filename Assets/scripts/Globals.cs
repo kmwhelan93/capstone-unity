@@ -10,4 +10,5 @@ public class Globals {
 	// Update this to pull username from session eventually
 	public static string username = "kmw8sf";
 	public static float baseRadius = .5f;
+	public static float timeCostPerTroop = 0.5f; // in seconds
 }

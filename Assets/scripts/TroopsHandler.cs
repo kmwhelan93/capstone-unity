@@ -7,6 +7,7 @@ public class TroopsHandler : MonoBehaviour {
 	
 	public static TroopsHandler instance;
 	public List<MoveTroopsAction> moveTroopsActions;
+	public List<AddTroopsAction> addTroopsActions;
 	public int costPerUnit;
 	
 	public class MoveTroopsAction {
@@ -34,14 +35,32 @@ public class TroopsHandler : MonoBehaviour {
 		}
 	}
 	
+	public class AddTroopsAction {
+		public Base b { get; set; }
+		public GameObject bObj { get; set; }
+		public float overflowTroopsAdded { get; set; }
+		
+		public AddTroopsAction(Base b1, GameObject bObject) {
+			b = b1;
+			bObj = bObject;
+			overflowTroopsAdded = 0f;
+		}
+	}
+	
 	// Use this for initialization
 	void Start () {
 		instance = this;
 		moveTroopsActions = new List<MoveTroopsAction> ();
+		addTroopsActions = new List<AddTroopsAction>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		updateMoveTroops();
+		updateAddTroops();
+	}
+	
+	public void updateMoveTroops() {
 		if (moveTroopsActions.Count > 0) {
 			List<MoveTroopsAction> toRemove = new List<MoveTroopsAction> ();
 			foreach (MoveTroopsAction a in moveTroopsActions) {
@@ -71,6 +90,37 @@ public class TroopsHandler : MonoBehaviour {
 			Camera.main.GetComponent<DisplayInfoHandler> ().updateContent ();
 			foreach (MoveTroopsAction p in toRemove) {
 				moveTroopsActions.Remove(p);
+			}
+		}
+	}
+	
+	public void updateAddTroops() {
+		if (addTroopsActions.Count > 0) {
+			List<AddTroopsAction> toRemove = new List<AddTroopsAction> ();
+			foreach (AddTroopsAction a in addTroopsActions) {
+				// If more troops to move
+				if (Mathf.Abs(a.b.unitsToAdd) > 0) {
+					// Update values based on Time.DeltaTime
+					//print ("*: " + Time.deltaTime * Globals.timeCostPerTroop);
+					a.overflowTroopsAdded += Time.deltaTime * Globals.timeCostPerTroop;
+					int wholeUnitsAdded = (int)Mathf.Floor(a.overflowTroopsAdded);
+					if (wholeUnitsAdded > 0) {
+						// Update base text wrappers
+						a.bObj.GetComponent<TouchBase>().b.units += wholeUnitsAdded;
+						a.overflowTroopsAdded -= Mathf.Abs(wholeUnitsAdded);
+						a.b.unitsToAdd -= wholeUnitsAdded;
+					}
+				} else {
+					// Remove action from list
+					toRemove.Add(a);
+					// Restore base color (will be added later)
+					// Final db sync
+					StartCoroutine("finishAddTroops", a);
+				}
+			}
+			Camera.main.GetComponent<DisplayInfoHandler> ().updateContent ();
+			foreach (AddTroopsAction p in toRemove) {
+				addTroopsActions.Remove(p);
 			}
 		}
 	}
@@ -158,26 +208,69 @@ public class TroopsHandler : MonoBehaviour {
 		} else if (Globals.opState == OpState.MoveTroops) {
 			instance.startMoveTroopsAction (GenerateWorld.instance.secondBase, (int)GenerateWorld.instance.slider.value);
 		}
+		GenerateWorld.instance.sliderValue.text = "";
+		GenerateWorld.instance.sliderObject.SetActive(false);
+		GenerateWorld.instance.sliderConfirmButton.SetActive(false);
 	}
 
 	public void addTroops(Base b, int numTroops) {
-		StartCoroutine (buyTroops(b, numTroops));
+		StartCoroutine (initBuyTroops(b, numTroops));
 	}
 
-	IEnumerator buyTroops(Base b, int numTroops) {
+	IEnumerator initBuyTroops(Base b, int numTroops) {
 		WWWForm wwwform = new WWWForm ();
 		wwwform.AddField ("username", Globals.username);
 		wwwform.AddField ("baseId", b.baseId);
 		wwwform.AddField ("numTroops", numTroops);
 		wwwform.AddField ("costPerTroop", costPerUnit);
-		WWW request = new WWW ("localhost:8080/myapp/world/troops/buy", wwwform);
+		print ("nt: " + numTroops);
+		WWW request = new WWW ("localhost:8080/myapp/world/troops/startBuy", wwwform);
 		yield return request;
 		GameObject b1 = GenerateWorld.instance.getBaseObj("Base" + b.baseId);
-		b1.GetComponent<TouchBase> ().b.units += numTroops;
-		Camera.main.GetComponent<DisplayInfoHandler> ().updateContent ();
+		b.unitsToAdd = numTroops;
+		addTroopsActions.Add(new AddTroopsAction(b, b1));
 		// database gold entry undated with troops/buy request, this syncs frontend to new value
 		UpdateGold.instance.syncGold ();
 		DisplayTransactionHandler.instance.setCostText(numTroops * costPerUnit);
+	}
+	
+	IEnumerator finishAddTroops(AddTroopsAction a) {
+		WWWForm wwwform = new WWWForm ();
+		wwwform.AddField ("username", Globals.username);
+		wwwform.AddField ("baseId", a.b.baseId);
+		WWW request = new WWW ("localhost:8080/myapp/world/troops/finishBuy", wwwform);
+		yield return request;	
+	}
+	
+	public void restartAddTroops() {
+		// START ANY ADDS CURRENTLY IN PROGRESS - has to be done after portals are created, so this is called in PortalHandler
+		StartCoroutine ("restartAddTroopsActions");
+	}
+	
+	IEnumerator restartAddTroopsActions() {
+		WWWForm wwwform = new WWWForm ();
+		wwwform.AddField ("username", Globals.username);
+		WWW request = new WWW ("localhost:8080/myapp/world/troops/restartAdd", wwwform);
+		yield return request;
+		Base[] bases = JsonMapper.ToObject<Base[]>(request.text);
+		foreach (Base b in bases) {
+			GameObject b1 = GenerateWorld.instance.getBaseObj("Base" + b.baseId);
+			AddTroopsAction a = new AddTroopsAction(b, b1);		
+			// Update values based on Time.DeltaTime
+			a.overflowTroopsAdded += ((CurrentTime.currentTimeMillis() - b.lastUpdated) / 1000) * Globals.timeCostPerTroop;
+			int wholeUnitsAdded = (int)Mathf.Floor(a.overflowTroopsAdded);;
+			if (wholeUnitsAdded > Mathf.Abs(a.b.unitsToAdd)) {
+				wholeUnitsAdded = Mathf.Abs(a.b.unitsToAdd);
+			}
+			if (wholeUnitsAdded > 0) {
+				// Update base text wrappers
+				a.bObj.GetComponent<TouchBase>().b.units += wholeUnitsAdded;
+				a.overflowTroopsAdded -= Mathf.Abs(wholeUnitsAdded);
+				a.b.unitsToAdd -= wholeUnitsAdded;
+			}
+			
+			addTroopsActions.Add (a);
+		}
 	}
 	
 	public void displaySliderValue(float f) {

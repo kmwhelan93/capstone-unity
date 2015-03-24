@@ -113,7 +113,9 @@ public class PortalHandler : MonoBehaviour {
 		if (TroopsHandler.instance.moveTroopsActions.Count == 0) {
 			TroopsHandler.instance.restartMoveTroops ();
 		}
-		
+		if (TroopsHandler.instance.addTroopsActions.Count == 0) {
+			TroopsHandler.instance.restartAddTroops();		
+		}
 	}
 
 	private GameObject getUnfinishedPortalObj(int pId) {
