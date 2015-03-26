@@ -11,11 +11,12 @@ public class GenerateWorld : MonoBehaviour {
 
 	public GameObject basePrefab;
 	public GameObject textPrefab;
+	public GameObject objectInfoPanelPrefab;
+	public GameObject OIPItemPrefab;
 
 	public Material[] materials;
 
 	private GameObject[] currentBases;
-	private GameObject[] currentDisplayText;
 	public GameObject canvas;
 
 	// TODO: investigate what this is used for
@@ -94,15 +95,11 @@ public class GenerateWorld : MonoBehaviour {
 		foreach (GameObject b in currentBases) {
 			Destroy (b);
 		}
-		foreach (GameObject t in currentDisplayText) {
-			Destroy (t);
-		}
 	}
 
 	private bool displayBases(Base[] baseLocs) {
 		// Place objects
 		currentBases = new GameObject[baseLocs.Length];
-		currentDisplayText = new GameObject[baseLocs.Length];
 		List<BaseWrapper> baseWrappers = new List<BaseWrapper> ();
 		for (int i = 0; i < baseLocs.Length; i++) {
 			Vector3 loc = baseLocs[i].convertBaseCoordsToWorld();
@@ -115,15 +112,37 @@ public class GenerateWorld : MonoBehaviour {
 			baseObj.name = "Base" + baseLocs[i].baseId;
 			currentBases[i] = baseObj;
 
-			GameObject displayTextObj = (GameObject) Instantiate (textPrefab, new Vector3(0, 0, -1000), Quaternion.identity);
-			currentDisplayText[i] = displayTextObj;
-			displayTextObj.transform.SetParent (canvas.transform, false);
-			baseWrappers.Add (new BaseWrapper(baseObj, displayTextObj));
+			GameObject objectInfoPanel = (GameObject) Instantiate (objectInfoPanelPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+			objectInfoPanel.transform.SetParent(canvas.transform, false);
+			objectInfoPanel.GetComponent<ObjectInfoPanelScript>().o = baseObj;
+
+			GameObject prodText = (GameObject) Instantiate (OIPItemPrefab, new Vector3(0, 0, -1000), Quaternion.identity);
+			prodText.transform.SetParent (objectInfoPanel.transform, false);
+			tb.b.updateUnitsEvent += prodText.GetComponent<OIPItemScript>().updateContent;
+
+			GameObject unitsText = (GameObject) Instantiate (OIPItemPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+			unitsText.transform.SetParent(objectInfoPanel.transform, false);
 		}
-		Camera.main.GetComponent<DisplayInfoHandler> ().baseWrappers = baseWrappers;
-		Camera.main.GetComponent<DisplayInfoHandler> ().positionText ();
-		Camera.main.GetComponent<DisplayInfoHandler> ().updateContent ();
+		StartCoroutine (triggerEvents());
 		return true;
+	}
+
+	public IEnumerator triggerEvents() 
+	{
+		while (EventManager.positionText == null) {
+			yield return null;
+		}
+		EventManager.positionText ();
+
+		while (EventManager.updateUI == null) {
+			yield return null;
+		}
+		Debug.Log (EventManager.updateUI);
+		EventManager.updateUI ();
+
+		Debug.Log ("finished method");
+
+		yield break;
 	}
 
 	public GameObject getBaseObj(String name) {

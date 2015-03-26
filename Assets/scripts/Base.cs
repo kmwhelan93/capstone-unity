@@ -8,7 +8,23 @@ public class Base {
 	public Point world	{ get; set; } // world location (larger grid)
 	public Point local	{ get; set; } // local location (inner grid, 3x3 within each square of world grid)
 	public int prodRate { get; set; }
-	public int units { get; set; }
+	private int _units;
+	public int units { 
+		get{
+			return this._units;
+		} set {
+			this._units = value;
+			if (updateUnitsEvent != null) {
+				updateUnitsEvent(this._units);
+			}
+		} }
+	private EventManager.UpdateContentEvent _updateUnitsEvent;
+	public EventManager.UpdateContentEvent updateUnitsEvent {get {
+			return this._updateUnitsEvent;
+		} set {
+			this._updateUnitsEvent = value;
+			this._updateUnitsEvent(this._units);
+		}}
 	public int unitsToAdd { get; set; }
 	public long lastUpdated {get; set; }
 	

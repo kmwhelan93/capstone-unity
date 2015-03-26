@@ -87,7 +87,7 @@ public class TroopsHandler : MonoBehaviour {
 					StartCoroutine("finishMoveTroops", a);
 				}
 			}
-			Camera.main.GetComponent<DisplayInfoHandler> ().updateContent ();
+			EventManager.updateUI();
 			foreach (MoveTroopsAction p in toRemove) {
 				moveTroopsActions.Remove(p);
 			}
@@ -118,7 +118,7 @@ public class TroopsHandler : MonoBehaviour {
 					StartCoroutine("finishAddTroops", a);
 				}
 			}
-			Camera.main.GetComponent<DisplayInfoHandler> ().updateContent ();
+			EventManager.updateUI();
 			foreach (AddTroopsAction p in toRemove) {
 				addTroopsActions.Remove(p);
 			}

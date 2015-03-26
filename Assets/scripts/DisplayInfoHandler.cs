@@ -9,27 +9,7 @@ public class DisplayInfoHandler : MonoBehaviour {
 	public List<BaseWrapper> baseWrappers { get; set; }
 	public float hideTextDepth;
 
-	public void updateContent()
-	{
-		foreach (BaseWrapper bw in baseWrappers) 
-		{
-			Base b = bw.baseObj.GetComponent<TouchBase>().b;
-			bw.displayText.GetComponent<Text>().text = "prod: " + b.prodRate + "\nunits: " + b.units;
-		}
-	}
 
-	public void positionText()
-	{
-		foreach(BaseWrapper bw in baseWrappers) {
-			// hide or show text
-			bw.displayText.SetActive(Camera.main.transform.position.z >= hideTextDepth);
-			Vector3 worldOffset = getBestOffset(bw);
-			Vector3 textPosition = Camera.main.WorldToScreenPoint(bw.baseObj.transform.position + worldOffset);
-			bw.displayText.SetActive(!Globals.isInLocalView);
-			bw.displayText.transform.position = textPosition;
-		}
-
-	}
 
 	private Vector3 getBestOffset(BaseWrapper bw)
 	{

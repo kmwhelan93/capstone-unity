@@ -63,7 +63,7 @@ public class LocalView : MonoBehaviour {
 		currentWorld = world;
 		Globals.isInLocalView = true;
 		// hide the displayInfo text
-		GetComponent<DisplayInfoHandler> ().positionText ();
+		EventManager.positionText ();
 		initialPosition = transform.position;
 		lookAtWorld = world;
 
@@ -109,7 +109,7 @@ public class LocalView : MonoBehaviour {
 			} else {
 				transform.localRotation = Quaternion.Slerp (transform.localRotation, empireViewRotation, Time.deltaTime * rotateSmooth);
 				if (fracJourney > .999) {
-					GetComponent<DisplayInfoHandler>().positionText();
+					EventManager.positionText();
 					inProgress = false;
 				}
 			}

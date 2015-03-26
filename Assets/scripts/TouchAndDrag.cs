@@ -58,7 +58,7 @@ public class TouchAndDrag : MonoBehaviour {
 				Vector2 deltaToScreenRatio = deltaPosition * GetComponent<Camera>().orthographicSize / 5;
 				if (!Globals.isInLocalView) {
 					GetComponent<Camera>().transform.Translate(deltaToScreenRatio * -1 *speed);
-					Camera.main.GetComponent<DisplayInfoHandler>().positionText();
+					EventManager.positionText();
 				} else {
 					GetComponent<LocalView>().rotateQuickly = true;
 					GetComponent<LocalView>().rotateAngle += deltaPosition.x / Screen.width * 90;

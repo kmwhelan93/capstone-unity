@@ -25,7 +25,7 @@ public class PinchToZoom : MonoBehaviour {
 				} else {
 					transform.position = new Vector3 (transform.position.x, transform.position.y, Mathf.Clamp (transform.position.z + (currLength - prevLength) * perspectiveZoomSpeed, -100, -.8f));
 				}
-				Camera.main.GetComponent<DisplayInfoHandler> ().positionText ();
+				EventManager.positionText();
 			}
 		}
 	}
