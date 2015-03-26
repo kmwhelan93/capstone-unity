@@ -12,7 +12,7 @@ GameObject:
   - 114: {fileID: 11486698}
   - 114: {fileID: 11449298}
   - 114: {fileID: 11467530}
-  - 114: {fileID: 11491226}
+  - 114: {fileID: 11490772}
   m_Layer: 5
   m_Name: ObjectInfoPanel
   m_TagString: Untagged
@@ -37,7 +37,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 0
-  m_Spacing: 4
+  m_Spacing: 0
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
 --- !u!114 &11467530
@@ -72,7 +72,7 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &11491226
+--- !u!114 &11490772
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}

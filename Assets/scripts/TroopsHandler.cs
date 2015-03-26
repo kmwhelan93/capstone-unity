@@ -87,7 +87,6 @@ public class TroopsHandler : MonoBehaviour {
 					StartCoroutine("finishMoveTroops", a);
 				}
 			}
-			EventManager.updateUI();
 			foreach (MoveTroopsAction p in toRemove) {
 				moveTroopsActions.Remove(p);
 			}
@@ -118,7 +117,6 @@ public class TroopsHandler : MonoBehaviour {
 					StartCoroutine("finishAddTroops", a);
 				}
 			}
-			EventManager.updateUI();
 			foreach (AddTroopsAction p in toRemove) {
 				addTroopsActions.Remove(p);
 			}

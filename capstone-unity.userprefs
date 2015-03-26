@@ -1,12 +1,14 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\scripts\ObjectInfoPanelScript.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\scripts\EventManager.cs">
     <Files>
-      <File FileName="Assets\scripts\GenerateWorld.cs" Line="129" Column="4" />
-      <File FileName="Assets\scripts\ObjectInfoPanelScript.cs" Line="28" Column="16" />
+      <File FileName="Assets\scripts\GenerateWorld.cs" Line="120" Column="68" />
+      <File FileName="Assets\scripts\ObjectInfoPanelScript.cs" Line="12" Column="25" />
       <File FileName="Assets\scripts\DisplayInfoHandler.cs" Line="10" Column="29" />
-      <File FileName="Assets\scripts\EventManager.cs" Line="7" Column="40" />
+      <File FileName="Assets\scripts\EventManager.cs" Line="7" Column="2" />
       <File FileName="Assets\scripts\BaseWrapper.cs" Line="4" Column="1" />
+      <File FileName="Assets\scripts\OIPItemScript.cs" Line="7" Column="47" />
+      <File FileName="Assets\scripts\Base.cs" Line="22" Column="55" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -14,7 +16,7 @@
           <Node name="Assembly-CSharp" expanded="True">
             <Node name="scripts" expanded="True">
               <Node name="Classes" expanded="True" />
-              <Node name="ObjectInfoPanelScript.cs" selected="True" />
+              <Node name="EventManager.cs" selected="True" />
             </Node>
           </Node>
         </State>

@@ -123,28 +123,9 @@ public class GenerateWorld : MonoBehaviour {
 			GameObject unitsText = (GameObject) Instantiate (OIPItemPrefab, new Vector3(0, 0, 0), Quaternion.identity);
 			unitsText.transform.SetParent(objectInfoPanel.transform, false);
 		}
-		StartCoroutine (triggerEvents());
+		EventManager.positionText ();
 		return true;
 	}
-
-	public IEnumerator triggerEvents() 
-	{
-		while (EventManager.positionText == null) {
-			yield return null;
-		}
-		EventManager.positionText ();
-
-		while (EventManager.updateUI == null) {
-			yield return null;
-		}
-		Debug.Log (EventManager.updateUI);
-		EventManager.updateUI ();
-
-		Debug.Log ("finished method");
-
-		yield break;
-	}
-
 	public GameObject getBaseObj(String name) {
 		foreach (GameObject b in currentBases) {
 			if (b.name.Equals(name)) return b;
