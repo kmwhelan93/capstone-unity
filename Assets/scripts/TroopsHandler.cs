@@ -2,9 +2,11 @@
 using LitJson;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class TroopsHandler : MonoBehaviour {
 	public GameObject ProgressBarPrefab;
+	public Sprite addUnitSprite;
 	public static TroopsHandler instance;
 	public List<MoveTroopsAction> moveTroopsActions;
 	public List<AddTroopsAction> addTroopsActions;
@@ -229,6 +231,8 @@ public class TroopsHandler : MonoBehaviour {
 		// create progress bar ui
 		GameObject progressBar = (GameObject)Instantiate (ProgressBarPrefab, new Vector3 (0, 0, 0), Quaternion.identity);
 		progressBar.transform.SetParent (b.objectInfoPanel.transform);
+		progressBar.GetComponentInChildren<Image> ().sprite = addUnitSprite;
+		b.updateAddUnitProgress += progressBar.GetComponent<OIPProgressScript> ().updateContent;
 
 
 		b.unitsToAdd = numTroops;

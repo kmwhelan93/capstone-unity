@@ -54,8 +54,23 @@ public class Base {
 			return _unitsToAdd;
 		} set{
 			_unitsToAdd = value;
-			//Debug.Log (_unitsToAdd);
+			if (this._updateAddUnitProgress != null) {
+				this._updateAddUnitProgress(this._unitsToAdd);
+			}
 		} }
+	private EventManager.UpdateContentEvent _updateAddUnitProgress;
+	[DoNotSerialize]
+	public EventManager.UpdateContentEvent updateAddUnitProgress {
+		get {
+			return this._updateAddUnitProgress;
+		}
+		set{
+			this._updateAddUnitProgress = value;
+			if (this._updateAddUnitProgress != null) {
+				this._updateAddUnitProgress(this._unitsToAdd);
+			}
+		}
+	}
 
 	public long lastUpdated {get; set; }
 

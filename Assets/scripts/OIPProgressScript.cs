@@ -6,14 +6,13 @@ using LitJson;
 
 public class OIPProgressScript : MonoBehaviour {
 	public void updateContent(int value) {
+		if (GetComponentInChildren<ProgressBarBehaviour> ().Value != null) {
+			//Debug.Log (GetComponentInChildren<ProgressBarBehaviour> ().Value);
+			//GetComponentInChildren<ProgressBarBehaviour> ().Value = 100;
+		}
 	}
-	// Use this for initialization
-	void Start () {
-		GetComponentInChildren<ProgressBarBehaviour> ().Value = 50;
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+
+	void Start() {
+		//GetComponentInChildren<ProgressBarBehaviour> ().Value = 50;
 	}
 }
