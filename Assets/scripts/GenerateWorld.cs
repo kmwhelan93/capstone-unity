@@ -116,7 +116,9 @@ public class GenerateWorld : MonoBehaviour {
 
 			GameObject objectInfoPanel = (GameObject) Instantiate (objectInfoPanelPrefab, new Vector3(0, 0, 0), Quaternion.identity);
 			objectInfoPanel.transform.SetParent(canvas.transform, false);
+			// TODO: check if I need the following line
 			objectInfoPanel.GetComponent<ObjectInfoPanelScript>().o = baseObj;
+			tb.b.objectInfoPanel = objectInfoPanel;
 
 			GameObject prodText = (GameObject) Instantiate (OIPItemPrefab, new Vector3(0, 0, -1000), Quaternion.identity);
 			prodText.transform.SetParent (objectInfoPanel.transform, false);
@@ -148,6 +150,7 @@ public class GenerateWorld : MonoBehaviour {
 	}
 
 	private IEnumerator coClearBases() {
+		Debug.Log ("here");
 		WWW request = RequestService.makeRequest ("world/clear", currentBases [0].GetComponent<TouchBase>().b);
 		yield return request;
 		Debug.Log (request.text);

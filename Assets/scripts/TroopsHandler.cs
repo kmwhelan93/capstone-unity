@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class TroopsHandler : MonoBehaviour {
-	
+	public GameObject ProgressBarPrefab;
 	public static TroopsHandler instance;
 	public List<MoveTroopsAction> moveTroopsActions;
 	public List<AddTroopsAction> addTroopsActions;
@@ -225,6 +225,12 @@ public class TroopsHandler : MonoBehaviour {
 		WWW request = new WWW ("localhost:8080/myapp/world/troops/startBuy", wwwform);
 		yield return request;
 		GameObject b1 = GenerateWorld.instance.getBaseObj("Base" + b.baseId);
+
+		// create progress bar ui
+		GameObject progressBar = (GameObject)Instantiate (ProgressBarPrefab, new Vector3 (0, 0, 0), Quaternion.identity);
+		progressBar.transform.SetParent (b.objectInfoPanel.transform);
+
+
 		b.unitsToAdd = numTroops;
 		addTroopsActions.Add(new AddTroopsAction(b, b1));
 		// database gold entry undated with troops/buy request, this syncs frontend to new value

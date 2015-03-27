@@ -94,7 +94,6 @@ namespace ProgressBar
             m_Value = new ProgressValue(0, m_FillerInfo.MaxWidth);
 
             XOffset = (transform.GetComponent<RectTransform>().rect.width - m_FillRect.rect.width) /2 ;
-            
             //We set the Filler size to zero at the start.
             SetFillerSize(0);
         }
@@ -162,7 +161,6 @@ namespace ProgressBar
         /// <param name="Percent">this method needs a percentage as parameter</param>
         public void SetFillerSizeAsPercentage(float Percent)
         {
-			Debug.Log (m_FillerInfo);
             m_Value.Set(m_FillerInfo.MaxWidth * Percent / 100);
 
             if (Value < 0) Value = 0;

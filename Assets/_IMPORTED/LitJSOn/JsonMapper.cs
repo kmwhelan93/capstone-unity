@@ -16,7 +16,6 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 
-
 namespace LitJson
 {
     internal struct PropertyMetadata
@@ -253,6 +252,7 @@ namespace LitJson
             IList<PropertyMetadata> props = new List<PropertyMetadata> ();
 
             foreach (PropertyInfo p_info in type.GetProperties ()) {
+				UnityEngine.Debug.Log (p_info.Name);
                 if (p_info.Name == "Item")
                     continue;
 
