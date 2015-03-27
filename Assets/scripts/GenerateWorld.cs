@@ -13,6 +13,8 @@ public class GenerateWorld : MonoBehaviour {
 	public GameObject textPrefab;
 	public GameObject objectInfoPanelPrefab;
 	public GameObject OIPItemPrefab;
+	public Sprite prodSprite;
+	public Sprite unitSprite;
 
 	public Material[] materials;
 
@@ -118,10 +120,14 @@ public class GenerateWorld : MonoBehaviour {
 
 			GameObject prodText = (GameObject) Instantiate (OIPItemPrefab, new Vector3(0, 0, -1000), Quaternion.identity);
 			prodText.transform.SetParent (objectInfoPanel.transform, false);
-			tb.b.updateUnitsEvent += prodText.GetComponent<OIPItemScript>().updateContent;
+			prodText.GetComponentInChildren<Image>().sprite = prodSprite;
+			tb.b.updateProdRateEvent += prodText.GetComponent<OIPItemScript>().updateContent;
+			
 
 			GameObject unitsText = (GameObject) Instantiate (OIPItemPrefab, new Vector3(0, 0, 0), Quaternion.identity);
 			unitsText.transform.SetParent(objectInfoPanel.transform, false);
+			unitsText.GetComponentInChildren<Image>().sprite = unitSprite;
+			tb.b.updateUnitsEvent += unitsText.GetComponent<OIPItemScript>().updateContent;
 		}
 		EventManager.positionText ();
 		return true;

@@ -1,22 +1,21 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\scripts\EventManager.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\scripts\GenerateWorld.cs">
     <Files>
-      <File FileName="Assets\scripts\GenerateWorld.cs" Line="120" Column="68" />
+      <File FileName="Assets\scripts\GenerateWorld.cs" Line="123" Column="25" />
       <File FileName="Assets\scripts\ObjectInfoPanelScript.cs" Line="12" Column="25" />
       <File FileName="Assets\scripts\DisplayInfoHandler.cs" Line="10" Column="29" />
       <File FileName="Assets\scripts\EventManager.cs" Line="7" Column="2" />
       <File FileName="Assets\scripts\BaseWrapper.cs" Line="4" Column="1" />
-      <File FileName="Assets\scripts\OIPItemScript.cs" Line="7" Column="47" />
-      <File FileName="Assets\scripts\Base.cs" Line="22" Column="55" />
+      <File FileName="Assets\scripts\OIPItemScript.cs" Line="7" Column="48" />
+      <File FileName="Assets\scripts\Base.cs" Line="17" Column="5" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="Assembly-CSharp" expanded="True">
             <Node name="scripts" expanded="True">
-              <Node name="Classes" expanded="True" />
-              <Node name="EventManager.cs" selected="True" />
+              <Node name="GenerateWorld.cs" selected="True" />
             </Node>
           </Node>
         </State>

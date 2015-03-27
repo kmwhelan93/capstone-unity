@@ -7,7 +7,27 @@ public class Base {
 	public int baseId	{ get; set; }
 	public Point world	{ get; set; } // world location (larger grid)
 	public Point local	{ get; set; } // local location (inner grid, 3x3 within each square of world grid)
-	public int prodRate { get; set; }
+
+	private int _prodRate;
+	public int prodRate { get {
+			return _prodRate;
+		} set{
+			this._prodRate = value;
+			if (this._updateProdRateEvent != null) {
+				this._updateProdRateEvent(this._prodRate);
+			}
+		} }
+	private EventManager.UpdateContentEvent _updateProdRateEvent;
+	public EventManager.UpdateContentEvent updateProdRateEvent {
+		get {
+			return this._updateProdRateEvent;
+		} set {
+			this._updateProdRateEvent = value;
+			this._updateProdRateEvent(this._prodRate);
+		}
+	}
+
+	// This is super wordy but it is how we link this with the UI
 	private int _units;
 	public int units { 
 		get{
@@ -25,6 +45,7 @@ public class Base {
 			this._updateUnitsEvent = value;
 			this._updateUnitsEvent(this._units);
 		}}
+
 	public int unitsToAdd { get; set; }
 	public long lastUpdated {get; set; }
 	
