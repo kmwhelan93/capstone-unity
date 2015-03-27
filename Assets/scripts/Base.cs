@@ -3,18 +3,12 @@ using System.Collections;
 using LitJson;
 
 public class Base {
-	[SerializeField]
 	public string username { get; set; }
-	[SerializeField]
 	public int colorId { get; set; }
-	[SerializeField]
 	public int baseId	{ get; set; }
-	[SerializeField]
 	public Point world	{ get; set; } // world location (larger grid)
-	[SerializeField]
 	public Point local	{ get; set; } // local location (inner grid, 3x3 within each square of world grid)
-
-	[SerializeField]
+	
 	private int _prodRate;
 	public int prodRate { get {
 			return _prodRate;
@@ -25,6 +19,7 @@ public class Base {
 			}
 		} }
 	private EventManager.UpdateContentEvent _updateProdRateEvent;
+	[DoNotSerialize]
 	public EventManager.UpdateContentEvent updateProdRateEvent {
 		get {
 			return this._updateProdRateEvent;
@@ -46,6 +41,7 @@ public class Base {
 			}
 		} }
 	private EventManager.UpdateContentEvent _updateUnitsEvent;
+	[DoNotSerialize]
 	public EventManager.UpdateContentEvent updateUnitsEvent {get {
 			return this._updateUnitsEvent;
 		} set {
@@ -60,8 +56,10 @@ public class Base {
 			_unitsToAdd = value;
 			//Debug.Log (_unitsToAdd);
 		} }
+
 	public long lastUpdated {get; set; }
 
+	[DoNotSerialize]
 	public GameObject objectInfoPanel { get; set; }
 	
 	// {"username":"kmw8sf","colorId":1,"baseId":1,"world":{"x":0,"y":0},"local":{"x":0,"y":0},"prodRate":10,"units":151,"unitsToAdd":0,"lastUpdated":0}

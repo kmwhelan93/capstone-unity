@@ -18,6 +18,16 @@ using System.Reflection;
 
 namespace LitJson
 {
+	/// <summary>
+	/// P CUSTOM ADDS BY KEVIN	/// </summary>
+	[AttributeUsage(AttributeTargets.All)]
+	public class DoNotSerialize : System.Attribute
+	{
+
+	}
+
+	/// END CUSTOM ADDS
+
     internal struct PropertyMetadata
     {
         public MemberInfo Info;
@@ -252,21 +262,28 @@ namespace LitJson
             IList<PropertyMetadata> props = new List<PropertyMetadata> ();
 
             foreach (PropertyInfo p_info in type.GetProperties ()) {
-				UnityEngine.Debug.Log (p_info.Name);
                 if (p_info.Name == "Item")
                     continue;
 
                 PropertyMetadata p_data = new PropertyMetadata ();
                 p_data.Info = p_info;
                 p_data.IsField = false;
-                props.Add (p_data);
+				object[] customAttributes = p_info.GetCustomAttributes(true);
+				bool containsDoNotSerialize = false;
+				foreach (object o in customAttributes) {
+					if (o is DoNotSerialize) {
+						containsDoNotSerialize = true;
+					}
+				}
+				if (!containsDoNotSerialize) {
+               		props.Add (p_data);
+				}
             }
 
             foreach (FieldInfo f_info in type.GetFields ()) {
                 PropertyMetadata p_data = new PropertyMetadata ();
                 p_data.Info = f_info;
                 p_data.IsField = true;
-
                 props.Add (p_data);
             }
 
