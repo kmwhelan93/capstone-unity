@@ -230,10 +230,8 @@ public class TroopsHandler : MonoBehaviour {
 
 		// create progress bar ui
 		GameObject progressBar = (GameObject)Instantiate (ProgressBarPrefab, new Vector3 (0, 0, 0), Quaternion.identity);
-		progressBar.transform.SetParent (b.objectInfoPanel.transform);
+		progressBar.transform.SetParent (b1.GetComponent<BaseScript>().objectInfoPanel.transform);
 		progressBar.GetComponentInChildren<Image> ().sprite = addUnitSprite;
-		progressBar.GetComponent<OIPProgressScript> ().min = 0;
-		progressBar.GetComponent<OIPProgressScript> ().max = numTroops;
 		b.updateAddUnitProgress += progressBar.GetComponent<OIPProgressScript> ().updateContent;
 
 
@@ -278,6 +276,11 @@ public class TroopsHandler : MonoBehaviour {
 				a.overflowTroopsAdded -= Mathf.Abs(wholeUnitsAdded);
 				a.b.unitsToAdd -= wholeUnitsAdded;
 			}
+			Debug.Log (a.b.unitsToAdd);
+			GameObject progressBar = (GameObject)Instantiate (ProgressBarPrefab, new Vector3 (0, 0, 0), Quaternion.identity);
+			progressBar.transform.SetParent (b1.GetComponent<BaseScript>().objectInfoPanel.transform);
+			progressBar.GetComponentInChildren<Image> ().sprite = addUnitSprite;
+			b.updateAddUnitProgress += progressBar.GetComponent<OIPProgressScript> ().updateContent;
 			
 			addTroopsActions.Add (a);
 		}

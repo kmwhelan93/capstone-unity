@@ -88,6 +88,7 @@ public class GenerateWorld : MonoBehaviour {
 		displayBases (bases);
 		PortalHandler.instance.displayPortals ();
 		WormHoleHandler.instance.loadWormHoles ();
+
 		yield break;
 	}
 
@@ -118,7 +119,7 @@ public class GenerateWorld : MonoBehaviour {
 			objectInfoPanel.transform.SetParent(canvas.transform, false);
 			// TODO: check if I need the following line
 			objectInfoPanel.GetComponent<ObjectInfoPanelScript>().o = baseObj;
-			tb.b.objectInfoPanel = objectInfoPanel;
+			baseObj.GetComponent<BaseScript>().objectInfoPanel = objectInfoPanel;
 
 			GameObject prodText = (GameObject) Instantiate (OIPItemPrefab, new Vector3(0, 0, -1000), Quaternion.identity);
 			prodText.transform.SetParent (objectInfoPanel.transform, false);
@@ -132,6 +133,10 @@ public class GenerateWorld : MonoBehaviour {
 			tb.b.updateUnitsEvent += unitsText.GetComponent<OIPItemScript>().updateContent;
 		}
 		EventManager.positionText ();
+		if (TroopsHandler.instance.addTroopsActions.Count == 0) {
+			Debug.Log ("restarting adding troops");
+			TroopsHandler.instance.restartAddTroops();		
+		}
 		return true;
 	}
 	public GameObject getBaseObj(String name) {

@@ -66,17 +66,12 @@ public class Base {
 		}
 		set{
 			this._updateAddUnitProgress = value;
-			if (this._updateAddUnitProgress != null) {
-				this._updateAddUnitProgress(this._unitsToAdd);
-			}
 		}
 	}
 
 	public long lastUpdated {get; set; }
 
-	[DoNotSerialize]
-	public GameObject objectInfoPanel { get; set; }
-	
+
 	// {"username":"kmw8sf","colorId":1,"baseId":1,"world":{"x":0,"y":0},"local":{"x":0,"y":0},"prodRate":10,"units":151,"unitsToAdd":0,"lastUpdated":0}
 	
 
