@@ -46,6 +46,7 @@ public class Base {
 			this._updateUnitsEvent(this._units);
 		}}
 
+	private int _unitsToAdd;
 	public int unitsToAdd { get; set; }
 	public long lastUpdated {get; set; }
 	
