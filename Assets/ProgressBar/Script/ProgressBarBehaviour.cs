@@ -86,10 +86,9 @@ namespace ProgressBar
         /// </summary>
         private float XOffset;
 
-        void Start()
+        void Awake()
         {
             //Max and Min Filler Values
-			Debug.Log (m_FillRect.rect.width);
             m_FillerInfo = new FillerProperty(0, m_FillRect.rect.width);
             //Current and Max Filler Values
             m_Value = new ProgressValue(0, m_FillerInfo.MaxWidth);
@@ -97,7 +96,6 @@ namespace ProgressBar
             XOffset = (transform.GetComponent<RectTransform>().rect.width - m_FillRect.rect.width) /2 ;
             //We set the Filler size to zero at the start.
             SetFillerSize(0);
-			SetFillerSizeAsPercentage (50);
         }
 
         void Update()
@@ -163,7 +161,6 @@ namespace ProgressBar
         public void SetFillerSizeAsPercentage(float Percent)
         {
             m_Value.Set(m_FillerInfo.MaxWidth * Percent / 100);
-			Debug.Log (m_FillerInfo.MaxWidth);
             if (Value < 0) Value = 0;
             else if (Value > 100) Value = 100;
         }

@@ -232,6 +232,8 @@ public class TroopsHandler : MonoBehaviour {
 		GameObject progressBar = (GameObject)Instantiate (ProgressBarPrefab, new Vector3 (0, 0, 0), Quaternion.identity);
 		progressBar.transform.SetParent (b.objectInfoPanel.transform);
 		progressBar.GetComponentInChildren<Image> ().sprite = addUnitSprite;
+		progressBar.GetComponent<OIPProgressScript> ().min = 0;
+		progressBar.GetComponent<OIPProgressScript> ().max = numTroops;
 		b.updateAddUnitProgress += progressBar.GetComponent<OIPProgressScript> ().updateContent;
 
 
