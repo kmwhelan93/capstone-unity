@@ -351,7 +351,7 @@ Prefab:
     - target: {fileID: 11457154, guid: 9e41f3037af3bb546854b44c3ad69491, type: 2}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: aef785a72fd47a744ba41eb0a9ace0d4,
+      objectReference: {fileID: 21300000, guid: 3e093960727f02747b61e3dd360917b1,
         type: 3}
     - target: {fileID: 22457154, guid: 9e41f3037af3bb546854b44c3ad69491, type: 2}
       propertyPath: m_SizeDelta.x
@@ -705,7 +705,7 @@ Prefab:
     - target: {fileID: 11457154, guid: 9e41f3037af3bb546854b44c3ad69491, type: 2}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: aef785a72fd47a744ba41eb0a9ace0d4,
+      objectReference: {fileID: 21300000, guid: 3e093960727f02747b61e3dd360917b1,
         type: 3}
     - target: {fileID: 22457154, guid: 9e41f3037af3bb546854b44c3ad69491, type: 2}
       propertyPath: m_SizeDelta.x
@@ -3000,7 +3000,7 @@ MonoBehaviour:
     type: 2}
   OIPItemPrefab: {fileID: 187658, guid: 0d4bc112d7e8fb7449114ded73da601c, type: 2}
   prodSprite: {fileID: 21300000, guid: ed8e2d475c0be314795219afad3991a8, type: 3}
-  unitSprite: {fileID: 21300000, guid: aef785a72fd47a744ba41eb0a9ace0d4, type: 3}
+  unitSprite: {fileID: 21300000, guid: 3e093960727f02747b61e3dd360917b1, type: 3}
   materials: []
   canvas: {fileID: 1615884911}
   secondClick: 0
@@ -3072,6 +3072,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba9fe8b74e7c7454da768e1bdee5a6fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ProgressBarPrefab: {fileID: 116874, guid: 952a5fb17c90a6149b95d094a4a6353f, type: 2}
   costPerUnit: 100
 --- !u!1 &1369496861
 GameObject:
@@ -5360,6 +5361,18 @@ Prefab:
     - target: {fileID: 150806, guid: a940e5c3fbef1e240af64196118596ef, type: 2}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 402576, guid: a940e5c3fbef1e240af64196118596ef, type: 2}
+      propertyPath: m_LocalScale.x
+      value: .5
+      objectReference: {fileID: 0}
+    - target: {fileID: 402576, guid: a940e5c3fbef1e240af64196118596ef, type: 2}
+      propertyPath: m_LocalScale.y
+      value: .5
+      objectReference: {fileID: 0}
+    - target: {fileID: 402576, guid: a940e5c3fbef1e240af64196118596ef, type: 2}
+      propertyPath: m_LocalScale.z
+      value: .5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a940e5c3fbef1e240af64196118596ef, type: 2}
