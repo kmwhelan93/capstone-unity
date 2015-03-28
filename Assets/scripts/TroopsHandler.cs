@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 
 public class TroopsHandler : MonoBehaviour {
-	public GameObject ProgressBarPrefab;
-	public Sprite addUnitSprite;
 	public static TroopsHandler instance;
 	public List<MoveTroopsAction> moveTroopsActions;
 	public List<AddTroopsAction> addTroopsActions;
@@ -228,12 +226,6 @@ public class TroopsHandler : MonoBehaviour {
 		yield return request;
 		GameObject b1 = GenerateWorld.instance.getBaseObj("Base" + b.baseId);
 
-		// create progress bar ui
-		GameObject progressBar = (GameObject)Instantiate (ProgressBarPrefab, new Vector3 (0, 0, 0), Quaternion.identity);
-		progressBar.transform.SetParent (b1.GetComponent<BaseScript>().objectInfoPanel.transform);
-		progressBar.GetComponentInChildren<Image> ().sprite = addUnitSprite;
-		b.updateAddUnitProgress += progressBar.GetComponent<OIPProgressScript> ().updateContent;
-
 
 		b.unitsToAdd = numTroops;
 		addTroopsActions.Add(new AddTroopsAction(b, b1));
@@ -261,8 +253,11 @@ public class TroopsHandler : MonoBehaviour {
 		WWW request = new WWW ("localhost:8080/myapp/world/troops/restartAdd", wwwform);
 		yield return request;
 		Base[] bases = JsonMapper.ToObject<Base[]>(request.text);
-		foreach (Base b in bases) {
-			GameObject b1 = GenerateWorld.instance.getBaseObj("Base" + b.baseId);
+		for (int i = 0; i < bases.Length; i++) {
+			GameObject b1 = GenerateWorld.instance.getBaseObj("Base" + bases[i].baseId);
+			// I needed to use this b instead of the one returned by request
+			// because the b attached to TouchBase script is hooked up with event listeners
+			Base b = b1.GetComponent<TouchBase>().b;
 			AddTroopsAction a = new AddTroopsAction(b, b1);		
 			// Update values based on Time.DeltaTime
 			a.overflowTroopsAdded += ((CurrentTime.currentTimeMillis() - b.lastUpdated) / 1000) * Globals.timeCostPerTroop;
@@ -276,11 +271,6 @@ public class TroopsHandler : MonoBehaviour {
 				a.overflowTroopsAdded -= Mathf.Abs(wholeUnitsAdded);
 				a.b.unitsToAdd -= wholeUnitsAdded;
 			}
-			Debug.Log (a.b.unitsToAdd);
-			GameObject progressBar = (GameObject)Instantiate (ProgressBarPrefab, new Vector3 (0, 0, 0), Quaternion.identity);
-			progressBar.transform.SetParent (b1.GetComponent<BaseScript>().objectInfoPanel.transform);
-			progressBar.GetComponentInChildren<Image> ().sprite = addUnitSprite;
-			b.updateAddUnitProgress += progressBar.GetComponent<OIPProgressScript> ().updateContent;
 			
 			addTroopsActions.Add (a);
 		}

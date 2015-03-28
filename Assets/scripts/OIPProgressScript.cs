@@ -7,14 +7,16 @@ using LitJson;
 public class OIPProgressScript : MonoBehaviour {
 	private int min = 0;
 	private int max;
-	private bool maxHasBeenSet = false;
+	private int value = 0;
 	public void updateContent(int value) {
-		if (maxHasBeenSet == false) {
-			maxHasBeenSet = true;
+		if (value - this.value > 0) {
+			this.gameObject.SetActive(true);
 			max = value;
 		}
+		this.value = value;
 		if (value == 0) {
-			done ();
+			this.gameObject.SetActive (false);
+			return;
 		}
 		if (GetComponentInChildren<ProgressBarBehaviour> ().Value != null) {
 			float percentage = (max - value) / (float)max * 100;
@@ -25,8 +27,5 @@ public class OIPProgressScript : MonoBehaviour {
 	void Start() {
 		//GetComponentInChildren<ProgressBarBehaviour> ().Value = 50;
 	}
-
-	public void done() {
-		Destroy (gameObject);
-	}
+	
 }

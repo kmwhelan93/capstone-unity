@@ -15,6 +15,8 @@ public class GenerateWorld : MonoBehaviour {
 	public GameObject OIPItemPrefab;
 	public Sprite prodSprite;
 	public Sprite unitSprite;
+	public GameObject ProgressBarPrefab;
+	public Sprite addUnitSprite;
 
 	public Material[] materials;
 
@@ -131,6 +133,14 @@ public class GenerateWorld : MonoBehaviour {
 			unitsText.transform.SetParent(objectInfoPanel.transform, false);
 			unitsText.GetComponentInChildren<Image>().sprite = unitSprite;
 			tb.b.updateUnitsEvent += unitsText.GetComponent<OIPItemScript>().updateContent;
+
+			// create progress bar ui
+			// There is always one progress bar per base and it just hides and shows
+			GameObject progressBar = (GameObject)Instantiate (ProgressBarPrefab, new Vector3 (0, 0, 0), Quaternion.identity);
+			progressBar.transform.SetParent (objectInfoPanel.transform);
+			progressBar.GetComponentInChildren<Image> ().sprite = addUnitSprite;
+			progressBar.SetActive(false);
+			tb.b.updateAddUnitProgress += progressBar.GetComponent<OIPProgressScript> ().updateContent;
 		}
 		EventManager.positionText ();
 		if (TroopsHandler.instance.addTroopsActions.Count == 0) {
