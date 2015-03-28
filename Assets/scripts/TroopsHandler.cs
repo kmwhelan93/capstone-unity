@@ -15,22 +15,16 @@ public class TroopsHandler : MonoBehaviour {
 		public GameObject b2 { get; set; }
 		public string username { get; set; }
 		public GameObject portal { get; set; }
-		public int portalId { get; set; }
-		public int flowRate { get; set; }
-		public int troopsLeftToMove { get; set; }
 		public float overflowTroopsMoved { get; set; }
 		
 		public MoveTroopsAction(GameObject base1, GameObject base2, string username_,
-		                        GameObject p, int pId, int flow, int troops) {
+		                        GameObject p) {
 			b1 = base1;
 			b2 = base2;
 			username = username_;
 			portal = p;
-			portalId = pId;
-			flowRate = flow;
 			// Sign of troopsLeftToMove (here and in the Portals table) reflects direction troops
 			// are being moved through portal
-			troopsLeftToMove = troops;
 			overflowTroopsMoved = 0.0f;
 		}
 	}
@@ -64,19 +58,20 @@ public class TroopsHandler : MonoBehaviour {
 		if (moveTroopsActions.Count > 0) {
 			List<MoveTroopsAction> toRemove = new List<MoveTroopsAction> ();
 			foreach (MoveTroopsAction a in moveTroopsActions) {
+				Portal2 p = a.portal.GetComponent<PortalScript>().portal;
 				// If more troops to move
-				if (Mathf.Abs(a.troopsLeftToMove) > 0) {
+				if (Mathf.Abs(p.troopsToMove) > 0) {
 					// Update values based on Time.DeltaTime
-					a.overflowTroopsMoved += Time.deltaTime * a.flowRate;
+					a.overflowTroopsMoved += Time.deltaTime * p.flowRate;
 					int wholeUnitsMoved = (int)Mathf.Floor(a.overflowTroopsMoved);
 					if (wholeUnitsMoved > 0) {
-						if (wholeUnitsMoved > Mathf.Abs(a.troopsLeftToMove)) { wholeUnitsMoved = Mathf.Abs(a.troopsLeftToMove); }
-						if (a.troopsLeftToMove < 0) { wholeUnitsMoved *= -1; }
+						if (wholeUnitsMoved > Mathf.Abs(p.troopsToMove)) { wholeUnitsMoved = Mathf.Abs(p.troopsToMove); }
+						if (p.troopsToMove < 0) { wholeUnitsMoved *= -1; }
 						// Update base text wrappers
 						a.b1.GetComponent<TouchBase>().b.units -= wholeUnitsMoved;
 						a.b2.GetComponent<TouchBase>().b.units += wholeUnitsMoved;
 						a.overflowTroopsMoved -= Mathf.Abs(wholeUnitsMoved);
-						a.troopsLeftToMove -= wholeUnitsMoved;
+						p.troopsToMove -= wholeUnitsMoved;
 					}
 				} else {
 					// Remove action from list
@@ -142,9 +137,11 @@ public class TroopsHandler : MonoBehaviour {
 			GameObject b1 = GenerateWorld.instance.getBaseObj("Base" + p.base1.baseId);
 			GameObject b2 = GenerateWorld.instance.getBaseObj("Base" + p.base2.baseId);
 			GameObject pObj = PortalHandler.instance.getFinishedPortalObj (p.portalId);
+			p = pObj.GetComponent<PortalScript>().portal;
 			pObj.GetComponent<Renderer>().material = PortalHandler.instance.portalBuildingMaterial;
 			if (p.base1.baseId == b.baseId) { numTroops *= -1; }
-			MoveTroopsAction a = new MoveTroopsAction (b1, b2, b.username, pObj, p.portalId, p.flowRate, numTroops);
+			p.troopsToMove += numTroops;
+			MoveTroopsAction a = new MoveTroopsAction (b1, b2, b.username, pObj);
 			moveTroopsActions.Add (a);
 		}
 	}
@@ -152,7 +149,7 @@ public class TroopsHandler : MonoBehaviour {
 	IEnumerator finishMoveTroops(MoveTroopsAction a) {
 		WWWForm wwwform = new WWWForm ();
 		wwwform.AddField ("username", a.username);
-		wwwform.AddField ("portalId", a.portalId);
+		wwwform.AddField ("portalId", a.portal.GetComponent<PortalScript>().portal.portalId);
 		WWW request = new WWW ("localhost:8080/myapp/world/troops/finishMove", wwwform);
 		yield return request;
 		if (request.text.Equals ("")) {
@@ -174,26 +171,30 @@ public class TroopsHandler : MonoBehaviour {
 		WWW request = new WWW ("localhost:8080/myapp/world/troops/restartMove", wwwform);
 		yield return request;
 		Portal2[] portals = JsonMapper.ToObject<Portal2[]>(request.text);
-		foreach (Portal2 p in portals) {
-			GameObject pObj = PortalHandler.instance.getFinishedPortalObj (p.portalId);
+		for (int i = 0; i < portals.Length; i++) {
+
+			GameObject pObj = PortalHandler.instance.getFinishedPortalObj (portals[i].portalId);
+			// need to do this so we get the portal that belongs to the portalObj
+			Portal2 p = pObj.GetComponent<PortalScript>().portal;
+			p.troopsToMove += portals[i].troopsToMove;
 			pObj.GetComponent<Renderer>().material = PortalHandler.instance.portalBuildingMaterial;
 			GameObject base1 = GenerateWorld.instance.getBaseObj("Base" + p.base1.baseId);
 			GameObject base2 = GenerateWorld.instance.getBaseObj("Base" + p.base2.baseId);
-			MoveTroopsAction a = new MoveTroopsAction (base1, base2, p.base1.username, pObj, p.portalId, p.flowRate, p.troopsToMove);
+			MoveTroopsAction a = new MoveTroopsAction (base1, base2, p.base1.username, pObj);
 			
 			// Update values based on Time.DeltaTime
-			a.overflowTroopsMoved += ((CurrentTime.currentTimeMillis() - p.lastMoveUpdate) / 1000) * a.flowRate;
+			a.overflowTroopsMoved += ((CurrentTime.currentTimeMillis() - p.lastMoveUpdate) / 1000) * p.flowRate;
 			int wholeUnitsMoved = (int)Mathf.Floor(a.overflowTroopsMoved);
-			if (wholeUnitsMoved > Mathf.Abs(a.troopsLeftToMove)) {
-				wholeUnitsMoved = Mathf.Abs(a.troopsLeftToMove);
+			if (wholeUnitsMoved > Mathf.Abs(p.troopsToMove)) {
+				wholeUnitsMoved = Mathf.Abs(p.troopsToMove);
 			}
 			if (wholeUnitsMoved > 0) {
-				if (a.troopsLeftToMove < 0) { wholeUnitsMoved *= -1; }
+				if (p.troopsToMove < 0) { wholeUnitsMoved *= -1; }
 				// Update base text wrappers
 				a.b1.GetComponent<TouchBase>().b.units -= wholeUnitsMoved;
 				a.b2.GetComponent<TouchBase>().b.units += wholeUnitsMoved;
 				a.overflowTroopsMoved -= Mathf.Abs(wholeUnitsMoved);
-				a.troopsLeftToMove -= wholeUnitsMoved;
+				p.troopsToMove -= wholeUnitsMoved;
 			}
 			
 			moveTroopsActions.Add (a);

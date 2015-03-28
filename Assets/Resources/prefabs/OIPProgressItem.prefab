@@ -140,7 +140,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_FillRect: {fileID: 22477820}
   m_AttachedText: {fileID: 11424746}
-  ProgressSpeed: 140
+  ProgressSpeed: 14000
   TriggerOnComplete: 1
   OnCompleteMethods:
     m_PersistentCalls:

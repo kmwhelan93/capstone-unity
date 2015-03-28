@@ -1,27 +1,24 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\scripts\Base.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\scripts\Globals.cs">
     <Files>
-      <File FileName="Assets\scripts\GenerateWorld.cs" Line="131" Column="58" />
+      <File FileName="Assets\scripts\GenerateWorld.cs" Line="143" Column="95" />
       <File FileName="Assets\scripts\ObjectInfoPanelScript.cs" Line="1" Column="1" />
       <File FileName="Assets\scripts\DisplayInfoHandler.cs" Line="1" Column="1" />
-      <File FileName="Assets\scripts\EventManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\scripts\BaseWrapper.cs" Line="1" Column="1" />
-      <File FileName="Assets\scripts\OIPItemScript.cs" Line="1" Column="1" />
-      <File FileName="Assets\scripts\Base.cs" Line="1" Column="1" />
-      <File FileName="Assets\scripts\OIPProgressScript.cs" Line="17" Column="2" />
-      <File FileName="Assets\scripts\TroopsHandler.cs" Line="276" Column="5" />
-      <File FileName="Assets\scripts\PortalHandler.cs" Line="115" Column="4" />
+      <File FileName="Assets\scripts\OIPProgressScript.cs" Line="20" Column="38" />
+      <File FileName="Assets\scripts\TroopsHandler.cs" Line="65" Column="59" />
+      <File FileName="Assets\scripts\PortalHandler.cs" Line="20" Column="49" />
+      <File FileName="Assets\scripts\Portal2.cs" Line="20" Column="1" />
+      <File FileName="Assets\scripts\Base.cs" Line="18" Column="16" />
+      <File FileName="Assets\scripts\PortalScript.cs" Line="5" Column="73" />
+      <File FileName="Assets\scripts\Globals.cs" Line="15" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="Assembly-CSharp" expanded="True">
-            <Node name="ProgressBar" expanded="True">
-              <Node name="Script" expanded="True" />
-            </Node>
             <Node name="scripts" expanded="True">
-              <Node name="Base.cs" selected="True" />
+              <Node name="Globals.cs" selected="True" />
             </Node>
           </Node>
         </State>

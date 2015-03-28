@@ -2,6 +2,7 @@
 using LitJson;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class PortalHandler : MonoBehaviour {
 
@@ -107,12 +108,26 @@ public class PortalHandler : MonoBehaviour {
 				currentUnfinishedPortalObjs.Add(portalObj);
 			}
 			portalObj.name = "Portal" + portal.portalId;
+			portalObj.GetComponent<PortalScript>().portal = portal;
+
+			GameObject objectInfoPanel = (GameObject) Instantiate (GenerateWorld.instance.objectInfoPanelPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+			objectInfoPanel.transform.SetParent(GenerateWorld.instance.canvas.transform, false);
+			objectInfoPanel.GetComponent<ObjectInfoPanelScript>().o = portalObj;
+
+			GameObject moveTroopsProgress = (GameObject)Instantiate (GenerateWorld.instance.ProgressBarPrefab, new Vector3 (0, 0, 0), Quaternion.identity);
+			moveTroopsProgress.transform.SetParent (objectInfoPanel.transform);
+			// TODO: change this to a move unit sprite
+			moveTroopsProgress.GetComponentInChildren<Image> ().sprite = GenerateWorld.instance.moveTroopSprite;
+			moveTroopsProgress.SetActive(false);
+			portal.updateTroopsToMove += moveTroopsProgress.GetComponent<OIPProgressScript> ().updateContent;
+
 			currentPortalObjects[i] = portalObj;
 		}
 		// TODO (cem6at): Find better location for this
 		if (TroopsHandler.instance.moveTroopsActions.Count == 0) {
 			TroopsHandler.instance.restartMoveTroops ();
 		}
+		EventManager.positionText ();
 	}
 
 	private GameObject getUnfinishedPortalObj(int pId) {

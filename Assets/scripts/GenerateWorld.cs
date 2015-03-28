@@ -17,6 +17,7 @@ public class GenerateWorld : MonoBehaviour {
 	public Sprite unitSprite;
 	public GameObject ProgressBarPrefab;
 	public Sprite addUnitSprite;
+	public Sprite moveTroopSprite;
 
 	public Material[] materials;
 

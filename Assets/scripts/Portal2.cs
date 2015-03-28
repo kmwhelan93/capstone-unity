@@ -9,7 +9,20 @@ public class Portal2 {
 	public Base base2 { get; set; }
 	public long timeFinished { get; set; }
 	public int flowRate { get; set; }
-	public int troopsToMove { get; set; }
+
+	private int _troopsToMove;
+	public int troopsToMove {
+		get{
+			return _troopsToMove;
+		}
+		set{
+			this._troopsToMove = value;
+			if (updateTroopsToMove != null)
+				updateTroopsToMove(this._troopsToMove);
+		}
+	}
+	public EventManager.UpdateContentEvent updateTroopsToMove { get; set; }
+
 	public long lastMoveUpdate { get; set; }
 
 	public override string ToString ()

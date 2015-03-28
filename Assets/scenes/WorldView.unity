@@ -1307,11 +1307,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22494934, guid: 4b196cf0777f696478b6237b0b7b51d7, type: 2}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 66
       objectReference: {fileID: 0}
     - target: {fileID: 22494934, guid: 4b196cf0777f696478b6237b0b7b51d7, type: 2}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 22494934, guid: 4b196cf0777f696478b6237b0b7b51d7, type: 2}
       propertyPath: m_AnchorMin.x
@@ -1339,7 +1339,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 113084, guid: 4b196cf0777f696478b6237b0b7b51d7, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4b196cf0777f696478b6237b0b7b51d7, type: 2}
@@ -2949,51 +2949,51 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22481690, guid: 952a5fb17c90a6149b95d094a4a6353f, type: 2}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22481690, guid: 952a5fb17c90a6149b95d094a4a6353f, type: 2}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22434598, guid: 952a5fb17c90a6149b95d094a4a6353f, type: 2}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22434598, guid: 952a5fb17c90a6149b95d094a4a6353f, type: 2}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22481690, guid: 952a5fb17c90a6149b95d094a4a6353f, type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: 6.060606
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22481690, guid: 952a5fb17c90a6149b95d094a4a6353f, type: 2}
       propertyPath: m_SizeDelta.x
-      value: 12.121212
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22434598, guid: 952a5fb17c90a6149b95d094a4a6353f, type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: 31.060606
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22434598, guid: 952a5fb17c90a6149b95d094a4a6353f, type: 2}
       propertyPath: m_SizeDelta.x
-      value: 37.878788
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22481690, guid: 952a5fb17c90a6149b95d094a4a6353f, type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -25
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22481690, guid: 952a5fb17c90a6149b95d094a4a6353f, type: 2}
       propertyPath: m_SizeDelta.y
-      value: 16
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22434598, guid: 952a5fb17c90a6149b95d094a4a6353f, type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -25
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22434598, guid: 952a5fb17c90a6149b95d094a4a6353f, type: 2}
       propertyPath: m_SizeDelta.y
-      value: 16
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 952a5fb17c90a6149b95d094a4a6353f, type: 2}
@@ -3131,6 +3131,9 @@ MonoBehaviour:
   OIPItemPrefab: {fileID: 187658, guid: 0d4bc112d7e8fb7449114ded73da601c, type: 2}
   prodSprite: {fileID: 21300000, guid: ed8e2d475c0be314795219afad3991a8, type: 3}
   unitSprite: {fileID: 21300000, guid: 3e093960727f02747b61e3dd360917b1, type: 3}
+  ProgressBarPrefab: {fileID: 116874, guid: 952a5fb17c90a6149b95d094a4a6353f, type: 2}
+  addUnitSprite: {fileID: 21300000, guid: a035d2121d6686849adef190f78ca25a, type: 3}
+  moveTroopSprite: {fileID: 21300000, guid: f34df0cb9ac1def4984d0fb854e14b79, type: 3}
   materials: []
   canvas: {fileID: 1615884911}
   secondClick: 0
@@ -3202,8 +3205,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba9fe8b74e7c7454da768e1bdee5a6fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ProgressBarPrefab: {fileID: 116874, guid: 952a5fb17c90a6149b95d094a4a6353f, type: 2}
-  addUnitSprite: {fileID: 21300000, guid: a035d2121d6686849adef190f78ca25a, type: 3}
   costPerUnit: 100
 --- !u!1 &1369496861
 GameObject:
@@ -3715,15 +3716,15 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22404036, guid: 952a5fb17c90a6149b95d094a4a6353f, type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -8
       objectReference: {fileID: 0}
     - target: {fileID: 22404036, guid: 952a5fb17c90a6149b95d094a4a6353f, type: 2}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 66
       objectReference: {fileID: 0}
     - target: {fileID: 22404036, guid: 952a5fb17c90a6149b95d094a4a6353f, type: 2}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 22404036, guid: 952a5fb17c90a6149b95d094a4a6353f, type: 2}
       propertyPath: m_AnchorMin.x
@@ -3731,7 +3732,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22404036, guid: 952a5fb17c90a6149b95d094a4a6353f, type: 2}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22404036, guid: 952a5fb17c90a6149b95d094a4a6353f, type: 2}
       propertyPath: m_AnchorMax.x
@@ -3739,7 +3740,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22404036, guid: 952a5fb17c90a6149b95d094a4a6353f, type: 2}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22404036, guid: 952a5fb17c90a6149b95d094a4a6353f, type: 2}
       propertyPath: m_Pivot.x
