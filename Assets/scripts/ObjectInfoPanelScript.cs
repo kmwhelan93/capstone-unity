@@ -13,7 +13,13 @@ public class ObjectInfoPanelScript : MonoBehaviour {
 
 	void position() {
 		//SetActive(Camera.main.transform.position.z >= hideTextDepth);
-		// TODO (kevin): change this to call a method based on portals
-		transform.position = o.GetComponent<UIPlacer> ().getUIScreenPosition ();
+		Vector3 position = o.GetComponent<UIPlacer> ().getUIScreenPosition ();
+		if (position.z < 0) {
+			this.gameObject.SetActive (false);
+		} else {
+			this.gameObject.SetActive(true);
+			transform.position = position;
+		}
+
 	}
 }

@@ -113,6 +113,7 @@ public class LocalView : MonoBehaviour {
 					inProgress = false;
 				}
 			}
+			EventManager.positionText();
 		}
 	}
 }

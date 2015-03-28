@@ -63,7 +63,7 @@ public class TouchAndDrag : MonoBehaviour {
 					GetComponent<LocalView>().rotateQuickly = true;
 					GetComponent<LocalView>().rotateAngle += deltaPosition.x / Screen.width * 90;
 					GetComponent<LocalView>().moveToNewEndPosition(GetComponent<LocalView>().rotateAngle);
-					
+					EventManager.positionText();
 				}
 			}
 		}
