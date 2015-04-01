@@ -2972,7 +2972,7 @@ MonoBehaviour:
   portalBuildingMaterial: {fileID: 0}
   dragPortalInvalidMaterial: {fileID: 0}
   invalidBaseMaterial: {fileID: 0}
-  costPerPortal: 10000
+  costPerPortal: 1000
 --- !u!114 &1307284337
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2984,7 +2984,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba9fe8b74e7c7454da768e1bdee5a6fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  costPerUnit: 100
+  costPerUnit: 10
 --- !u!1 &1369496861
 GameObject:
   m_ObjectHideFlags: 0

@@ -35,6 +35,7 @@ public class TouchBase : MonoBehaviour {
 					GenerateWorld.instance.sliderConfirmButton.SetActive(true);
 					GenerateWorld.instance.slider.minValue = 0;
 					GenerateWorld.instance.slider.maxValue = GenerateWorld.instance.lastBase.units;
+					GenerateWorld.instance.slider.value = 0;
 					GenerateWorld.instance.sliderValue.text = "0";
 					GenerateWorld.instance.secondBase = b;
 				} else {
