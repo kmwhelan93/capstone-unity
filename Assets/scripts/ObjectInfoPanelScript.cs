@@ -14,7 +14,7 @@ public class ObjectInfoPanelScript : MonoBehaviour {
 	void position() {
 		//SetActive(Camera.main.transform.position.z >= hideTextDepth);
 		Vector3 position = o.GetComponent<UIPlacer> ().getUIScreenPosition ();
-		if (position.z < 0) {
+		if (position.z < 2 ||  position.z > 10) {
 			this.gameObject.SetActive (false);
 		} else {
 			this.gameObject.SetActive(true);
