@@ -1,12 +1,28 @@
 ﻿using UnityEngine;
 using System.Collections;
+using LitJson;
 
-public class Portal2 {
+public class Portal2 : InstanceObject {
+	public GameObject gameObject { get; set; }
 
 	public int portalId { get; set; }
 	public string username { get; set; }
-	public Base base1 { get; set; }
-	public Base base2 { get; set; }
+
+	public int base1Id { get; set; }
+	[DoNotSerialize]
+	public Base base1 {
+		get {
+			return (Base) ObjectInstanceDictionary.getObjectInstanceById("Base", base1Id);
+		}
+	}
+
+	public int base2Id { get; set; }
+	public Base base2 {
+		get {
+			return (Base) ObjectInstanceDictionary.getObjectInstanceById("Base", base2Id);
+		}
+	}
+
 	public long timeFinished { get; set; }
 	public int flowRate { get; set; }
 

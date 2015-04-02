@@ -4,9 +4,10 @@ using System.Collections;
 /**
  * A class to hold variables that belong to the Portal GameObject itself
  */
-public class PortalScript : MonoBehaviour, UIPlacer {
+public class PortalScript : MonoBehaviour, UIPlacer, InstanceObjectScript {
 
-	public Portal2 portal { get; set; }
+	// TODO: change to type Portal2 if possible
+	public InstanceObject instanceObject { get; set; }
 
 	public Vector3 getUIScreenPosition() 
 	{

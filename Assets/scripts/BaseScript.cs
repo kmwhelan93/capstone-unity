@@ -4,7 +4,9 @@ using System.Collections;
 /**
  * This class is for storing variables that belong to the base game object
  */
-public class BaseScript : MonoBehaviour, UIPlacer {
+public class BaseScript : MonoBehaviour, UIPlacer, InstanceObjectScript {
+	// TODO: change to type Base if possible
+	public InstanceObject instanceObject { get; set; }
 	public GameObject objectInfoPanel { get; set; }
 
 	public Vector3 getUIScreenPosition() {

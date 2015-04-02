@@ -37,9 +37,12 @@ public class WormHoleHandler : MonoBehaviour {
 		currentWormHoleObjects = new GameObject[wormholes.Length];
 
 		for (int i = 0; i < wormholes.Length; i++) {
-			GameObject wormhole = (GameObject) Instantiate(prefab, wormholes[i].getWorldCoords(), new Quaternion());
-			currentWormHoleObjects[i] = wormhole;
-			angleTowardsBase (wormhole, wormholes[i].b.getGameObject());
+			GameObject wormholeObj = (GameObject) Instantiate(prefab, wormholes[i].getWorldCoords(), new Quaternion());
+			currentWormHoleObjects[i] = wormholeObj;
+			wormholeObj.name = "WormHole" + wormholes[i].wormholeId;
+			ObjectInstanceDictionary.registerGameObject(wormholeObj.name, wormholeObj);
+			wormholes[i].gameObject = wormholeObj;
+			angleTowardsBase (wormholeObj, wormholes[i].b.getGameObject());
 		}
 	}
 

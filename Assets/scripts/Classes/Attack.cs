@@ -4,11 +4,33 @@ using System.Collections;
 public class Attack : MonoBehaviour {
 
 	public string attacker { get; set; }
-	public Base attackerBase { get; set; }
+
+	public int attackerBaseId { get; set; }
+	public Base attackerBase { get { return (Base) ObjectInstanceDictionary.getObjectInstanceById ("Base", attackerBaseId); } }
+	
 	public int attackerWormholeId { get; set; }
+	public WormHole attackerWormHole {
+		get{
+			return (WormHole) ObjectInstanceDictionary.getObjectInstanceById("WormHole", attackerWormholeId);
+		}
+	}
+
 	public string defender { get; set; }
-	public Base defenderBase { get; set; }
+
+	public int defenderBaseId { get; set; }
+	public Base defenderBase {
+		get {
+			return (Base) ObjectInstanceDictionary.getObjectInstanceById("Base", defenderBaseId);
+		}
+	}
+
 	public int defenderWormholeId { get; set; }
+	public WormHole defenderWormHole {
+		get {
+			return (WormHole) ObjectInstanceDictionary.getObjectInstanceById("WormHole", defenderWormholeId);
+		}
+	}
+
 	public long timeInitiated { get; set; }
 	public long timeAttackLands { get; set; }
 	public long lastUpdate { get; set; }
@@ -35,7 +57,8 @@ public class Attack : MonoBehaviour {
 	}
 	public override string ToString ()
 	{
-		return string.Format ("[Attack: attacker={0}, attackerBase={1}, attackerWormholeId={2}, defender={3}, defenderBase={4}, defenderWormholeId={5}, timeInitiated={6}, timeAttackLands={7}, lastUpdate={8}, numUnits={9}]", attacker, attackerBase, attackerWormholeId, defender, defenderBase, defenderWormholeId, timeInitiated, timeAttackLands, lastUpdate, numUnits);
+		return "todo add to string for attack";
+		//return string.Format ("[Attack: attacker={0}, attackerBase={1}, attackerWormholeId={2}, defender={3}, defenderBase={4}, defenderWormholeId={5}, timeInitiated={6}, timeAttackLands={7}, lastUpdate={8}, numUnits={9}]", attacker, attackerBase, attackerWormholeId, defender, defenderBase, defenderWormholeId, timeInitiated, timeAttackLands, lastUpdate, numUnits);
 	}
 	
 }

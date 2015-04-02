@@ -117,6 +117,9 @@ public class GenerateWorld : MonoBehaviour {
 			TouchBase tb = baseObj.GetComponent<TouchBase>();
 			tb.b = baseLocs[i];
 			baseObj.name = "Base" + baseLocs[i].baseId;
+			ObjectInstanceDictionary.registerGameObject(baseObj.name, baseObj);
+			baseObj.GetComponent<InstanceObjectScript>().instanceObject = baseLocs[i];
+			baseLocs[i].gameObject = baseObj;
 			currentBases[i] = baseObj;
 
 			GameObject objectInfoPanel = (GameObject) Instantiate (objectInfoPanelPrefab, new Vector3(0, 0, 0), Quaternion.identity);

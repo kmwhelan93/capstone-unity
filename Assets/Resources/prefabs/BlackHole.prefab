@@ -10,6 +10,7 @@ GameObject:
   - 4: {fileID: 455808}
   - 212: {fileID: 21252008}
   - 95: {fileID: 9586086}
+  - 114: {fileID: 11441062}
   m_Layer: 0
   m_Name: BlackHole
   m_TagString: Untagged
@@ -46,6 +47,17 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &11441062
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 124542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 951dee186371f2347aa4fd1980535d96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!212 &21252008
 SpriteRenderer:
   m_ObjectHideFlags: 1

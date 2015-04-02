@@ -36,8 +36,16 @@ public class PortalHandler : MonoBehaviour {
 		invalidBaseMaterial = (Material)Resources.Load ("materials/base_gray", typeof(Material));
 	}
 
-	public GameObject createPortal(Vector3 p1, Vector3 p2) {
+	public GameObject createPortal(Vector3 p1, Vector3 p2, Portal2 portal) {
+		Debug.Log ("creating a portal");
 		GameObject portalObj = (GameObject) Instantiate (portalPrefab, (p1 + p2) / 2, Quaternion.identity);
+		if (portal != null)
+			portalObj.name = "Portal" + portal.portalId;
+		else 
+			portalObj.name = "Portal" + -1;
+		portalObj.GetComponent<InstanceObjectScript> ().instanceObject = portal;
+		portal.gameObject = portalObj;
+		ObjectInstanceDictionary.registerGameObject (portalObj.name, portalObj);
 		scalePortalBetweenPoints (portalObj, p1, p2);
 		rotatePortalBetweenPoints (portalObj, p1, p2);
 		return portalObj;
@@ -74,11 +82,12 @@ public class PortalHandler : MonoBehaviour {
 
 	private IEnumerator createPortals() {
 		WWWForm wwwform = new WWWForm ();
-		wwwform.AddField ("username", "kmw8sf");
+		wwwform.AddField ("username", Globals.username);
 		// NOTE: Changed this to "new WWW" from "RequestService.makeRequest" to fix a 500 request failed error
 		WWW request = new WWW ("localhost:8080/myapp/world/portals", wwwform);
 		yield return request;
 		portals = JsonMapper.ToObject<Portal2[]> (request.text);
+		Debug.Log (portals.Length);
 		
 		currentPortalObjects = new GameObject[portals.Length];
 		currentUnfinishedPortals = new List<Portal2>();
@@ -86,6 +95,8 @@ public class PortalHandler : MonoBehaviour {
 		for (int i = 0; i < portals.Length; i++) {
 			// Locations of the two bases
 			Portal2 portal = portals[i];
+			Debug.Log (portal.base1Id);
+			Debug.Log (portal.base2Id);
 			Vector3 p1 = portal.base1.convertBaseCoordsToWorld();
 			Vector3 p2 = portal.base2.convertBaseCoordsToWorld();
 
@@ -97,18 +108,16 @@ public class PortalHandler : MonoBehaviour {
 			// Start new, user created portals at length corresponging to 1% finished
 			if (portal.timeFinished <= CurrentTime.currentTimeMillis()) {
 				// Portal finished
-				portalObj = createPortal(p1, p2);
+				portalObj = createPortal(p1, p2, portals[i]);
 				portalObj.GetComponent<Renderer>().material = portalMaterial;
 			}
 			else {
 				// Portal unfinished
-				portalObj = createPortal(p1, p1 + (p2- p1)*.01f);
+				portalObj = createPortal(p1, p1 + (p2- p1)*.01f, portals[i]);
 				portalObj.GetComponent<Renderer>().material = portalBuildingMaterial;
 				currentUnfinishedPortals.Add(portal);
 				currentUnfinishedPortalObjs.Add(portalObj);
 			}
-			portalObj.name = "Portal" + portal.portalId;
-			portalObj.GetComponent<PortalScript>().portal = portal;
 
 			GameObject objectInfoPanel = (GameObject) Instantiate (GenerateWorld.instance.objectInfoPanelPrefab, new Vector3(0, 0, 0), Quaternion.identity);
 			objectInfoPanel.transform.SetParent(GenerateWorld.instance.canvas.transform, false);
@@ -192,7 +201,7 @@ public class PortalHandler : MonoBehaviour {
 		Vector3 endPos = startPos + new Vector3 (.1f, .1f, 0);
 		
 		// Create the portal (cylinder prefab)
-		dragToCreateTempPortal = createPortal (startPos, endPos);
+		dragToCreateTempPortal = createPortal (startPos, endPos, null);
 		dragToCreateTempPortal.name = "tempPortal";
 	}
 	

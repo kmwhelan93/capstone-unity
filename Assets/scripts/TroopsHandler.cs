@@ -11,18 +11,18 @@ public class TroopsHandler : MonoBehaviour {
 	public int costPerUnit;
 	
 	public class MoveTroopsAction {
-		public GameObject b1 { get; set; }
-		public GameObject b2 { get; set; }
 		public string username { get; set; }
-		public GameObject portal { get; set; }
+		public int pId { get; set; }
+		public Portal2 p {
+			get {
+				return (Portal2) ObjectInstanceDictionary.getObjectInstanceById("Portal", pId);
+			}
+		}
 		public float overflowTroopsMoved { get; set; }
 		
-		public MoveTroopsAction(GameObject base1, GameObject base2, string username_,
-		                        GameObject p) {
-			b1 = base1;
-			b2 = base2;
+		public MoveTroopsAction(string username_, int portalId) {
 			username = username_;
-			portal = p;
+			pId = portalId;
 			// Sign of troopsLeftToMove (here and in the Portals table) reflects direction troops
 			// are being moved through portal
 			overflowTroopsMoved = 0.0f;
@@ -30,13 +30,17 @@ public class TroopsHandler : MonoBehaviour {
 	}
 	
 	public class AddTroopsAction {
-		public Base b { get; set; }
-		public GameObject bObj { get; set; }
+		public int bId { get; set; }
+		public Base b {
+			get {
+				return (Base) ObjectInstanceDictionary.getObjectInstanceById("Base", bId);
+			}
+		}
+
 		public float overflowTroopsAdded { get; set; }
 		
-		public AddTroopsAction(Base b1, GameObject bObject) {
-			b = b1;
-			bObj = bObject;
+		public AddTroopsAction(int base1) {
+			bId = base1;
 			overflowTroopsAdded = 0f;
 		}
 	}
@@ -58,7 +62,7 @@ public class TroopsHandler : MonoBehaviour {
 		if (moveTroopsActions.Count > 0) {
 			List<MoveTroopsAction> toRemove = new List<MoveTroopsAction> ();
 			foreach (MoveTroopsAction a in moveTroopsActions) {
-				Portal2 p = a.portal.GetComponent<PortalScript>().portal;
+				Portal2 p = a.p;
 				// If more troops to move
 				if (Mathf.Abs(p.troopsToMove) > 0) {
 					// Update values based on Time.DeltaTime
@@ -68,8 +72,8 @@ public class TroopsHandler : MonoBehaviour {
 						if (wholeUnitsMoved > Mathf.Abs(p.troopsToMove)) { wholeUnitsMoved = Mathf.Abs(p.troopsToMove); }
 						if (p.troopsToMove < 0) { wholeUnitsMoved *= -1; }
 						// Update base text wrappers
-						a.b1.GetComponent<TouchBase>().b.units -= wholeUnitsMoved;
-						a.b2.GetComponent<TouchBase>().b.units += wholeUnitsMoved;
+						a.p.base1.units -= wholeUnitsMoved;
+						a.p.base2.units += wholeUnitsMoved;
 						a.overflowTroopsMoved -= Mathf.Abs(wholeUnitsMoved);
 						p.troopsToMove -= wholeUnitsMoved;
 					}
@@ -77,7 +81,7 @@ public class TroopsHandler : MonoBehaviour {
 					// Remove action from list
 					toRemove.Add(a);
 					// Restore portal color
-					a.portal.GetComponent<Renderer>().material = PortalHandler.instance.portalMaterial;
+					a.p.gameObject.GetComponent<Renderer>().material = PortalHandler.instance.portalMaterial;
 					// Final db sync
 					StartCoroutine("finishMoveTroops", a);
 				}
@@ -100,7 +104,7 @@ public class TroopsHandler : MonoBehaviour {
 					int wholeUnitsAdded = (int)Mathf.Floor(a.overflowTroopsAdded);
 					if (wholeUnitsAdded > 0) {
 						// Update base text wrappers
-						a.bObj.GetComponent<TouchBase>().b.units += wholeUnitsAdded;
+						a.b.units += wholeUnitsAdded;
 						a.overflowTroopsAdded -= Mathf.Abs(wholeUnitsAdded);
 						a.b.unitsToAdd -= wholeUnitsAdded;
 					}
@@ -133,15 +137,11 @@ public class TroopsHandler : MonoBehaviour {
 		if (request.text.Equals ("")) {
 			Debug.Log("Move troops action invalid");
 		} else {
-			Portal2 p = JsonMapper.ToObject<Portal2>(request.text);
-			GameObject b1 = GenerateWorld.instance.getBaseObj("Base" + p.base1.baseId);
-			GameObject b2 = GenerateWorld.instance.getBaseObj("Base" + p.base2.baseId);
-			GameObject pObj = PortalHandler.instance.getFinishedPortalObj (p.portalId);
-			p = pObj.GetComponent<PortalScript>().portal;
-			pObj.GetComponent<Renderer>().material = PortalHandler.instance.portalBuildingMaterial;
-			if (p.base1.baseId == b.baseId) { numTroops *= -1; }
-			p.troopsToMove += numTroops;
-			MoveTroopsAction a = new MoveTroopsAction (b1, b2, b.username, pObj);
+			MoveTroopsCommand mtc = JsonMapper.ToObject<MoveTroopsCommand>(request.text);
+			mtc.portal.gameObject.GetComponent<Renderer>().material = PortalHandler.instance.portalBuildingMaterial;
+			if (mtc.portal.base1.baseId == b.baseId) { mtc.troopsToMove *= -1; }
+			mtc.portal.troopsToMove += mtc.troopsToMove;
+			MoveTroopsAction a = new MoveTroopsAction (b.username, mtc.portalId);
 			moveTroopsActions.Add (a);
 		}
 	}
@@ -149,7 +149,7 @@ public class TroopsHandler : MonoBehaviour {
 	IEnumerator finishMoveTroops(MoveTroopsAction a) {
 		WWWForm wwwform = new WWWForm ();
 		wwwform.AddField ("username", a.username);
-		wwwform.AddField ("portalId", a.portal.GetComponent<PortalScript>().portal.portalId);
+		wwwform.AddField ("portalId", a.p.portalId);
 		WWW request = new WWW ("localhost:8080/myapp/world/troops/finishMove", wwwform);
 		yield return request;
 		if (request.text.Equals ("")) {
@@ -170,31 +170,27 @@ public class TroopsHandler : MonoBehaviour {
 		wwwform.AddField ("username", Globals.username);
 		WWW request = new WWW ("localhost:8080/myapp/world/troops/restartMove", wwwform);
 		yield return request;
-		Portal2[] portals = JsonMapper.ToObject<Portal2[]>(request.text);
-		for (int i = 0; i < portals.Length; i++) {
-
-			GameObject pObj = PortalHandler.instance.getFinishedPortalObj (portals[i].portalId);
+		MoveTroopsCommand[] mtcs = JsonMapper.ToObject<MoveTroopsCommand[]>(request.text);
+		foreach (MoveTroopsCommand mtc in mtcs) {
 			// need to do this so we get the portal that belongs to the portalObj
-			Portal2 p = pObj.GetComponent<PortalScript>().portal;
-			p.troopsToMove += portals[i].troopsToMove;
-			pObj.GetComponent<Renderer>().material = PortalHandler.instance.portalBuildingMaterial;
-			GameObject base1 = GenerateWorld.instance.getBaseObj("Base" + p.base1.baseId);
-			GameObject base2 = GenerateWorld.instance.getBaseObj("Base" + p.base2.baseId);
-			MoveTroopsAction a = new MoveTroopsAction (base1, base2, p.base1.username, pObj);
+			mtc.portal.troopsToMove += mtc.troopsToMove;
+			mtc.portal.gameObject.GetComponent<Renderer>().material = PortalHandler.instance.portalBuildingMaterial;
+			MoveTroopsAction a = new MoveTroopsAction (Globals.username, mtc.portal.portalId);
 			
 			// Update values based on Time.DeltaTime
-			a.overflowTroopsMoved += ((CurrentTime.currentTimeMillis() - p.lastMoveUpdate) / 1000) * p.flowRate;
+			a.overflowTroopsMoved += ((CurrentTime.currentTimeMillis() - mtc.portal.lastMoveUpdate) / 1000) * 
+				mtc.portal.flowRate;
 			int wholeUnitsMoved = (int)Mathf.Floor(a.overflowTroopsMoved);
-			if (wholeUnitsMoved > Mathf.Abs(p.troopsToMove)) {
-				wholeUnitsMoved = Mathf.Abs(p.troopsToMove);
+			if (wholeUnitsMoved > Mathf.Abs(mtc.portal.troopsToMove)) {
+				wholeUnitsMoved = Mathf.Abs(mtc.portal.troopsToMove);
 			}
 			if (wholeUnitsMoved > 0) {
-				if (p.troopsToMove < 0) { wholeUnitsMoved *= -1; }
+				if (mtc.portal.troopsToMove < 0) { wholeUnitsMoved *= -1; }
 				// Update base text wrappers
-				a.b1.GetComponent<TouchBase>().b.units -= wholeUnitsMoved;
-				a.b2.GetComponent<TouchBase>().b.units += wholeUnitsMoved;
+				a.p.base1.units -= wholeUnitsMoved;
+				a.p.base2.units += wholeUnitsMoved;
 				a.overflowTroopsMoved -= Mathf.Abs(wholeUnitsMoved);
-				p.troopsToMove -= wholeUnitsMoved;
+				mtc.portal.troopsToMove -= wholeUnitsMoved;
 			}
 			
 			moveTroopsActions.Add (a);
@@ -225,11 +221,9 @@ public class TroopsHandler : MonoBehaviour {
 		print ("nt: " + numTroops);
 		WWW request = new WWW ("localhost:8080/myapp/world/troops/startBuy", wwwform);
 		yield return request;
-		GameObject b1 = GenerateWorld.instance.getBaseObj("Base" + b.baseId);
 
-
-		b.unitsToAdd = numTroops;
-		addTroopsActions.Add(new AddTroopsAction(b, b1));
+		b.unitsToAdd += numTroops;
+		addTroopsActions.Add(new AddTroopsAction(b.baseId));
 		// database gold entry undated with troops/buy request, this syncs frontend to new value
 		UpdateGold.instance.syncGold ();
 		DisplayTransactionHandler.instance.setCostText(numTroops * costPerUnit);
@@ -253,22 +247,18 @@ public class TroopsHandler : MonoBehaviour {
 		wwwform.AddField ("username", Globals.username);
 		WWW request = new WWW ("localhost:8080/myapp/world/troops/restartAdd", wwwform);
 		yield return request;
-		Base[] bases = JsonMapper.ToObject<Base[]>(request.text);
-		for (int i = 0; i < bases.Length; i++) {
-			GameObject b1 = GenerateWorld.instance.getBaseObj("Base" + bases[i].baseId);
-			// I needed to use this b instead of the one returned by request
-			// because the b attached to TouchBase script is hooked up with event listeners
-			Base b = b1.GetComponent<TouchBase>().b;
-			AddTroopsAction a = new AddTroopsAction(b, b1);		
+		AddTroopsCommand[] atcs = JsonMapper.ToObject<AddTroopsCommand[]>(request.text);
+		foreach (AddTroopsCommand atc in atcs) {
+			AddTroopsAction a = new AddTroopsAction(atc.bId);		
 			// Update values based on Time.DeltaTime
-			a.overflowTroopsAdded += ((CurrentTime.currentTimeMillis() - b.lastUpdated) / 1000) * Globals.timeCostPerTroop;
+			a.overflowTroopsAdded += ((CurrentTime.currentTimeMillis() - atc.b.lastUpdated) / 1000) * Globals.timeCostPerTroop;
 			int wholeUnitsAdded = (int)Mathf.Floor(a.overflowTroopsAdded);;
 			if (wholeUnitsAdded > Mathf.Abs(a.b.unitsToAdd)) {
 				wholeUnitsAdded = Mathf.Abs(a.b.unitsToAdd);
 			}
 			if (wholeUnitsAdded > 0) {
 				// Update base text wrappers
-				a.bObj.GetComponent<TouchBase>().b.units += wholeUnitsAdded;
+				a.b.units += wholeUnitsAdded;
 				a.overflowTroopsAdded -= Mathf.Abs(wholeUnitsAdded);
 				a.b.unitsToAdd -= wholeUnitsAdded;
 			}

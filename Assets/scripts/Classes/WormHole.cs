@@ -1,10 +1,25 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class WormHole {
+public class WormHole : InstanceObject {
+	public GameObject gameObject { get; set; }
+
 	public int wormholeId { get; set; }
-	public Base b { get; set; }
+
+	public int baseId { get; set; }
+	public Base b {
+		get {
+			return (Base) ObjectInstanceDictionary.getObjectInstanceById("Base", baseId);
+		}
+	}
+
 	public int connectedWormholeId { get; set; }
+	public WormHole connectedWormHole {
+		get{
+			return (WormHole) ObjectInstanceDictionary.getObjectInstanceById("WormHole", connectedWormholeId);
+		}
+	}
+
 	public Point relativeCoords { get; set; }
 
 	public Vector3 getWorldCoords()
