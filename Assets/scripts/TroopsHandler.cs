@@ -138,6 +138,7 @@ public class TroopsHandler : MonoBehaviour {
 			Debug.Log("Move troops action invalid");
 		} else {
 			MoveTroopsCommand mtc = JsonMapper.ToObject<MoveTroopsCommand>(request.text);
+			Debug.Log("mtc: " + mtc.portalId + " " + mtc.troopsToMove);
 			mtc.portal.gameObject.GetComponent<Renderer>().material = PortalHandler.instance.portalBuildingMaterial;
 			if (mtc.portal.base1.baseId == b.baseId) { mtc.troopsToMove *= -1; }
 			mtc.portal.troopsToMove += mtc.troopsToMove;
