@@ -39,12 +39,14 @@ public class PortalHandler : MonoBehaviour {
 	public GameObject createPortal(Vector3 p1, Vector3 p2, Portal2 portal) {
 		Debug.Log ("creating a portal");
 		GameObject portalObj = (GameObject) Instantiate (portalPrefab, (p1 + p2) / 2, Quaternion.identity);
-		if (portal != null)
+		if (portal != null) {
 			portalObj.name = "Portal" + portal.portalId;
+			portal.gameObject = portalObj;
+		}
 		else 
 			portalObj.name = "Portal" + -1;
 		portalObj.GetComponent<InstanceObjectScript> ().instanceObject = portal;
-		portal.gameObject = portalObj;
+
 		ObjectInstanceDictionary.registerGameObject (portalObj.name, portalObj);
 		scalePortalBetweenPoints (portalObj, p1, p2);
 		rotatePortalBetweenPoints (portalObj, p1, p2);
