@@ -28,8 +28,7 @@ public class GenerateWorld : MonoBehaviour {
 	public Base lastBase;
 	// TODO (cem6at): do this a better way
 	public Base secondBase;
-	// TODO: investigate whether this is necessary
-	public bool secondClick;
+
 	public UnityEngine.UI.Text message;
 	public GameObject numTroopsInputObject;
 	public GameObject sliderObject;

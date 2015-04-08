@@ -11,24 +11,24 @@ public class TouchBase : MonoBehaviour {
 			Debug.Log ("base touched to add base");
 			GenerateWorld.instance.message.text = "Adding base...";
 			StartCoroutine ("createBase");
-		} else if (Globals.opState == OpState.AddPortal && !GenerateWorld.instance.secondClick) {
+		} else if (Globals.opState == OpState.AddPortal && !Globals.secondClick) {
 			Debug.Log ("base touched to add portal");
 			// Create temp portal - red
 			PortalHandler.instance.createDragPortal (b);
 			GenerateWorld.instance.lastBase = b;
-			GenerateWorld.instance.secondClick = true;
+			Globals.secondClick = true;
 			// Gray out invalid bases
 			PortalHandler.instance.grayOutInvalidBases (b.baseId);
 		} else if (Globals.opState == OpState.MoveTroops) {
 			Debug.Log ("base touched to move troops");
 			GenerateWorld.instance.message.text = "Select bases";
-			if (!GenerateWorld.instance.secondClick) {
+			if (!Globals.secondClick) {
 				print ("waiting for second click");
 				GenerateWorld.instance.lastBase = b;
-				GenerateWorld.instance.secondClick = true;
+				Globals.secondClick = true;
 			} else {
 				print ("got second click, moving troops");
-				GenerateWorld.instance.secondClick = false;
+				Globals.secondClick = false;
 				if (GenerateWorld.instance.lastBase.baseId != b.baseId) {
 					GenerateWorld.instance.message.text = "How many?";
 					GenerateWorld.instance.sliderObject.SetActive(true);

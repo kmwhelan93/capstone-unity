@@ -12,8 +12,8 @@ public class TouchAndDrag : MonoBehaviour {
 			Touch t = Input.GetTouch (0);
 			// If in AddPortal state and first touch is on a base
 			//Debug.Log ("Opstate: " + (Globals.opState == OpState.AddPortal));
-			//Debug.Log ("second click: " + GenerateWorld.instance.secondClick);
-			if (Globals.opState == OpState.AddPortal && GenerateWorld.instance.secondClick) {
+			//Debug.Log ("second click: " + Globals.secondClick);
+			if (Globals.opState == OpState.AddPortal && Globals.secondClick) {
 				if (t.phase == TouchPhase.Moved) {
 					// Update temp portal
 					// If touch location is on base, temp portal = purple to signify that portal is valid
@@ -24,6 +24,7 @@ public class TouchAndDrag : MonoBehaviour {
 												  validBaseAtPos(t.position));
 				}
 				if (t.phase == TouchPhase.Ended) {
+					Debug.Log ("second click");
 					// Create portal if on base
 					int bId = getIdOfBaseAtPos(t.position);
 					if (bId == -1) {
@@ -36,14 +37,12 @@ public class TouchAndDrag : MonoBehaviour {
 							// Portal created by touching each base separately, waiting for second touch
 							PortalHandler.instance.deleteDragPortal();
 							GenerateWorld.instance.message.text = "A portal must connect two different bases";
-							GenerateWorld.instance.secondClick = false;
 						}
 						else if (PortalHandler.instance.validBase(bId)) {
 							// Portal created by dragging
 							// restore invalid base colors
 							PortalHandler.instance.restoreInvalidBaseColors();
 							PortalHandler.instance.deleteDragPortal();
-							GenerateWorld.instance.secondClick = false;
 							GenerateWorld.instance.message.text = "Adding portal...";
 							StartCoroutine ("createPortal", bId);
 						}
@@ -52,6 +51,7 @@ public class TouchAndDrag : MonoBehaviour {
 							PortalHandler.instance.deleteDragPortal();
 						}
 					}
+					Globals.secondClick = false;
 				}
 			}
 			else if (t.phase == TouchPhase.Moved && t.deltaPosition.magnitude > 2 && !GenerateWorld.instance.slider.IsActive()) {
@@ -107,8 +107,9 @@ public class TouchAndDrag : MonoBehaviour {
 		wwwform.AddField ("cost", PortalHandler.instance.costPerPortal);
 		WWW request = new WWW ("localhost:8080/myapp/world/portals/create", wwwform);
 		yield return request;
-		GenerateWorld.instance.message.text = request.text;
-		GenerateWorld.instance.resetWorldView ();
+		Portal2 portal = LitJson.JsonMapper.ToObject<Portal2> (request.text);
+		Debug.Log (portal);
+		PortalHandler.instance.createUnfinishedPortal (portal);
 		UpdateGold.instance.syncGold ();
 		DisplayTransactionHandler.instance.setCostText(PortalHandler.instance.costPerPortal);
 	}

@@ -1110,6 +1110,7 @@ GameObject:
   - 114: {fileID: 562025599}
   - 114: {fileID: 562025600}
   - 114: {fileID: 562025601}
+  - 114: {fileID: 562025602}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1258,6 +1259,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   costText: {fileID: 111062462}
+--- !u!114 &562025602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 562025590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fba9094daa06334f92fa9c37e945f2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &592901037
 MonoBehaviour:
   m_PrefabParentObject: {fileID: 11457156, guid: 9e41f3037af3bb546854b44c3ad69491,
@@ -2916,7 +2928,6 @@ MonoBehaviour:
   moveTroopSprite: {fileID: 21300000, guid: f34df0cb9ac1def4984d0fb854e14b79, type: 3}
   materials: []
   canvas: {fileID: 1615884911}
-  secondClick: 0
   message: {fileID: 137720505}
   numTroopsInputObject: {fileID: 0}
   sliderObject: {fileID: 1474471623}

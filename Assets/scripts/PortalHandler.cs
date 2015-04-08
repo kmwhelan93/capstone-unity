@@ -37,19 +37,38 @@ public class PortalHandler : MonoBehaviour {
 	}
 
 	public GameObject createPortal(Vector3 p1, Vector3 p2, Portal2 portal) {
-		Debug.Log ("creating a portal");
 		GameObject portalObj = (GameObject) Instantiate (portalPrefab, (p1 + p2) / 2, Quaternion.identity);
 		if (portal != null) {
 			portalObj.name = "Portal" + portal.portalId;
 			portal.gameObject = portalObj;
+			portalObj.GetComponent<InstanceObjectScript> ().instanceObject = portal;
+			ObjectInstanceDictionary.registerGameObject (portalObj.name, portalObj);
 		}
 		else 
 			portalObj.name = "Portal" + -1;
-		portalObj.GetComponent<InstanceObjectScript> ().instanceObject = portal;
 
-		ObjectInstanceDictionary.registerGameObject (portalObj.name, portalObj);
 		scalePortalBetweenPoints (portalObj, p1, p2);
 		rotatePortalBetweenPoints (portalObj, p1, p2);
+		return portalObj;
+	}
+
+	public GameObject createPortal(Portal2 portal) {
+		Vector3 p1 = portal.base1.convertBaseCoordsToWorld();
+		Vector3 p2 = portal.base2.convertBaseCoordsToWorld();
+		p1 = p1 + (p2 - p1).normalized * Globals.baseRadius;
+		p2 = p2 + (p1 - p2).normalized * Globals.baseRadius;
+		GameObject pObj = createPortal (p1, p2, portal);
+		pObj.GetComponent<Renderer>().material = portalMaterial;
+		return pObj;
+	}
+
+	public GameObject createUnfinishedPortal(Portal2 portal) {
+		Vector3 p1 = portal.base1.convertBaseCoordsToWorld();
+		Vector3 p2 = portal.base2.convertBaseCoordsToWorld();
+		GameObject portalObj = createPortal(p1, p1 + (p2- p1)*.01f, portal);
+		portalObj.GetComponent<Renderer>().material = portalBuildingMaterial;
+		currentUnfinishedPortals.Add(portal);
+		currentUnfinishedPortalObjs.Add(portalObj);
 		return portalObj;
 	}
 	
@@ -89,16 +108,13 @@ public class PortalHandler : MonoBehaviour {
 		WWW request = new WWW ("localhost:8080/myapp/world/portals", wwwform);
 		yield return request;
 		portals = JsonMapper.ToObject<Portal2[]> (request.text);
-		Debug.Log (portals.Length);
-		
+
 		currentPortalObjects = new GameObject[portals.Length];
 		currentUnfinishedPortals = new List<Portal2>();
 		currentUnfinishedPortalObjs = new List<GameObject>();
 		for (int i = 0; i < portals.Length; i++) {
 			// Locations of the two bases
 			Portal2 portal = portals[i];
-			Debug.Log (portal.base1Id);
-			Debug.Log (portal.base2Id);
 			Vector3 p1 = portal.base1.convertBaseCoordsToWorld();
 			Vector3 p2 = portal.base2.convertBaseCoordsToWorld();
 
@@ -110,15 +126,11 @@ public class PortalHandler : MonoBehaviour {
 			// Start new, user created portals at length corresponging to 1% finished
 			if (portal.timeFinished <= CurrentTime.currentTimeMillis()) {
 				// Portal finished
-				portalObj = createPortal(p1, p2, portals[i]);
-				portalObj.GetComponent<Renderer>().material = portalMaterial;
+				portalObj = createPortal(portals[i]);;
 			}
 			else {
 				// Portal unfinished
-				portalObj = createPortal(p1, p1 + (p2- p1)*.01f, portals[i]);
-				portalObj.GetComponent<Renderer>().material = portalBuildingMaterial;
-				currentUnfinishedPortals.Add(portal);
-				currentUnfinishedPortalObjs.Add(portalObj);
+				portalObj = createUnfinishedPortal(portals[i]);
 			}
 
 			GameObject objectInfoPanel = (GameObject) Instantiate (GenerateWorld.instance.objectInfoPanelPrefab, new Vector3(0, 0, 0), Quaternion.identity);
@@ -239,6 +251,7 @@ public class PortalHandler : MonoBehaviour {
 		for (int i = 0; i < split.Length; i++) {
 			validBaseIds[i] = int.Parse(split[i]);
 		}
+		// This is lazy. Get valid bases should not gray out invalid bases
 		grayInvalidBases ();
 	}
 	
@@ -252,7 +265,7 @@ public class PortalHandler : MonoBehaviour {
 	}
 	
 	public bool validBase(int baseId) {
-		if (!GenerateWorld.instance.secondClick) {
+		if (!Globals.secondClick) {
 			return true;
 		} else {
 			if (validBaseIds == null) {
@@ -268,9 +281,12 @@ public class PortalHandler : MonoBehaviour {
 	}
 	
 	public void restoreInvalidBaseColors() {
-		GenerateWorld.instance.secondClick = false;
+		GameObject[] currentBases = GenerateWorld.instance.getCurrentBases ();
+		foreach (GameObject bObj in currentBases) {
+			Base b = (Base)bObj.GetComponent<InstanceObjectScript>().instanceObject;
+			BaseHandler.instance.setColor(b);
+		}
 		validBaseIds = null;
-		GenerateWorld.instance.resetWorldView();
 	}
 
 	public GameObject getFinishedPortalObj(int pId) {
