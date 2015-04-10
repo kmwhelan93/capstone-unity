@@ -3,6 +3,7 @@ using System.Collections;
 using LitJson;
 
 public class Base : InstanceObject {
+	[DoNotSerialize]
 	public GameObject gameObject { get; set; }
 	public string username { get; set; }
 	public int colorId { get; set; }

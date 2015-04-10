@@ -8,6 +8,7 @@ public class PortalScript : MonoBehaviour, UIPlacer, InstanceObjectScript {
 
 	// TODO: change to type Portal2 if possible
 	public InstanceObject instanceObject { get; set; }
+	//public GameObject objectInfoPanel { get; set; }
 
 	public Vector3 getUIScreenPosition() 
 	{

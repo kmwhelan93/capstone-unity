@@ -99,6 +99,8 @@ public class GenerateWorld : MonoBehaviour {
 		if (currentBases == null)
 			return;
 		foreach (GameObject b in currentBases) {
+			Destroy(b.GetComponent<BaseScript>().objectInfoPanel);
+			// TODO: destroy progress bars also?
 			Destroy (b);
 		}
 	}
@@ -169,10 +171,10 @@ public class GenerateWorld : MonoBehaviour {
 	}
 
 	private IEnumerator coClearBases() {
-		Debug.Log ("here");
-		WWW request = RequestService.makeRequest ("world/clear", currentBases [0].GetComponent<TouchBase>().b);
+		//WWW request = RequestService.makeRequest ("world/clear", currentBases [0].GetComponent<TouchBase>().b);
+		WWW request = RequestService.makeRequest ("world/clear", ObjectInstanceDictionary.getObjectInstanceById("Base", 1));
 		yield return request;
-		Debug.Log (request.text);
+		ObjectInstanceDictionary.clearDictionary();
 		UpdateGold.instance.syncGold ();
 		GenerateWorld.instance.resetWorldView();
 	}

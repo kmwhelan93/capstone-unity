@@ -89,6 +89,7 @@ public class PortalHandler : MonoBehaviour {
 	public void destroyCurrentPortals() {
 		if (currentPortalObjects != null) {
 			foreach (GameObject p in currentPortalObjects) {
+				//Destroy(p.GetComponent<PortalScript>().objectInfoPanel);
 				Destroy (p);
 			}
 		}
@@ -136,6 +137,7 @@ public class PortalHandler : MonoBehaviour {
 			GameObject objectInfoPanel = (GameObject) Instantiate (GenerateWorld.instance.objectInfoPanelPrefab, new Vector3(0, 0, 0), Quaternion.identity);
 			objectInfoPanel.transform.SetParent(GenerateWorld.instance.canvas.transform, false);
 			objectInfoPanel.GetComponent<ObjectInfoPanelScript>().o = portalObj;
+			//portalObj.GetComponent<PortalScript>().objectInfoPanel = objectInfoPanel;
 
 			GameObject moveTroopsProgress = (GameObject)Instantiate (GenerateWorld.instance.ProgressBarPrefab, new Vector3 (0, 0, 0), Quaternion.identity);
 			moveTroopsProgress.transform.SetParent (objectInfoPanel.transform);
@@ -150,7 +152,9 @@ public class PortalHandler : MonoBehaviour {
 		if (TroopsHandler.instance.moveTroopsActions.Count == 0) {
 			TroopsHandler.instance.restartMoveTroops ();
 		}
-		EventManager.positionText ();
+		if (portals.Length > 0) { 
+			EventManager.positionText ();
+		}
 	}
 
 	private GameObject getUnfinishedPortalObj(int pId) {

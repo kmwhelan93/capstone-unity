@@ -21,5 +21,9 @@ public class ObjectInstanceDictionary {
 	public static void registerGameObject(string name, GameObject gameObject) {
 		gameObjects.Add (name, gameObject);
 	}
+	
+	public static void clearDictionary() {
+		gameObjects.Clear();
+	}
 
 }
