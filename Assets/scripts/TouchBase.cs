@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using LitJson;
 
 public class TouchBase : MonoBehaviour {
 
@@ -61,9 +62,13 @@ public class TouchBase : MonoBehaviour {
 		WWW request = RequestService.makeRequest("world/bases/create", b);
 		yield return request;
 		Debug.Log (request.text);
+		NewBase newBase = JsonMapper.ToObject<NewBase> (request.text);
+		GenerateWorld.instance.addBase(newBase.b);
+		EventManager.positionText ();
+		PortalHandler.instance.addPortal(newBase.p);
 		GenerateWorld.instance.message.text = request.text;
 		UpdateGold.instance.syncGold ();
-		GenerateWorld.instance.resetWorldView ();
+		//GenerateWorld.instance.resetWorldView ();
 	}
 
 }

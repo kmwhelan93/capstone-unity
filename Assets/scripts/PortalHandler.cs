@@ -15,8 +15,10 @@ public class PortalHandler : MonoBehaviour {
 	public Material dragPortalInvalidMaterial;
 	public Material invalidBaseMaterial;
 
-	private Portal2[] portals;
-	private GameObject[] currentPortalObjects;
+	// TODO: (cem6at) get rid of this
+	private List<Portal2> portals;
+	private List<GameObject> currentPortalObjects;
+	// TODO: (cem6at) get rid of this
 	private List<Portal2> currentUnfinishedPortals;
 	private List<GameObject> currentUnfinishedPortalObjs;
 	private GameObject dragToCreateTempPortal;
@@ -108,53 +110,55 @@ public class PortalHandler : MonoBehaviour {
 		// NOTE: Changed this to "new WWW" from "RequestService.makeRequest" to fix a 500 request failed error
 		WWW request = new WWW ("localhost:8080/myapp/world/portals", wwwform);
 		yield return request;
-		portals = JsonMapper.ToObject<Portal2[]> (request.text);
-
-		currentPortalObjects = new GameObject[portals.Length];
+		portals = JsonMapper.ToObject<List<Portal2>> (request.text);
+		currentPortalObjects = new List<GameObject>();
 		currentUnfinishedPortals = new List<Portal2>();
 		currentUnfinishedPortalObjs = new List<GameObject>();
-		for (int i = 0; i < portals.Length; i++) {
-			// Locations of the two bases
-			Portal2 portal = portals[i];
-			Vector3 p1 = portal.base1.convertBaseCoordsToWorld();
-			Vector3 p2 = portal.base2.convertBaseCoordsToWorld();
-
-			p1 = p1 + (p2 - p1).normalized * Globals.baseRadius;
-			p2 = p2 + (p1 - p2).normalized * Globals.baseRadius;
-			GameObject portalObj;
-			
-			// Create the portal (cylinder prefab)
-			// Start new, user created portals at length corresponging to 1% finished
-			if (portal.timeFinished <= CurrentTime.currentTimeMillis()) {
-				// Portal finished
-				portalObj = createPortal(portals[i]);;
-			}
-			else {
-				// Portal unfinished
-				portalObj = createUnfinishedPortal(portals[i]);
-			}
-
-			GameObject objectInfoPanel = (GameObject) Instantiate (GenerateWorld.instance.objectInfoPanelPrefab, new Vector3(0, 0, 0), Quaternion.identity);
-			objectInfoPanel.transform.SetParent(GenerateWorld.instance.canvas.transform, false);
-			objectInfoPanel.GetComponent<ObjectInfoPanelScript>().o = portalObj;
-			//portalObj.GetComponent<PortalScript>().objectInfoPanel = objectInfoPanel;
-
-			GameObject moveTroopsProgress = (GameObject)Instantiate (GenerateWorld.instance.ProgressBarPrefab, new Vector3 (0, 0, 0), Quaternion.identity);
-			moveTroopsProgress.transform.SetParent (objectInfoPanel.transform);
-			// TODO: change this to a move unit sprite
-			moveTroopsProgress.GetComponentInChildren<Image> ().sprite = GenerateWorld.instance.moveTroopSprite;
-			moveTroopsProgress.SetActive(false);
-			portal.updateTroopsToMove += moveTroopsProgress.GetComponent<OIPProgressScript> ().updateContent;
-
-			currentPortalObjects[i] = portalObj;
+		foreach (Portal2 portal in portals) {
+			addPortal (portal);
 		}
 		// TODO (cem6at): Find better location for this
 		if (TroopsHandler.instance.moveTroopsActions.Count == 0) {
 			TroopsHandler.instance.restartMoveTroops ();
 		}
-		if (portals.Length > 0) { 
+		if (portals.Count > 0) { 
 			EventManager.positionText ();
 		}
+	}
+	
+	public void addPortal(Portal2 portal) {
+		// Locations of the two bases
+		Vector3 p1 = portal.base1.convertBaseCoordsToWorld();
+		Vector3 p2 = portal.base2.convertBaseCoordsToWorld();
+		
+		p1 = p1 + (p2 - p1).normalized * Globals.baseRadius;
+		p2 = p2 + (p1 - p2).normalized * Globals.baseRadius;
+		GameObject portalObj;
+		
+		// Create the portal (cylinder prefab)
+		// Start new, user created portals at length corresponging to 1% finished
+		if (portal.timeFinished <= CurrentTime.currentTimeMillis()) {
+			// Portal finished
+			portalObj = createPortal(portal);;
+		}
+		else {
+			// Portal unfinished
+			portalObj = createUnfinishedPortal(portal);
+		}
+		
+		GameObject objectInfoPanel = (GameObject) Instantiate (GenerateWorld.instance.objectInfoPanelPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+		objectInfoPanel.transform.SetParent(GenerateWorld.instance.canvas.transform, false);
+		objectInfoPanel.GetComponent<ObjectInfoPanelScript>().o = portalObj;
+		//portalObj.GetComponent<PortalScript>().objectInfoPanel = objectInfoPanel;
+		
+		GameObject moveTroopsProgress = (GameObject)Instantiate (GenerateWorld.instance.ProgressBarPrefab, new Vector3 (0, 0, 0), Quaternion.identity);
+		moveTroopsProgress.transform.SetParent (objectInfoPanel.transform);
+		// TODO: change this to a move unit sprite
+		moveTroopsProgress.GetComponentInChildren<Image> ().sprite = GenerateWorld.instance.moveTroopSprite;
+		moveTroopsProgress.SetActive(false);
+		portal.updateTroopsToMove += moveTroopsProgress.GetComponent<OIPProgressScript> ().updateContent;
+		
+		currentPortalObjects.Add(portalObj);
 	}
 
 	private GameObject getUnfinishedPortalObj(int pId) {
@@ -260,7 +264,7 @@ public class PortalHandler : MonoBehaviour {
 	}
 	
 	private void grayInvalidBases() {
-		GameObject[] currentBases = GenerateWorld.instance.getCurrentBases ();
+		List<GameObject> currentBases = GenerateWorld.instance.getCurrentBases ();
 		foreach (GameObject b in currentBases) {
 			if (!validBase(int.Parse(b.name.Substring(4)))) {
 				b.GetComponent<Renderer>().material = invalidBaseMaterial;
@@ -285,7 +289,7 @@ public class PortalHandler : MonoBehaviour {
 	}
 	
 	public void restoreInvalidBaseColors() {
-		GameObject[] currentBases = GenerateWorld.instance.getCurrentBases ();
+		List<GameObject> currentBases = GenerateWorld.instance.getCurrentBases ();
 		foreach (GameObject bObj in currentBases) {
 			Base b = (Base)bObj.GetComponent<InstanceObjectScript>().instanceObject;
 			BaseHandler.instance.setColor(b);

@@ -6,9 +6,9 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 
 public class GenerateWorld : MonoBehaviour {
-
+	
 	public static GenerateWorld instance;
-
+	
 	public GameObject basePrefab;
 	public GameObject textPrefab;
 	public GameObject objectInfoPanelPrefab;
@@ -18,17 +18,17 @@ public class GenerateWorld : MonoBehaviour {
 	public GameObject ProgressBarPrefab;
 	public Sprite addUnitSprite;
 	public Sprite moveTroopSprite;
-
+	
 	public Material[] materials;
-
-	private GameObject[] currentBases;
+	
+	private List<GameObject> currentBases;
 	public GameObject canvas;
-
+	
 	// TODO: investigate what this is used for
 	public Base lastBase;
 	// TODO (cem6at): do this a better way
 	public Base secondBase;
-
+	
 	public UnityEngine.UI.Text message;
 	public GameObject numTroopsInputObject;
 	public GameObject sliderObject;
@@ -52,33 +52,33 @@ public class GenerateWorld : MonoBehaviour {
 		// Create bases and portals
 		resetWorldView ();
 	}
-
+	
 	// Update is called once per frame
 	void Update () {
 		PortalHandler.instance.updateUnfinishedPortals ();
 	}
-
+	
 	private void loadResources() {
 		String[] materialNames = {
-						"base_orange",
-						"base_green",
-						"base_blue",
-						"base_yellow",
-						"base_purple",
-						"base_pink",
-						"base_teal"
-				};
+			"base_orange",
+			"base_green",
+			"base_blue",
+			"base_yellow",
+			"base_purple",
+			"base_pink",
+			"base_teal"
+		};
 		materials = new Material[materialNames.Length];
 		for (int i = 0; i < materialNames.Length; i++) 
 		{
 			materials[i] = (Material) Resources.Load ("materials/"+ materialNames[i], typeof(Material));
 		}
 	}
-
+	
 	public void resetWorldView() {
 		StartCoroutine (coResetWorldView());
 	}
-
+	
 	private IEnumerator coResetWorldView() {
 		WWWForm wwwform = new WWWForm ();
 		wwwform.AddField ("username", "kmw8sf");
@@ -91,10 +91,10 @@ public class GenerateWorld : MonoBehaviour {
 		PortalHandler.instance.displayPortals ();
 		WormHoleHandler.instance.loadWormHoles ();
 		AttackHandler.instance.loadAttacks ();
-
+		
 		yield break;
 	}
-
+	
 	private void destroyCurrentBases() {
 		if (currentBases == null)
 			return;
@@ -104,49 +104,12 @@ public class GenerateWorld : MonoBehaviour {
 			Destroy (b);
 		}
 	}
-
+	
 	private bool displayBases(Base[] baseLocs) {
 		// Place objects
-		currentBases = new GameObject[baseLocs.Length];
-		List<BaseWrapper> baseWrappers = new List<BaseWrapper> ();
+		currentBases = new List<GameObject>();
 		for (int i = 0; i < baseLocs.Length; i++) {
-			Vector3 loc = baseLocs[i].convertBaseCoordsToWorld();
-			// adjust for base prefab
-			loc = loc + new Vector3(0, 0, .5f);
-			GameObject baseObj = (GameObject) Instantiate (basePrefab, loc, basePrefab.transform.rotation);
-			baseObj.GetComponent<Renderer>().material = materials[baseLocs[i].colorId % materials.Length];
-			TouchBase tb = baseObj.GetComponent<TouchBase>();
-			tb.b = baseLocs[i];
-			baseObj.name = "Base" + baseLocs[i].baseId;
-			ObjectInstanceDictionary.registerGameObject(baseObj.name, baseObj);
-			baseObj.GetComponent<InstanceObjectScript>().instanceObject = baseLocs[i];
-			baseLocs[i].gameObject = baseObj;
-			currentBases[i] = baseObj;
-
-			GameObject objectInfoPanel = (GameObject) Instantiate (objectInfoPanelPrefab, new Vector3(0, 0, 0), Quaternion.identity);
-			objectInfoPanel.transform.SetParent(canvas.transform, false);
-			// TODO: check if I need the following line
-			objectInfoPanel.GetComponent<ObjectInfoPanelScript>().o = baseObj;
-			baseObj.GetComponent<BaseScript>().objectInfoPanel = objectInfoPanel;
-
-			GameObject prodText = (GameObject) Instantiate (OIPItemPrefab, new Vector3(0, 0, -1000), Quaternion.identity);
-			prodText.transform.SetParent (objectInfoPanel.transform, false);
-			prodText.GetComponentInChildren<Image>().sprite = prodSprite;
-			tb.b.updateProdRateEvent += prodText.GetComponent<OIPItemScript>().updateContent;
-			
-
-			GameObject unitsText = (GameObject) Instantiate (OIPItemPrefab, new Vector3(0, 0, 0), Quaternion.identity);
-			unitsText.transform.SetParent(objectInfoPanel.transform, false);
-			unitsText.GetComponentInChildren<Image>().sprite = unitSprite;
-			tb.b.updateUnitsEvent += unitsText.GetComponent<OIPItemScript>().updateContent;
-
-			// create progress bar ui
-			// There is always one progress bar per base and it just hides and shows
-			GameObject progressBar = (GameObject)Instantiate (ProgressBarPrefab, new Vector3 (0, 0, 0), Quaternion.identity);
-			progressBar.transform.SetParent (objectInfoPanel.transform);
-			progressBar.GetComponentInChildren<Image> ().sprite = addUnitSprite;
-			progressBar.SetActive(false);
-			tb.b.updateAddUnitProgress += progressBar.GetComponent<OIPProgressScript> ().updateContent;
+			addBase (baseLocs[i]);
 		}
 		EventManager.positionText ();
 		if (TroopsHandler.instance.addTroopsActions.Count == 0) {
@@ -155,21 +118,62 @@ public class GenerateWorld : MonoBehaviour {
 		}
 		return true;
 	}
+	
+	public void addBase(Base b) {
+		Vector3 loc = b.convertBaseCoordsToWorld();
+		// adjust for base prefab
+		loc = loc + new Vector3(0, 0, .5f);
+		GameObject baseObj = (GameObject) Instantiate (basePrefab, loc, basePrefab.transform.rotation);
+		baseObj.GetComponent<Renderer>().material = materials[b.colorId % materials.Length];
+		TouchBase tb = baseObj.GetComponent<TouchBase>();
+		tb.b = b;
+		baseObj.name = "Base" + b.baseId;
+		ObjectInstanceDictionary.registerGameObject(baseObj.name, baseObj);
+		baseObj.GetComponent<InstanceObjectScript>().instanceObject = b;
+		b.gameObject = baseObj;
+		currentBases.Add(baseObj);
+		
+		GameObject objectInfoPanel = (GameObject) Instantiate (objectInfoPanelPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+		objectInfoPanel.transform.SetParent(canvas.transform, false);
+		// TODO: check if I need the following line
+		objectInfoPanel.GetComponent<ObjectInfoPanelScript>().o = baseObj;
+		baseObj.GetComponent<BaseScript>().objectInfoPanel = objectInfoPanel;
+		
+		GameObject prodText = (GameObject) Instantiate (OIPItemPrefab, new Vector3(0, 0, -1000), Quaternion.identity);
+		prodText.transform.SetParent (objectInfoPanel.transform, false);
+		prodText.GetComponentInChildren<Image>().sprite = prodSprite;
+		tb.b.updateProdRateEvent += prodText.GetComponent<OIPItemScript>().updateContent;
+		
+		
+		GameObject unitsText = (GameObject) Instantiate (OIPItemPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+		unitsText.transform.SetParent(objectInfoPanel.transform, false);
+		unitsText.GetComponentInChildren<Image>().sprite = unitSprite;
+		tb.b.updateUnitsEvent += unitsText.GetComponent<OIPItemScript>().updateContent;
+		
+		// create progress bar ui
+		// There is always one progress bar per base and it just hides and shows
+		GameObject progressBar = (GameObject)Instantiate (ProgressBarPrefab, new Vector3 (0, 0, 0), Quaternion.identity);
+		progressBar.transform.SetParent (objectInfoPanel.transform);
+		progressBar.GetComponentInChildren<Image> ().sprite = addUnitSprite;
+		progressBar.SetActive(false);
+		tb.b.updateAddUnitProgress += progressBar.GetComponent<OIPProgressScript> ().updateContent;
+	}
+	
 	public GameObject getBaseObj(String name) {
 		foreach (GameObject b in currentBases) {
 			if (b.name.Equals(name)) return b;
 		}
 		return null;
 	}
-
-	public GameObject[] getCurrentBases() {
+	
+	public List<GameObject> getCurrentBases() {
 		return currentBases;
 	}
-
+	
 	public void clearBases() {
 		StartCoroutine(coClearBases ());
 	}
-
+	
 	private IEnumerator coClearBases() {
 		//WWW request = RequestService.makeRequest ("world/clear", currentBases [0].GetComponent<TouchBase>().b);
 		WWW request = RequestService.makeRequest ("world/clear", ObjectInstanceDictionary.getObjectInstanceById("Base", 1));
@@ -178,5 +182,5 @@ public class GenerateWorld : MonoBehaviour {
 		UpdateGold.instance.syncGold ();
 		GenerateWorld.instance.resetWorldView();
 	}
-
+	
 }
