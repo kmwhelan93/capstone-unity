@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using LitJson;
 
 public class WormHole : InstanceObject {
 	public GameObject gameObject { get; set; }
@@ -7,6 +8,7 @@ public class WormHole : InstanceObject {
 	public int wormholeId { get; set; }
 
 	public int baseId { get; set; }
+	[DoNotSerialize]
 	public Base b {
 		get {
 			return (Base) ObjectInstanceDictionary.getObjectInstanceById("Base", baseId);
@@ -14,6 +16,7 @@ public class WormHole : InstanceObject {
 	}
 
 	public int connectedWormholeId { get; set; }
+	[DoNotSerialize]
 	public WormHole connectedWormHole {
 		get{
 			return (WormHole) ObjectInstanceDictionary.getObjectInstanceById("WormHole", connectedWormholeId);
@@ -21,6 +24,22 @@ public class WormHole : InstanceObject {
 	}
 
 	public Point relativeCoords { get; set; }
+
+	[DoNotSerialize]
+	public GameObject objectInfoPanel { get; set; }
+
+	private AttackState _attackState = AttackState.NoAttack;
+	[DoNotSerialize]
+	public AttackState attackState {
+		get{ return this._attackState; }
+		set{
+			this._attackState = value;
+			if (this._attackState == AttackState.Attacking) {
+				this.gameObject.GetComponent<Animator>().runtimeAnimatorController = WormHoleHandler.instance.attackController;
+				Debug.Log ("Setting animator controller");
+			}
+		}
+	}
 
 	public Vector3 getWorldCoords()
 	{

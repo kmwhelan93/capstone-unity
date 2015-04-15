@@ -5,12 +5,12 @@ using LitJson;
 
 
 public class OIPProgressScript : MonoBehaviour {
-	private int min = 0;
-	private int max;
+	private long min = 0;
+	public long max;
 	// value specifies how many are left, not how many have been used
-	private int value = 0;
-	public void updateContent(int value) {
-		value = Mathf.Abs (value);
+	public long value = 0;
+	public void updateContent(long value) {
+		value = (long)Mathf.Abs (value);
 		if (value - this.value > 0) {
 			this.gameObject.SetActive(true);
 			max = value;

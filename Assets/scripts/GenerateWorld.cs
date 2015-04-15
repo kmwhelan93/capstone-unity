@@ -90,7 +90,6 @@ public class GenerateWorld : MonoBehaviour {
 		displayBases (bases);
 		PortalHandler.instance.displayPortals ();
 		WormHoleHandler.instance.loadWormHoles ();
-		AttackHandler.instance.loadAttacks ();
 		
 		yield break;
 	}

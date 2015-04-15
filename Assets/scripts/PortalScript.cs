@@ -16,4 +16,9 @@ public class PortalScript : MonoBehaviour, UIPlacer, InstanceObjectScript {
 		Vector3 textPosition = Camera.main.WorldToScreenPoint (transform.position + worldOffset);
 		return textPosition;
 	}
+
+	public Vector2 getPivot() {
+		// TODO: implement
+		return new Vector2 (0, .5f);
+	}
 }

@@ -2968,6 +2968,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 124542, guid: 6356967149c33a841a40caf3037779ce, type: 2}
+  objectInfoPanelPrefab: {fileID: 113084, guid: 4b196cf0777f696478b6237b0b7b51d7,
+    type: 2}
+  noAttackController: {fileID: 9100000, guid: 0b60c4f0c6d4a27418678d109cf8f342, type: 2}
+  attackController: {fileID: 9100000, guid: 2502d0c7c5a6a1545a3132ad64fe1446, type: 2}
+  underAttackController: {fileID: 9100000, guid: db471f1045c8bd248abd93969a81b836,
+    type: 2}
 --- !u!114 &1307284336
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3008,6 +3014,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38ed7e03dc792f04daf97be3266578c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OIPProgressItemPrefab: {fileID: 116874, guid: 952a5fb17c90a6149b95d094a4a6353f,
+    type: 2}
+  attackSprite: {fileID: 21300000, guid: 00cf651af036abc4da4706a7e06fd673, type: 3}
 --- !u!1 &1369496861
 GameObject:
   m_ObjectHideFlags: 0
@@ -3389,6 +3398,48 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Slider+SliderEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!1001 &1476227189
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 400000, guid: aae1720682ceabc4094bc1daa96f0b73, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 6.91777468
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: aae1720682ceabc4094bc1daa96f0b73, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -3.31159258
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: aae1720682ceabc4094bc1daa96f0b73, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: aae1720682ceabc4094bc1daa96f0b73, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: aae1720682ceabc4094bc1daa96f0b73, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: aae1720682ceabc4094bc1daa96f0b73, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: aae1720682ceabc4094bc1daa96f0b73, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: aae1720682ceabc4094bc1daa96f0b73, type: 2}
+      propertyPath: m_RootOrder
+      value: 9
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: aae1720682ceabc4094bc1daa96f0b73, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1 &1499243931
 GameObject:
   m_ObjectHideFlags: 0

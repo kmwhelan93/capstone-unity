@@ -5,6 +5,6 @@ public class EventManager {
 	public delegate void DefaultDelegate();
 	public static DefaultDelegate positionText;
 
-	public delegate void UpdateContentEvent(int value);
+	public delegate void UpdateContentEvent(long value);
 
 }

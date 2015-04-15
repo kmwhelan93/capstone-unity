@@ -6,14 +6,23 @@ using LitJson;
 
 public class WormHoleHandler : MonoBehaviour {
 	public GameObject prefab;
+	public GameObject objectInfoPanelPrefab;
 
 	public static WormHoleHandler instance;
+
+	public RuntimeAnimatorController noAttackController;
+	public RuntimeAnimatorController attackController;
+	public RuntimeAnimatorController underAttackController;
+
+
 
 	public WormHole[] currentWormHoles { get; set; }
 	public GameObject[] currentWormHoleObjects { get; set; }
 	// Use this for initialization
 	void Awake () {
 		instance = this;
+	}
+	void Start () {
 	}
 	
 	// Update is called once per frame
@@ -43,7 +52,17 @@ public class WormHoleHandler : MonoBehaviour {
 			ObjectInstanceDictionary.registerGameObject(wormholeObj.name, wormholeObj);
 			wormholes[i].gameObject = wormholeObj;
 			angleTowardsBase (wormholeObj, wormholes[i].b.getGameObject());
+
+			GameObject objectInfoPanel = (GameObject) Instantiate (objectInfoPanelPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+			objectInfoPanel.transform.SetParent(GenerateWorld.instance.canvas.transform, false);
+			// TODO: check if I need the following line
+			objectInfoPanel.GetComponent<ObjectInfoPanelScript>().o = wormholeObj;
+			wormholeObj.GetComponent<InstanceObjectScript>().instanceObject = wormholes[i];
+			wormholes[i].objectInfoPanel = objectInfoPanel;
+			objectInfoPanel.GetComponent<RectTransform>().pivot = wormholeObj.GetComponent<UIPlacer>().getPivot();
 		}
+		EventManager.positionText ();
+		AttackHandler.instance.loadAttacks ();
 	}
 
 	public void angleTowardsBase(GameObject wormhole, GameObject baseObj) 

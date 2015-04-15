@@ -16,4 +16,9 @@ public class BaseScript : MonoBehaviour, UIPlacer, InstanceObjectScript {
 		//SetActive(!Globals.isInLocalView);
 		return textPosition;
 	}
+
+	public Vector2 getPivot() {
+		// TODO: implement
+		return new Vector2(0, .5f);
+	}
 }

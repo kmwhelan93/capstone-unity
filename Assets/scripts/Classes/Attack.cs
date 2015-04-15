@@ -1,14 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
+using LitJson;
 
 public class Attack : MonoBehaviour {
 
 	public string attacker { get; set; }
 
 	public int attackerBaseId { get; set; }
+	[DoNotSerialize]
 	public Base attackerBase { get { return (Base) ObjectInstanceDictionary.getObjectInstanceById ("Base", attackerBaseId); } }
 	
 	public int attackerWormholeId { get; set; }
+	[DoNotSerialize]
 	public WormHole attackerWormHole {
 		get{
 			return (WormHole) ObjectInstanceDictionary.getObjectInstanceById("WormHole", attackerWormholeId);
@@ -18,6 +21,7 @@ public class Attack : MonoBehaviour {
 	public string defender { get; set; }
 
 	public int defenderBaseId { get; set; }
+	[DoNotSerialize]
 	public Base defenderBase {
 		get {
 			return (Base) ObjectInstanceDictionary.getObjectInstanceById("Base", defenderBaseId);
@@ -25,6 +29,7 @@ public class Attack : MonoBehaviour {
 	}
 
 	public int defenderWormholeId { get; set; }
+	[DoNotSerialize]
 	public WormHole defenderWormHole {
 		get {
 			return (WormHole) ObjectInstanceDictionary.getObjectInstanceById("WormHole", defenderWormholeId);
@@ -33,7 +38,27 @@ public class Attack : MonoBehaviour {
 
 	public long timeInitiated { get; set; }
 	public long timeAttackLands { get; set; }
-	public long lastUpdate { get; set; }
+
+	private long _lastUpdate;
+	public long lastUpdate {
+		get{return this._lastUpdate;}
+		set{
+			this._lastUpdate = value;
+			if (_lastUpdateEvent != null) {
+				_lastUpdateEvent(this.timeAttackLands - _lastUpdate);
+			}
+		}
+	}
+	private EventManager.UpdateContentEvent _lastUpdateEvent;
+	[DoNotSerialize]
+	public EventManager.UpdateContentEvent lastUpdateEvent {
+		get{ return this._lastUpdateEvent;}
+		set{
+			this._lastUpdateEvent = value;
+			this._lastUpdateEvent(this.timeAttackLands - this.timeInitiated);
+		}
+	}
+	
 	public int numUnits { get; set; }
 
 	public override bool Equals (object obj)
@@ -57,8 +82,8 @@ public class Attack : MonoBehaviour {
 	}
 	public override string ToString ()
 	{
-		return "todo add to string for attack";
-		//return string.Format ("[Attack: attacker={0}, attackerBase={1}, attackerWormholeId={2}, defender={3}, defenderBase={4}, defenderWormholeId={5}, timeInitiated={6}, timeAttackLands={7}, lastUpdate={8}, numUnits={9}]", attacker, attackerBase, attackerWormholeId, defender, defenderBase, defenderWormholeId, timeInitiated, timeAttackLands, lastUpdate, numUnits);
+		return string.Format ("[Attack: attacker={0}, attackerBaseId={1}, attackerWormholeId={2}, defender={3}, defenderBaseId={4}, defenderWormholeId={5}, timeInitiated={6}, timeAttackLands={7}, lastUpdate={8}, numUnits={9}]", attacker, attackerBaseId, attackerWormholeId, defender, defenderBaseId, defenderWormholeId, timeInitiated, timeAttackLands, lastUpdate, numUnits);
 	}
+	
 	
 }
