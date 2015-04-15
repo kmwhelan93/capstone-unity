@@ -81,10 +81,20 @@ public class ToggleMenu : MonoBehaviour {
 	public void onZoomEmpireToggle(bool isOn) {
 		if (isOn) {
 			Globals.opState = OpState.ZoomEmpire;
-			GenerateWorld.instance.message.text = "";
+			GenerateWorld.instance.message.text = "Touch base to zoom";
 			Camera.main.GetComponent<LocalView>().switchToEmpireView();
 		} else {
 			Globals.opState = OpState.None;
+			GenerateWorld.instance.message.text = "";
+		}
+	}
+
+	public void onAttackToggle(bool isOn) {
+		if (isOn) {
+			Globals.opState = OpState.Attack;
+			GenerateWorld.instance.message.text = "Touch wormhole to attack";
+		} else {
+			Globals.opState= OpState.None;
 			GenerateWorld.instance.message.text = "";
 		}
 	}
