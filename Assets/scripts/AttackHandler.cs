@@ -2,6 +2,7 @@
 using System.Collections;
 using LitJson;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class AttackHandler : MonoBehaviour {
 	public GameObject OIPProgressItemPrefab;
@@ -9,7 +10,7 @@ public class AttackHandler : MonoBehaviour {
 
 	public static AttackHandler instance;
 
-	public Attack[] currentAttacks { get; set; }
+	public List<Attack> currentAttacks { get; set; }
 
 	void Awake () {
 		instance = this;
@@ -38,15 +39,24 @@ public class AttackHandler : MonoBehaviour {
 		wwwform.AddField ("username", "kmw8sf");
 		WWW request = new WWW ("localhost:8080/myapp/world/attacks", wwwform);
 		yield return request;
-		currentAttacks = JsonMapper.ToObject<Attack[]>(request.text);
+		currentAttacks = JsonMapper.ToObject<List<Attack>>(request.text);
 		foreach(Attack attack in currentAttacks) {
-			GameObject progressBar = (GameObject)Instantiate (OIPProgressItemPrefab, new Vector3 (0, 0, 0), Quaternion.identity);
-			WormHole w = attack.attackerWormHole;
-			progressBar.transform.SetParent (w.objectInfoPanel.transform);
-			progressBar.GetComponentInChildren<Image> ().sprite = attackSprite;
-			progressBar.SetActive(true);
-			attack.lastUpdateEvent += progressBar.GetComponent<OIPProgressScript> ().updateContent;
-			w.attackState = AttackState.Attacking;
+			createAttackObj(attack);
 		}
+	}
+
+	public void addAttack(Attack attack) {
+		currentAttacks.Add (attack);
+		createAttackObj (attack);
+	}
+
+	private void createAttackObj(Attack attack) {
+		GameObject progressBar = (GameObject)Instantiate (OIPProgressItemPrefab, new Vector3 (0, 0, 0), Quaternion.identity);
+		WormHole w = attack.attackerWormHole;
+		progressBar.transform.SetParent (w.objectInfoPanel.transform);
+		progressBar.GetComponentInChildren<Image> ().sprite = attackSprite;
+		progressBar.SetActive (true);
+		attack.lastUpdateEvent += progressBar.GetComponent<OIPProgressScript> ().updateContent;
+		w.attackState = AttackState.Attacking;
 	}
 }

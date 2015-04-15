@@ -48,10 +48,7 @@ public class ToggleMenu : MonoBehaviour {
 			GenerateWorld.instance.message.text = "Click a base to add a unit";
 		} else {
 			Globals.opState = OpState.None;
-			GenerateWorld.instance.sliderObject.SetActive(false);
-			GenerateWorld.instance.sliderConfirmButton.SetActive(false);
-			GenerateWorld.instance.message.text = "";
-			GenerateWorld.instance.sliderValue.text = "";
+			disableSlider();
 		}
 	}
 
@@ -61,10 +58,7 @@ public class ToggleMenu : MonoBehaviour {
 			GenerateWorld.instance.message.text = "Click a base with units";
 		} else {
 			Globals.opState = OpState.None;
-			GenerateWorld.instance.sliderObject.SetActive(false);
-			GenerateWorld.instance.sliderConfirmButton.SetActive(false);
-			GenerateWorld.instance.message.text = "";
-			GenerateWorld.instance.sliderValue.text = "";
+			disableSlider();
 		}
 	}
 
@@ -96,7 +90,15 @@ public class ToggleMenu : MonoBehaviour {
 		} else {
 			Globals.opState= OpState.None;
 			GenerateWorld.instance.message.text = "";
+			disableSlider();
 		}
+	}
+
+	private void disableSlider() {
+		GenerateWorld.instance.sliderObject.SetActive(false);
+		GenerateWorld.instance.sliderConfirmButton.SetActive(false);
+		GenerateWorld.instance.message.text = "";
+		GenerateWorld.instance.sliderValue.text = "";
 	}
 
 }

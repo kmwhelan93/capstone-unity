@@ -7,4 +7,7 @@ public class EventManager {
 
 	public delegate void UpdateContentEvent(long value);
 
+	public delegate void SliderConfirmedEvent(int value);
+	public static SliderConfirmedEvent sliderConfirmed;
+
 }

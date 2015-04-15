@@ -196,12 +196,18 @@ public class TroopsHandler : MonoBehaviour {
 			moveTroopsActions.Add (a);
 		}
 	}
-	
+
+	/**
+	 * Courtney, this is not a good place for this and I suspect you know that. Please move this out to slider behavior.
+	 */
 	public void onCheckButtonClickAddTroops() {
 		if (Globals.opState == OpState.AddTroops) {
 			addTroops (GenerateWorld.instance.lastBase, (int)GenerateWorld.instance.slider.value);
 		} else if (Globals.opState == OpState.MoveTroops) {
 			instance.startMoveTroopsAction (GenerateWorld.instance.secondBase, (int)GenerateWorld.instance.slider.value);
+		} else if (Globals.opState == OpState.Attack) {
+			EventManager.sliderConfirmed((int)GenerateWorld.instance.slider.value);
+			EventManager.sliderConfirmed = null;
 		}
 		GenerateWorld.instance.sliderValue.text = "";
 		GenerateWorld.instance.sliderObject.SetActive(false);

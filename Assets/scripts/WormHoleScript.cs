@@ -32,4 +32,24 @@ public class WormHoleScript : MonoBehaviour, InstanceObjectScript, UIPlacer {
 			retVal.y = 1;
 		return retVal;
 	}
+
+	public void onAttackConfirmed(int numUnits) {
+		StartCoroutine (coOnAttackConfirmed (numUnits));
+	}
+
+	public IEnumerator coOnAttackConfirmed(int numUnits) {
+		WormHole w = (WormHole)gameObject.GetComponent<InstanceObjectScript> ().instanceObject;
+		Base b = w.b;
+		WWWForm wwwform = new WWWForm ();
+		wwwform.AddField ("username", "kmw8sf");
+		wwwform.AddField ("baseId", b.baseId);
+		wwwform.AddField ("wormholeId", w.wormholeId);
+		wwwform.AddField ("numUnits", numUnits);
+		WWW request = new WWW ("localhost:8080/myapp/world/attack", wwwform);
+		yield return request;
+		Attack attack = LitJson.JsonMapper.ToObject<Attack> (request.text);
+		if (attack.attackerBaseId != null) {
+			AttackHandler.instance.addAttack(attack);
+		}
+	}
 }
