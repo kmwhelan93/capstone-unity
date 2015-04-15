@@ -63,6 +63,7 @@ public class WormHoleHandler : MonoBehaviour {
 		}
 		EventManager.positionText ();
 		AttackHandler.instance.loadAttacks ();
+		UnderAttackHandler.instance.loadUnderAttacks ();
 	}
 
 	public void angleTowardsBase(GameObject wormhole, GameObject baseObj) 

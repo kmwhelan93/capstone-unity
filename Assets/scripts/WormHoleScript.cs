@@ -8,10 +8,10 @@ public class WormHoleScript : MonoBehaviour, InstanceObjectScript, UIPlacer {
 	public Vector3 getUIScreenPosition() {
 		WormHole w = (WormHole)instanceObject;
 		Vector3 worldOffset = new Vector3 (0, 0, 0);
-		if (w.relativeCoords.x > 0) {
-			worldOffset = new Vector3 (this.gameObject.transform.localScale.x * 1.3f, 0, 0);
-		} else if (w.relativeCoords.x > 0) {
-			worldOffset = new Vector3 (-this.gameObject.transform.localScale.x * 1.3f, 0, 0);
+		if (w.relativeCoords.y > 0) {
+			worldOffset = new Vector3 (0, this.gameObject.transform.localScale.x, 0);
+		} else if (w.relativeCoords.y < 0) {
+			worldOffset = new Vector3 (0, -this.gameObject.transform.localScale.x, 0);
 		}
 		Vector3 textPosition = Camera.main.WorldToScreenPoint (transform.position + worldOffset);
 		//SetActive(!Globals.isInLocalView);

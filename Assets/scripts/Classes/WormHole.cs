@@ -36,7 +36,10 @@ public class WormHole : InstanceObject {
 			this._attackState = value;
 			if (this._attackState == AttackState.Attacking) {
 				this.gameObject.GetComponent<Animator>().runtimeAnimatorController = WormHoleHandler.instance.attackController;
-				Debug.Log ("Setting animator controller");
+			} else if (this._attackState == AttackState.underAttack) {
+				this.gameObject.GetComponent<Animator>().runtimeAnimatorController = WormHoleHandler.instance.underAttackController;
+			} else if (this._attackState == AttackState.NoAttack) {
+				this.gameObject.GetComponent<Animator>().runtimeAnimatorController = WormHoleHandler.instance.noAttackController;
 			}
 		}
 	}
