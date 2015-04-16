@@ -63,11 +63,7 @@ public class Base : InstanceObject {
 	[DoNotSerialize]
 	public EventManager.UpdateContentEvent updateAddUnitProgress { get; set; }
 
-	public long lastUpdated {get; set; }
-
-
-	// {"username":"kmw8sf","colorId":1,"baseId":1,"world":{"x":0,"y":0},"local":{"x":0,"y":0},"prodRate":10,"units":151,"unitsToAdd":0,"lastUpdated":0}
-	
+	public long lastUpdated {get; set; }	
 
 	public override bool Equals (object obj)
 	{

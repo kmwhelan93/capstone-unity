@@ -30,11 +30,7 @@ public class GenerateWorld : MonoBehaviour {
 	public Base secondBase;
 	
 	public UnityEngine.UI.Text message;
-	public GameObject numTroopsInputObject;
-	public GameObject sliderObject;
-	public Slider slider; // for num troops input
-	public GameObject sliderConfirmButton;
-	public UnityEngine.UI.Text sliderValue;
+	//public GameObject numTroopsInputObject;
 	
 	void Awake() {
 		instance = this;
@@ -43,9 +39,6 @@ public class GenerateWorld : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		message.text = "";
-		sliderValue.text = "";
-		sliderObject.SetActive(false);
-		sliderConfirmButton.SetActive(false);
 		Globals.portalBuildTimeInMins = 1;
 		// load resources
 		loadResources ();

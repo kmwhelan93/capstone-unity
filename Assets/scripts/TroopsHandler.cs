@@ -197,23 +197,6 @@ public class TroopsHandler : MonoBehaviour {
 		}
 	}
 
-	/**
-	 * Courtney, this is not a good place for this and I suspect you know that. Please move this out to slider behavior.
-	 */
-	public void onCheckButtonClickAddTroops() {
-		if (Globals.opState == OpState.AddTroops) {
-			addTroops (GenerateWorld.instance.lastBase, (int)GenerateWorld.instance.slider.value);
-		} else if (Globals.opState == OpState.MoveTroops) {
-			instance.startMoveTroopsAction (GenerateWorld.instance.secondBase, (int)GenerateWorld.instance.slider.value);
-		} else if (Globals.opState == OpState.Attack) {
-			EventManager.sliderConfirmed((int)GenerateWorld.instance.slider.value);
-			EventManager.sliderConfirmed = null;
-		}
-		GenerateWorld.instance.sliderValue.text = "";
-		GenerateWorld.instance.sliderObject.SetActive(false);
-		GenerateWorld.instance.sliderConfirmButton.SetActive(false);
-	}
-
 	public void addTroops(Base b, int numTroops) {
 		StartCoroutine (initBuyTroops(b, numTroops));
 	}
@@ -271,9 +254,5 @@ public class TroopsHandler : MonoBehaviour {
 			
 			addTroopsActions.Add (a);
 		}
-	}
-	
-	public void displaySliderValue(float f) {
-		GenerateWorld.instance.sliderValue.text = (int)f + "";
 	}
 }

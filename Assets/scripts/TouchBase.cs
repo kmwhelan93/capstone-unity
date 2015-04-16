@@ -32,12 +32,7 @@ public class TouchBase : MonoBehaviour {
 				Globals.secondClick = false;
 				if (GenerateWorld.instance.lastBase.baseId != b.baseId) {
 					GenerateWorld.instance.message.text = "How many?";
-					GenerateWorld.instance.sliderObject.SetActive(true);
-					GenerateWorld.instance.sliderConfirmButton.SetActive(true);
-					GenerateWorld.instance.slider.minValue = 0;
-					GenerateWorld.instance.slider.maxValue = GenerateWorld.instance.lastBase.units;
-					GenerateWorld.instance.slider.value = 0;
-					GenerateWorld.instance.sliderValue.text = "0";
+					SliderBehavior.instance.showSlider(0, GenerateWorld.instance.lastBase.units);
 					GenerateWorld.instance.secondBase = b;
 				} else {
 					Debug.Log ("Sorry! Can't move units from a base to itself");
@@ -48,12 +43,7 @@ public class TouchBase : MonoBehaviour {
 		} else if (Globals.opState == OpState.AddTroops) {
 			GenerateWorld.instance.message.text = "Waiting for check button click";
 			GenerateWorld.instance.lastBase = b;
-			GenerateWorld.instance.sliderObject.SetActive(true);
-			GenerateWorld.instance.sliderConfirmButton.SetActive(true);
-			GenerateWorld.instance.slider.minValue = 0;
-			GenerateWorld.instance.slider.maxValue = 100;
-			GenerateWorld.instance.slider.value = 0;
-			GenerateWorld.instance.sliderValue.text = "0";
+			SliderBehavior.instance.showSlider(0,100);
 		}
 	}
 	

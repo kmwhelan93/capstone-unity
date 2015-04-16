@@ -54,7 +54,7 @@ public class TouchAndDrag : MonoBehaviour {
 					Globals.secondClick = false;
 				}
 			}
-			else if (t.phase == TouchPhase.Moved && t.deltaPosition.magnitude > 2 && !GenerateWorld.instance.slider.IsActive()) {
+			else if (t.phase == TouchPhase.Moved && t.deltaPosition.magnitude > 2 && !SliderBehavior.instance.sliderIsActive()) {
 				// Drag to move camera
 				Vector2 deltaPosition = Input.GetTouch (0).deltaPosition;
 				Vector2 deltaToScreenRatio = deltaPosition * GetComponent<Camera>().orthographicSize / 5;

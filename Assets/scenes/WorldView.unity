@@ -2802,11 +2802,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22457152, guid: 9e41f3037af3bb546854b44c3ad69491, type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: 327
+      value: 253
       objectReference: {fileID: 0}
     - target: {fileID: 22457152, guid: 9e41f3037af3bb546854b44c3ad69491, type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -275
+      value: -250
       objectReference: {fileID: 0}
     - target: {fileID: 22457152, guid: 9e41f3037af3bb546854b44c3ad69491, type: 2}
       propertyPath: m_SizeDelta.x
@@ -3027,6 +3027,7 @@ GameObject:
   - 114: {fileID: 1307284335}
   - 114: {fileID: 1307284338}
   - 114: {fileID: 1307284339}
+  - 114: {fileID: 1307284340}
   m_Layer: 0
   m_Name: World
   m_TagString: Untagged
@@ -3070,11 +3071,6 @@ MonoBehaviour:
   materials: []
   canvas: {fileID: 1615884911}
   message: {fileID: 137720505}
-  numTroopsInputObject: {fileID: 0}
-  sliderObject: {fileID: 1474471623}
-  slider: {fileID: 1474471625}
-  sliderConfirmButton: {fileID: 1704891300}
-  sliderValue: {fileID: 695914082}
 --- !u!114 &1307284333
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3172,6 +3168,21 @@ MonoBehaviour:
   OIPProgressItemPrefab: {fileID: 116874, guid: 952a5fb17c90a6149b95d094a4a6353f,
     type: 2}
   defendSprite: {fileID: 21300000, guid: f304974f40602c74494e09abcd063d86, type: 3}
+--- !u!114 &1307284340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1307284330}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2593ed11faac3d4080a340b10d9559e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sliderObject: {fileID: 1474471623}
+  slider: {fileID: 1474471625}
+  sliderConfirmButton: {fileID: 1704891300}
+  sliderValue: {fileID: 695914082}
 --- !u!1 &1369496861
 GameObject:
   m_ObjectHideFlags: 0
@@ -3539,9 +3550,9 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1307284337}
+      - m_Target: {fileID: 1307284340}
         m_MethodName: displaySliderValue
-        m_Mode: 0
+        m_Mode: 4
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine, Version=0.0.0.0,
@@ -4113,7 +4124,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1307284337}
+      - m_Target: {fileID: 1307284340}
         m_MethodName: onCheckButtonClickAddTroops
         m_Mode: 1
         m_Arguments:
