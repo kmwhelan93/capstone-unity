@@ -4,6 +4,8 @@ using LitJson;
 
 public class Attack : MonoBehaviour {
 
+	public int attackId { get; set; }
+
 	public string attacker { get; set; }
 
 	public int attackerBaseId { get; set; }
@@ -82,7 +84,7 @@ public class Attack : MonoBehaviour {
 	}
 	public override string ToString ()
 	{
-		return string.Format ("[Attack: attacker={0}, attackerBaseId={1}, attackerWormholeId={2}, defender={3}, defenderBaseId={4}, defenderWormholeId={5}, timeInitiated={6}, timeAttackLands={7}, lastUpdate={8}, numUnits={9}]", attacker, attackerBaseId, attackerWormholeId, defender, defenderBaseId, defenderWormholeId, timeInitiated, timeAttackLands, lastUpdate, numUnits);
+		return string.Format ("[Attack: attackId={0}, attacker={1}, attackerBaseId={2}, attackerWormholeId={3}, defender={4}, defenderBaseId={5}, defenderWormholeId={6}, timeInitiated={7}, timeAttackLands={8}, lastUpdate={9}, numUnits={10}]", attackId, attacker, attackerBaseId, attackerWormholeId, defender, defenderBaseId, defenderWormholeId, timeInitiated, timeAttackLands, lastUpdate, numUnits);
 	}
 	
 	
