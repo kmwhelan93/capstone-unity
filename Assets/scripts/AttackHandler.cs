@@ -26,6 +26,9 @@ public class AttackHandler : MonoBehaviour {
 		if (currentAttacks != null) {
 			foreach (Attack attack in currentAttacks) {
 				attack.lastUpdate = CurrentTime.currentTimeMillis ();
+				if (attack.lastUpdate >= attack.timeAttackLands) {
+					getAttackResults(attack);
+				}
 			}
 		}
 	}
@@ -58,5 +61,27 @@ public class AttackHandler : MonoBehaviour {
 		progressBar.SetActive (true);
 		attack.lastUpdateEvent += progressBar.GetComponent<OIPProgressScript> ().updateContent;
 		w.attackState = AttackState.Attacking;
+	}
+	
+	public void getAttackResults(Attack attack) {
+		StartCoroutine("coGetAttackResults", attack);
+	}
+	
+	public IEnumerator coGetAttackResults(Attack attack) {
+		Debug.Log ("Attack landed");
+		WWWForm wwwform = new WWWForm ();
+		wwwform.AddField ("username", "kmw8sf");
+		wwwform.AddField ("attackId", attack.attackId);
+		WWW request = new WWW ("localhost:8080/myapp/world/attacklanded", wwwform);
+		yield return request;
+		AttackResultObj result = JsonMapper.ToObject<AttackResultObj>(request.text);
+		// Process results
+		bool isWinner = result.winnerUsername.Equals(Globals.username);
+		//Debug.Log ("AttackID: " + attack.attackId + " Won? " + isWinner);
+		if (isWinner) {
+			
+		} else {
+		
+		}
 	}
 }
