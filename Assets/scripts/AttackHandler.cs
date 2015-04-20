@@ -24,11 +24,17 @@ public class AttackHandler : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (currentAttacks != null) {
+			List<Attack> toRemove = new List<Attack> ();
 			foreach (Attack attack in currentAttacks) {
 				attack.lastUpdate = CurrentTime.currentTimeMillis ();
 				if (attack.lastUpdate >= attack.timeAttackLands) {
 					getAttackResults(attack);
+					// TODO: Delete attack from list
+					toRemove.Add(attack);
 				}
+			}
+			foreach (Attack a in toRemove) {
+				currentAttacks.Remove(a);
 			}
 		}
 	}
@@ -76,12 +82,32 @@ public class AttackHandler : MonoBehaviour {
 		yield return request;
 		AttackResultObj result = JsonMapper.ToObject<AttackResultObj>(request.text);
 		// Process results
+		processAttackResults(attack, result);
+	}
+	
+	private static void processAttackResults(Attack attack, AttackResultObj result) {
+		// TODO: Process results (delete/add new base, adjust num units, remove progress bar, restore wormhole color)
 		bool isWinner = result.winnerUsername.Equals(Globals.username);
-		//Debug.Log ("AttackID: " + attack.attackId + " Won? " + isWinner);
-		if (isWinner) {
-			
-		} else {
+		Debug.Log ("AttackID: " + attack.attackId + " Won? " + isWinner);
 		
+		if (isWinner) {
+			if (attack.attacker.Equals(Globals.username)) {
+				Debug.Log ("My attack successful! Aquired new base - NewBase: " + result.newBase);
+				// Draw new base and portal
+			}
+			else {
+				Debug.Log ("Survived attack! Survingig units - New num units: " + result.numUnitsLeft);
+				// Update num units
+			}
+		}
+		else {
+			if (attack.attacker.Equals(Globals.username)) {
+				Debug.Log ("My attack unsuccessful - lost all the troops I sent to battle");
+			}
+			else {
+				Debug.Log ("Didn't survive attack - lost base BaseId: " + attack.defenderBaseId);
+				// Delete base and connecting portals
+			}
 		}
 	}
 }
