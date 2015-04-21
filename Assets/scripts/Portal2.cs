@@ -17,6 +17,7 @@ public class Portal2 : InstanceObject {
 	}
 
 	public int base2Id { get; set; }
+	[DoNotSerialize]
 	public Base base2 {
 		get {
 			return (Base) ObjectInstanceDictionary.getObjectInstanceById("Base", base2Id);
@@ -41,9 +42,9 @@ public class Portal2 : InstanceObject {
 
 	public long lastMoveUpdate { get; set; }
 
-	public override string ToString ()
-	{
-		return string.Format ("[Portal2: portalId={0}, username={1}, base1={2}, base2={3}, timeFinished={4}, flowRate={5}, troopsToMove={6}, lastMoveUpdate={7}]", 
-		                      portalId, username, base1, base2, timeFinished, flowRate, troopsToMove, lastMoveUpdate);
-	}
+	//public override string ToString ()
+	//{
+	//	return string.Format ("[Portal2: portalId={0}, username={1}, base1={2}, base2={3}, timeFinished={4}, flowRate={5}, troopsToMove={6}, lastMoveUpdate={7}]", 
+	//	                      portalId, username, base1, base2, timeFinished, flowRate, troopsToMove, lastMoveUpdate);
+	//}
 }

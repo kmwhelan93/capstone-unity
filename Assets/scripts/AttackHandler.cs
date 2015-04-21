@@ -48,6 +48,7 @@ public class AttackHandler : MonoBehaviour {
 		wwwform.AddField ("username", "kmw8sf");
 		WWW request = new WWW ("localhost:8080/myapp/world/attacks", wwwform);
 		yield return request;
+		Debug.Log ("/attacks: " + request.text);
 		currentAttacks = JsonMapper.ToObject<List<Attack>>(request.text);
 		foreach(Attack attack in currentAttacks) {
 			createAttackObj(attack);
@@ -81,25 +82,37 @@ public class AttackHandler : MonoBehaviour {
 		WWW request = new WWW ("localhost:8080/myapp/world/attacklanded", wwwform);
 		yield return request;
 		AttackResultObj result = JsonMapper.ToObject<AttackResultObj>(request.text);
+		Debug.Log ("ATTACKRESULTS: " + request.text);
+		Debug.Log ("ATTACKRESULTS2: " + request.text + "____" + result.attackId);
 		// Process results
-		if (result != null) {
+		if (result.attackId == attack.attackId) {
 			processAttackResults(attack, result);
+		} else {
+			// try to get results again
+			Debug.Log ("EMPTY");
+			currentAttacks.Add(attack);
 		}
 	}
 	
 	private static void processAttackResults(Attack attack, AttackResultObj result) {
 		// TODO: Process results (delete/add new base, adjust num units, remove progress bar, restore wormhole color)
 		bool isWinner = result.winnerUsername.Equals(Globals.username);
-		Debug.Log ("AttackID: " + attack.attackId + " Won? " + isWinner);
+		Debug.Log ("AttackID: " + attack.attackId + " Won? " + isWinner + " result: " + result);
 		
 		if (isWinner) {
 			if (attack.attacker.Equals(Globals.username)) {
 				Debug.Log ("My attack successful! Aquired new base - NewBase: " + result.newBase);
 				// Draw new base and portal
+				GenerateWorld.instance.addBase(result.newBase);
+				PortalHandler.instance.addPortal(result.newPortal);
+				EventManager.positionText ();
 			}
 			else {
-				Debug.Log ("Survived attack! Survingig units - New num units: " + result.numUnitsLeft);
+				Debug.Log ("Survived attack! Surviving units - New num units: " + result.numUnitsLeft);
 				// Update num units
+				Base b = (Base)ObjectInstanceDictionary.getObjectInstanceById("Base", attack.defenderBaseId);
+				b.units = result.numUnitsLeft;
+				EventManager.positionText ();
 			}
 		}
 		else {
@@ -109,6 +122,15 @@ public class AttackHandler : MonoBehaviour {
 			else {
 				Debug.Log ("Didn't survive attack - lost base BaseId: " + attack.defenderBaseId);
 				// Delete base and connecting portals
+				GameObject b = ObjectInstanceDictionary.getObjectInstanceById("Base", attack.defenderBaseId).gameObject;
+				Destroy(b.GetComponent<BaseScript>().objectInfoPanel);
+				Destroy (b);
+				// Get all connecting portals
+				foreach (int pId in result.lostPortalIds) {
+					GameObject p = ObjectInstanceDictionary.getObjectInstanceById("Portal", pId).gameObject;
+					Destroy (p);
+				}
+				EventManager.positionText ();
 			}
 		}
 	}
