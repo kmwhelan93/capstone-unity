@@ -82,7 +82,9 @@ public class AttackHandler : MonoBehaviour {
 		yield return request;
 		AttackResultObj result = JsonMapper.ToObject<AttackResultObj>(request.text);
 		// Process results
-		processAttackResults(attack, result);
+		if (result != null) {
+			processAttackResults(attack, result);
+		}
 	}
 	
 	private static void processAttackResults(Attack attack, AttackResultObj result) {
