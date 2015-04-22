@@ -16,7 +16,7 @@ public class OIPProgressScript : MonoBehaviour {
 			max = value;
 		}
 		this.value = value;
-		if (value == 0) {
+		if (value <= 0) {
 			this.gameObject.SetActive (false);
 			return;
 		}
@@ -24,6 +24,7 @@ public class OIPProgressScript : MonoBehaviour {
 			float percentage = (max - value) / (float)max * 100;
 			GetComponentInChildren<ProgressBarBehaviour> ().Value = percentage;
 		}
+		
 	}
 
 	void Start() {

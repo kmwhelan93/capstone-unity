@@ -94,7 +94,7 @@ public class UnderAttackHandler : MonoBehaviour {
 			b.units = result.numUnitsLeft;
 			EventManager.positionText ();
 			
-			WormHole w = attack.attackerWormHole;
+			WormHole w = attack.defenderWormHole;
 			w.attackState = AttackState.NoAttack;
 			// Remove progress bar
 		}
@@ -107,7 +107,8 @@ public class UnderAttackHandler : MonoBehaviour {
 				GameObject p = ObjectInstanceDictionary.getObjectInstanceById("Portal", pId).gameObject;
 				Destroy (p);
 			}
-			// Delete base's wormholes
+			// TODO: Delete all of the base's wormholes, not just the one that the attack came through
+			Destroy( attack.defenderWormHole.gameObject);
 			GameObject b = ObjectInstanceDictionary.getObjectInstanceById("Base", attack.defenderBaseId).gameObject;
 			Destroy (b.GetComponent<BaseScript>().objectInfoPanel);
 			Destroy (b);
