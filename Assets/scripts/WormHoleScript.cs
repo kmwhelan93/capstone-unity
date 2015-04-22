@@ -47,7 +47,6 @@ public class WormHoleScript : MonoBehaviour, InstanceObjectScript, UIPlacer {
 		wwwform.AddField ("numUnits", numUnits);
 		WWW request = new WWW ("localhost:8080/myapp/world/attack", wwwform);
 		yield return request;
-		Debug.Log ("/attack: " + request.text);
 		Attack attack = LitJson.JsonMapper.ToObject<Attack> (request.text);
 		if (attack.attackerBaseId != null) {
 			AttackHandler.instance.addAttack(attack);

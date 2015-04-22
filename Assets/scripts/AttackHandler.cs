@@ -75,63 +75,42 @@ public class AttackHandler : MonoBehaviour {
 	}
 	
 	public IEnumerator coGetAttackResults(Attack attack) {
-		Debug.Log ("Attack landed");
 		WWWForm wwwform = new WWWForm ();
 		wwwform.AddField ("username", "kmw8sf");
 		wwwform.AddField ("attackId", attack.attackId);
 		WWW request = new WWW ("localhost:8080/myapp/world/attacklanded", wwwform);
 		yield return request;
 		AttackResultObj result = JsonMapper.ToObject<AttackResultObj>(request.text);
-		Debug.Log ("ATTACKRESULTS: " + request.text);
-		Debug.Log ("ATTACKRESULTS2: " + request.text + "____" + result.attackId);
-		// Process results
+
+				// Process results
 		if (result.attackId == attack.attackId) {
+			Debug.Log ("ATTACK RESULTS IN");
 			processAttackResults(attack, result);
 		} else {
 			// try to get results again
-			Debug.Log ("EMPTY");
 			currentAttacks.Add(attack);
 		}
 	}
 	
 	private static void processAttackResults(Attack attack, AttackResultObj result) {
-		// TODO: Process results (delete/add new base, adjust num units, remove progress bar, restore wormhole color)
 		bool isWinner = result.winnerUsername.Equals(Globals.username);
 		Debug.Log ("AttackID: " + attack.attackId + " Won? " + isWinner + " result: " + result);
 		
 		if (isWinner) {
-			if (attack.attacker.Equals(Globals.username)) {
-				Debug.Log ("My attack successful! Aquired new base - NewBase: " + result.newBase);
-				// Draw new base and portal
-				GenerateWorld.instance.addBase(result.newBase);
-				PortalHandler.instance.addPortal(result.newPortal);
-				EventManager.positionText ();
-			}
-			else {
-				Debug.Log ("Survived attack! Surviving units - New num units: " + result.numUnitsLeft);
-				// Update num units
-				Base b = (Base)ObjectInstanceDictionary.getObjectInstanceById("Base", attack.defenderBaseId);
-				b.units = result.numUnitsLeft;
-				EventManager.positionText ();
-			}
+			GenerateWorld.instance.message.text = "Attack successful! New base aquired";
+			Debug.Log ("My attack successful! Aquired new base - NewBase: " + result.newBase);
+			// Draw new base and portal
+			GenerateWorld.instance.addBase(result.newBase);
+			PortalHandler.instance.addPortal(result.newPortal);
+			EventManager.positionText ();
 		}
 		else {
-			if (attack.attacker.Equals(Globals.username)) {
-				Debug.Log ("My attack unsuccessful - lost all the troops I sent to battle");
-			}
-			else {
-				Debug.Log ("Didn't survive attack - lost base BaseId: " + attack.defenderBaseId);
-				// Delete base and connecting portals
-				GameObject b = ObjectInstanceDictionary.getObjectInstanceById("Base", attack.defenderBaseId).gameObject;
-				Destroy(b.GetComponent<BaseScript>().objectInfoPanel);
-				Destroy (b);
-				// Get all connecting portals
-				foreach (int pId in result.lostPortalIds) {
-					GameObject p = ObjectInstanceDictionary.getObjectInstanceById("Portal", pId).gameObject;
-					Destroy (p);
-				}
-				EventManager.positionText ();
-			}
+			GenerateWorld.instance.message.text = "Attack unsuccessful";
+			Debug.Log ("My attack unsuccessful - lost all the troops I sent to battle");
 		}
+		WormHole w = attack.attackerWormHole;
+		w.attackState = AttackState.NoAttack;
+		// Remove progress bar
+		//w.gameObject.GetComponentInChildren<OIPProgressScript>().gameObject.SetActive(false);
 	}
 }
