@@ -64,7 +64,7 @@ public class UnderAttackHandler : MonoBehaviour {
 		StartCoroutine("coGetAttackDefendingResults", attack);
 	}
 	
-	public IEnumerator coGetAttackResults(Attack attack) {
+	public IEnumerator coGetAttackDefendingResults(Attack attack) {
 		Debug.Log ("Attack defending landed");
 		WWWForm wwwform = new WWWForm ();
 		wwwform.AddField ("username", "kmw8sf");
@@ -90,22 +90,27 @@ public class UnderAttackHandler : MonoBehaviour {
 			Debug.Log ("Survived attack! Surviving units - New num units: " + result.numUnitsLeft);
 			// Update num units
 			Base b = (Base)ObjectInstanceDictionary.getObjectInstanceById("Base", attack.defenderBaseId);
-			GenerateWorld.instance.message.text = "Survived getting attacked! Lost " + (result.numUnitsLeft - b.units) + " units";
+			GenerateWorld.instance.message.text = "Survived getting attacked! Lost " + (b.units - result.numUnitsLeft) + " units";
 			b.units = result.numUnitsLeft;
 			EventManager.positionText ();
+			
+			WormHole w = attack.attackerWormHole;
+			w.attackState = AttackState.NoAttack;
+			// Remove progress bar
 		}
 		else {
 			GenerateWorld.instance.message.text = "Defeated in attack. Base lost.";
 			Debug.Log ("Didn't survive attack - lost base BaseId: " + attack.defenderBaseId);
 			// Delete base and connecting portals
-			GameObject b = ObjectInstanceDictionary.getObjectInstanceById("Base", attack.defenderBaseId).gameObject;
-			Destroy(b.GetComponent<BaseScript>().objectInfoPanel);
-			Destroy (b);
 			// Get all connecting portals
 			foreach (int pId in result.lostPortalIds) {
 				GameObject p = ObjectInstanceDictionary.getObjectInstanceById("Portal", pId).gameObject;
 				Destroy (p);
 			}
+			// Delete base's wormholes
+			GameObject b = ObjectInstanceDictionary.getObjectInstanceById("Base", attack.defenderBaseId).gameObject;
+			Destroy (b.GetComponent<BaseScript>().objectInfoPanel);
+			Destroy (b);
 			EventManager.positionText ();
 		}
 	}
